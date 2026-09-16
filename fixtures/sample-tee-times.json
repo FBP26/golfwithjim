@@ -1,0 +1,9 @@
+{
+  "teeTimes": [
+    { "id": "providence-0919-0740", "source": "Sample approved feed", "course": "Providence Golf Club", "date": "2026-09-19", "time": "7:40 AM", "availablePlayers": 2, "holes": 18, "allInPrice": 87.99, "hotDeal": false, "rateName": "Standard", "distanceMiles": 7, "url": "https://example.com/providence/0740" },
+    { "id": "providence-0919-1210", "source": "Sample approved feed", "course": "Providence Golf Club", "date": "2026-09-19", "time": "12:10 PM", "availablePlayers": 4, "holes": 18, "allInPrice": 75.24, "hotDeal": true, "rateName": "Hot Deal", "distanceMiles": 7, "url": "https://example.com/providence/1210" },
+    { "id": "providence-0919-1420", "source": "Sample approved feed", "course": "Providence Golf Club", "date": "2026-09-19", "time": "2:20 PM", "availablePlayers": 4, "holes": 18, "allInPrice": 70.99, "hotDeal": false, "rateName": "Standard", "distanceMiles": 7, "url": "https://example.com/providence/1420" },
+    { "id": "providence-0925-0800", "source": "Sample approved feed", "course": "Providence Golf Club", "date": "2026-09-25", "time": "8:00 AM", "availablePlayers": 4, "holes": 18, "standardAllInPrice": 84.99, "golfPassAllInPrice": 81.99, "golfPassEligible": true, "feesWaived": true, "hotDeal": false, "rateName": "GolfPass member", "distanceMiles": 7, "url": "https://example.com/providence/0925" },
+    { "id": "hollows-0925-0930", "source": "Sample approved feed", "course": "The Hollows Golf Club", "date": "2026-09-25", "time": "9:30 AM", "availablePlayers": 3, "holes": 18, "allInPrice": 54.99, "hotDeal": false, "rateName": "Standard", "distanceMiles": 18, "url": "https://example.com/hollows/0925" }
+  ]
+}

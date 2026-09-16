@@ -1,0 +1,59 @@
+name: Publish tee times
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "5 10,11,22,23 * * *"
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: golfwithjim-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Decide whether to collect
+        id: timing
+        shell: bash
+        run: |
+          hour=$(TZ=America/New_York date +%H)
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || ("${{ github.event_name }}" == "schedule" && ("$hour" == "06" || "$hour" == "18")) ]]; then
+            echo "collect=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "collect=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Collect live tee times
+        if: steps.timing.outputs.collect == 'true'
+        run: node src/collect.js --base=fixtures/richmond-live-2026-09-16.json --output=fixtures/live-current.json
+      - name: Save refreshed feed
+        if: steps.timing.outputs.collect == 'true'
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add fixtures/live-current.json
+          git diff --cached --quiet || git commit -m "Refresh tee-time inventory [skip ci]"
+          git push
+      - run: npm run build
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

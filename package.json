@@ -1,0 +1,18 @@
+{
+  "name": "golf-tee-alert",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/index.js && node --check src/monitor.js && node --check src/web.js && node --check public/app.js",
+    "test": "node --test",
+    "start": "node src/web.js",
+    "build": "node scripts/build-static.mjs",
+    "collect:live": "node src/collect.js",
+    "preview:daily": "node src/index.js --source=fixtures/sample-tee-times.json --mode=daily",
+    "preview:alerts": "node src/index.js --source=fixtures/sample-tee-times.json --mode=alert --send-baseline"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

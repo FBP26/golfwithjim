@@ -1,0 +1,13 @@
+{
+  "provider": "whoosh",
+  "defaults": {
+    "course": "Windy Hill Lake Course",
+    "date": "2026-09-16",
+    "distanceMiles": 23,
+    "url": "https://app.whoosh.io/patron/club/windy-hill/agenda/golf-course/today"
+  },
+  "teeTimes": [
+    { "time": "7:20 AM", "minimumPrice": 20, "maximumPrice": 50, "players": "Up to 4", "holes": [9, 18] },
+    { "time": "8:00 AM", "exactPrice": 50, "players": "Up to 4", "holes": [9, 18] }
+  ]
+}

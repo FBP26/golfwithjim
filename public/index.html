@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#15372c">
+  <title>Richmond Tee Times</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=20260916-8">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="Richmond Tee Times home">
+      <span class="brand-mark" aria-hidden="true">R</span>
+      <span><strong>Richmond Tee Times</strong><small>One search. Every public tee sheet.</small></span>
+    </a>
+    <div class="header-actions">
+      <button id="refresh" class="refresh-action" title="Refresh tee times">
+        <span id="refresh-label">Click to refresh tee times</span>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5"/></svg>
+      </button>
+      <span id="feed-status" class="feed-status">Loading live sources</span>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="date-strip" aria-label="Choose a date">
+      <button class="date-option active" data-date="">All dates</button>
+      <div id="date-options"></div>
+    </section>
+
+    <div class="workspace">
+      <aside class="filters" aria-label="Tee time filters">
+        <div class="filter-heading">
+          <div><p class="eyebrow">Your round</p><h2>Filters</h2></div>
+          <button id="clear-filters" class="text-button">Reset</button>
+        </div>
+
+        <fieldset>
+          <legend>Players</legend>
+          <div class="segmented" id="players-filter">
+            <button data-players="1">1</button><button class="active" data-players="2">2</button>
+            <button data-players="3">3</button><button data-players="4">4</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="time-filter">
+          <legend>Time of day</legend>
+          <div class="time-values"><output id="earliest-output">5:00 AM</output><span>to</span><output id="latest-output">8:00 PM</output></div>
+          <div class="dual-range">
+            <div class="range-track" aria-hidden="true"></div>
+            <input id="earliest" aria-label="Earliest tee time" type="range" min="300" max="1200" step="30" value="300">
+            <input id="latest" aria-label="Latest tee time" type="range" min="300" max="1200" step="30" value="1200">
+          </div>
+        </fieldset>
+
+        <label class="range-label">
+          <span>Distance <output id="distance-output">75 miles</output></span>
+          <input id="distance" type="range" min="5" max="75" step="5" value="75">
+        </label>
+
+        <label class="range-label">
+          <span>Max price <output id="price-output">Any</output></span>
+          <input id="price" type="range" min="30" max="160" step="5" value="160">
+        </label>
+
+        <label class="toggle-row">
+          <span><strong>Hot Deals only</strong><small>Show discounted inventory</small></span>
+          <input id="hot-deals" type="checkbox"><i aria-hidden="true"></i>
+        </label>
+
+        <label class="search-label">Course name
+          <span class="search-wrap"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="course-search" type="search" placeholder="Search courses"></span>
+        </label>
+      </aside>
+
+      <section class="results-panel" aria-live="polite">
+        <div class="results-head">
+          <div><p class="eyebrow">Available inventory</p><h2 id="results-title">Tee times</h2></div>
+          <div class="result-actions">
+            <div class="disclosure-actions" aria-label="Result display">
+              <button id="expand-results" type="button">Expand all</button>
+              <button id="collapse-results" type="button">Collapse all</button>
+            </div>
+            <label class="sort-control">Sort
+              <select id="sort">
+                <option value="price" selected>Lowest course price</option>
+                <option value="time">Earliest course time</option>
+                <option value="distance">Nearest course</option>
+                <option value="course">Course name</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="metrics" id="metrics"></div>
+        <div id="results" class="results"><div class="loading">Checking local tee sheets...</div></div>
+      </section>
+    </div>
+
+    <section class="coverage-section">
+      <div class="section-heading"><div><p class="eyebrow">Course coverage</p><h2>Tracked around Richmond</h2></div><p>Courses without public inventory stay visible so nothing falls off the radar.</p></div>
+      <div id="course-directory" class="course-directory"></div>
+    </section>
+  </main>
+
+  <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
+  <script type="module" src="app.js?v=20260916-11"></script>
+</body>
+</html>

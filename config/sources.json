@@ -1,0 +1,372 @@
+{
+  "interactiveOnly": [
+    {
+      "source": "First Tee",
+      "course": "Elson Redmond Memorial Driving Range",
+      "distanceMiles": 5,
+      "showInventory": false,
+      "url": "https://firstteegreaterrichmond.org/"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Spring Creek Golf Club",
+      "distanceMiles": 44,
+      "watchlist": true,
+      "collector": "golfnow",
+      "providerCourseId": "5732",
+      "latitude": 38.13473,
+      "longitude": -78.19478,
+      "url": "https://www.golfnow.com/tee-times/facility/5732-spring-creek-golf-club/search"
+    },
+    {
+      "source": "Sagacity/Play18",
+      "course": "Hunting Hawk Golf Club",
+      "distanceMiles": 24,
+      "collector": "play18",
+      "url": "https://huntinghawk.play18.com/teetimes/searchmatrix"
+    },
+    {
+      "source": "TeeSnap",
+      "course": "Queenfield Golf Club",
+      "distanceMiles": 29,
+      "collector": "teesnap",
+      "providerCourseId": "1512",
+      "url": "https://queenfieldgc.teesnap.net/"
+    },
+    {
+      "source": "Whoosh",
+      "course": "Windy Hill Lake Course",
+      "distanceMiles": 23,
+      "showInventory": false,
+      "url": "https://app.whoosh.io/patron/club/windy-hill/agenda/golf-course/today"
+    },
+    {
+      "source": "Chronogolf",
+      "course": "Belmont Golf Course",
+      "distanceMiles": 8,
+      "showInventory": false,
+      "url": "https://www.chronogolf.com/club/14281/ping"
+    },
+    {
+      "source": "Chronogolf",
+      "course": "The Tattersall Youth Development Center",
+      "distanceMiles": 17,
+      "showInventory": false,
+      "url": "https://www.chronogolf.com/club/14345/ping"
+    },
+    {
+      "source": "ForeUp",
+      "course": "Pendleton Golf Club",
+      "distanceMiles": 45,
+      "bookingWindowDays": 7,
+      "url": "https://foreupsoftware.com/index.php/booking/22537/11103#/teetimes"
+    },
+    {
+      "source": "Chronogolf",
+      "course": "Sycamore Creek Golf Course",
+      "distanceMiles": 20,
+      "watchlist": true,
+      "collector": "chronogolf",
+      "providerCourseId": "16657",
+      "providerCourseUuid": "0dae1010-7f89-43af-993b-bc31d65edd4d",
+      "providerAffiliationTypeId": "58874",
+      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Brickshire Golf Club",
+      "distanceMiles": 30,
+      "collector": "golfnow",
+      "providerCourseId": "2830",
+      "latitude": 37.473632,
+      "longitude": -76.993647,
+      "url": "https://www.golfnow.com/tee-times/facility/2830-brickshire-golf-club/search"
+    },
+    {
+      "source": "Chronogolf",
+      "course": "Amelia Golf & Country Club",
+      "distanceMiles": 40,
+      "showInventory": false,
+      "url": "https://www.chronogolf.com/club/amelia-golf-country-club"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Meadowbrook Country Club",
+      "distanceMiles": 7,
+      "watchlist": true,
+      "collector": "golfnow",
+      "providerCourseId": "17421",
+      "latitude": 37.448239,
+      "longitude": -77.463812,
+      "url": "https://www.golfnow.com/tee-times/facility/17421-meadowbrook-country-club/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Birkdale Golf Club",
+      "distanceMiles": 17,
+      "collector": "golfnow",
+      "providerCourseId": "16391",
+      "latitude": 37.387214,
+      "longitude": -77.668353,
+      "collectionDays": 21,
+      "url": "https://www.golfnow.com/tee-times/facility/16391-birkdale-golf-club/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Cardinal Golf Club at Fort Lee",
+      "distanceMiles": 23,
+      "watchlist": true,
+      "showInventory": false,
+      "providerCourseId": "17930",
+      "latitude": 37.221567,
+      "longitude": -77.327356,
+      "url": "https://www.golfnow.com/tee-times/facility/17930-cardinal-golf-club-at-fort-lee/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Colonial Heritage Golf Club",
+      "distanceMiles": 39,
+      "collector": "golfnow",
+      "providerCourseId": "7186",
+      "latitude": 37.354318,
+      "longitude": -76.773635,
+      "url": "https://www.golfnow.com/tee-times/facility/7186-colonial-heritage-golf-club/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Kiskiack Golf Club",
+      "distanceMiles": 39,
+      "collector": "golfnow",
+      "providerCourseId": "633",
+      "latitude": 37.388094,
+      "longitude": -76.754307,
+      "url": "https://www.golfnow.com/tee-times/facility/633-kiskiack-golf-club/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Ford's Colony Country Club - Blackheath",
+      "distanceMiles": 40,
+      "watchlist": true,
+      "collector": "golfnow",
+      "providerCourseId": "19209",
+      "latitude": 37.304347,
+      "longitude": -76.782897,
+      "url": "https://www.golfnow.com/tee-times/facility/19209-fords-colony-country-club-blackheath/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Ford's Colony Country Club - Blue Heron",
+      "distanceMiles": 40,
+      "watchlist": true,
+      "collector": "golfnow",
+      "providerCourseId": "5491",
+      "latitude": 37.304347,
+      "longitude": -76.782897,
+      "url": "https://www.golfnow.com/tee-times/facility/5491-fords-colony-country-club-blue-heron/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Ford's Colony Country Club - Marsh Hawk",
+      "distanceMiles": 40,
+      "watchlist": true,
+      "collector": "golfnow",
+      "providerCourseId": "20416",
+      "latitude": 37.304436,
+      "longitude": -76.784357,
+      "url": "https://www.golfnow.com/tee-times/facility/20416-fords-colony-country-club-marsh-hawk/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Hobbs Hole Golf Course",
+      "distanceMiles": 40,
+      "url": "https://www.golfnow.com/tee-times/facility/2425-hobbs-hole-golf-course/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Green Course at The Golden Horseshoe",
+      "distanceMiles": 45,
+      "url": "https://www.golfnow.com/tee-times/facility/15458-green-course-at-the-golden-horseshoe/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Gold Course at The Golden Horseshoe",
+      "distanceMiles": 45,
+      "url": "https://www.golfnow.com/tee-times/facility/15459-gold-course-at-the-golden-horseshoe/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Lee's Hill Golf Club",
+      "distanceMiles": 46,
+      "collector": "golfnow",
+      "providerCourseId": "3627",
+      "latitude": 38.2086,
+      "longitude": -77.4584,
+      "url": "https://www.golfnow.com/tee-times/facility/3627-lees-hill-golf-club/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Lake Monticello Golf Course",
+      "distanceMiles": 65,
+      "collector": "golfnow",
+      "providerCourseId": "852",
+      "latitude": 37.900676,
+      "longitude": -78.325816,
+      "url": "https://www.golfnow.com/tee-times/facility/852-lake-monticello-golf-course/search"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Meadows Farms Golf Course",
+      "distanceMiles": 67,
+      "collector": "golfnow",
+      "providerCourseId": "854",
+      "latitude": 38.333379,
+      "longitude": -77.76253,
+      "url": "https://www.golfnow.com/tee-times/facility/854-meadows-farms-golf-course/search"
+    },
+    {
+      "source": "Club Prophet Systems",
+      "course": "Williamsburg National Golf Club",
+      "distanceMiles": 52,
+      "showInventory": false,
+      "url": "https://williamsburgnatgc.cps.golf/onlineresweb/index.html"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Magnolia Green Golf Club",
+      "distanceMiles": 26,
+      "url": "https://magnolia-green-golf-club-formerly-westham-golf-club.book.teeitup.com/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "The Club at Viniterra",
+      "distanceMiles": 32,
+      "bookingWindowDays": 7,
+      "url": "https://club-at-viniterra.book.teeitup.com/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Royal New Kent Golf Club",
+      "distanceMiles": 35,
+      "url": "https://royal-new-kent-golf.book.teeitup.golf/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Mill Quarter Plantation Golf Club",
+      "distanceMiles": 34,
+      "url": "https://mill-quarter-plantation-golf-course.book.teeitup.com/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "The Hollows Golf Club",
+      "distanceMiles": 29,
+      "url": "https://the-hollows-golf-club.book.teeitup.golf/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Lake Chesdin Golf Club",
+      "distanceMiles": 32,
+      "url": "https://acumen-public.book.teeitup.com/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Dogwood Trace Golf Course",
+      "distanceMiles": 27,
+      "url": "https://dogwood-trace-golf-course.book.teeitup.golf/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Mattaponi Springs Golf Club",
+      "distanceMiles": 47,
+      "url": "https://mattaponi-springs-golf-club.book.teeitup.com/?course=19214"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Hanover Golf Club",
+      "distanceMiles": 22,
+      "url": "https://hanover-golf-club-va.book.teeitup.com/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "Providence Golf Club",
+      "distanceMiles": 20,
+      "url": "https://providence-golf-club-2.book.teeitup.com/"
+    },
+    {
+      "source": "GolfNow/TeeItUp",
+      "course": "The Golf Club at The Highlands",
+      "distanceMiles": 24,
+      "url": "https://the-golf-club-at-the-highlands.book.teeitup.com/"
+    },
+    {
+      "source": "Club Caddie",
+      "course": "Independence Championship Course",
+      "distanceMiles": 20,
+      "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/dgfdabab"
+    },
+    {
+      "source": "Club Caddie",
+      "course": "Independence Bear Course",
+      "distanceMiles": 20,
+      "showInventory": false,
+      "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/egfdabab"
+    }
+  ],
+  "dealSources": [
+    {
+      "source": "GolfMoose",
+      "course": "Stonehouse Golf Club",
+      "distanceMiles": 49,
+      "price": 124,
+      "players": 2,
+      "holes": 18,
+      "cartIncluded": true,
+      "expires": "2027-03-31",
+      "url": "https://golfmoose.com/product/shgcva-7/",
+      "restrictions": "Valid daily; after noon Saturday and Sunday; excludes course holidays; call course after purchase"
+    }
+  ],
+  "manualOnly": [
+    {
+      "course": "Glenwood Golf Club",
+      "distanceMiles": 7,
+      "phone": "804-226-1793",
+      "url": "https://www.glenwoodgolfclub1927.com/tee-times.html",
+      "closed": true,
+      "reason": "Closed"
+    },
+    {
+      "course": "Brookwoods Golf Club",
+      "distanceMiles": 18,
+      "phone": "804-932-3737",
+      "url": "https://brookwoodsgolf.com/",
+      "reason": "Course requests tee times by phone"
+    },
+    {
+      "course": "Kiln Creek Golf Club",
+      "distanceMiles": 61,
+      "phone": "757-988-3212",
+      "url": "https://www.kilncreekgolf.com/",
+      "reason": "Public 18-hole course currently requests tee times by phone"
+    }
+  ],
+  "excluded": [
+    {
+      "course": "Somerset Farms Golf Course",
+      "url": "https://www.somersetfarms.golf/",
+      "reason": "Supplied domain does not resolve"
+    },
+    {
+      "course": "The Federal Club",
+      "url": "https://www.thefederalclub.com/",
+      "reason": "Private membership club; supplied 2022 brochure is a 404"
+    },
+    {
+      "course": "Stonehenge Golf & Country Club",
+      "reason": "Private club; supplied ClubCorp URL is obsolete"
+    },
+    {
+      "course": "Virginia Beach and resort courses from the supplied list",
+      "reason": "Outside the 50-mile Richmond search radius"
+    }
+  ]
+}

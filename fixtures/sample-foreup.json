@@ -1,0 +1,15 @@
+{
+  "provider": "foreup",
+  "defaults": {
+    "course": "Pendleton Golf Club",
+    "date": "2026-09-16",
+    "distanceMiles": 45,
+    "url": "https://foreupsoftware.com/index.php/booking/22537/11103#/teetimes"
+  },
+  "teeTimes": [
+    { "time": "9:00 AM", "price": 75, "players": "2 Players", "holes": [18], "rateName": "PG" },
+    { "time": "1:50 PM", "price": 75, "players": "4 Players", "holes": [9, 18], "rateName": "PG" },
+    { "time": "2:00 PM", "price": 65, "players": "4 Players", "holes": [9, 18], "rateName": "PG" },
+    { "time": "2:40 PM", "price": 42, "players": "4 Players", "holes": [9], "rateName": "PG" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "provider": "chronogolf",
+  "defaults": {
+    "course": "Sycamore Creek Golf Course",
+    "date": "2026-09-16",
+    "distanceMiles": 20,
+    "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-09-16"
+  },
+  "teeTimes": [
+    { "time": "8:24 AM", "price": 37, "players": "1", "holes": [3, 9, 18] },
+    { "time": "8:24 AM", "price": 37, "players": "1 - 2", "holes": [3, 9, 18] },
+    { "time": "10:48 AM", "exactPrice": 59, "players": "1 - 4", "holes": [3, 9, 18] }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "provider": "teesnap",
+  "defaults": {
+    "course": "Queenfield Golf Club",
+    "date": "2026-09-16",
+    "distanceMiles": 29,
+    "url": "https://queenfieldgc.teesnap.net/"
+  },
+  "teeTimes": [
+    { "time": "11:50 AM", "price": 50, "slotsAvailable": 4, "holes": 18 },
+    { "time": "12:00 PM", "price": 45, "slotsAvailable": 4, "holes": 18 },
+    { "time": "2:50 PM", "price": 45, "slotsAvailable": 4, "holes": 18 },
+    { "time": "3:00 PM", "price": 38, "slotsAvailable": 4, "holes": 18 }
+  ]
+}

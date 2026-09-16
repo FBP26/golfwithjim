@@ -1,0 +1,14 @@
+{
+  "provider": "play18",
+  "defaults": {
+    "course": "Hunting Hawk Golf Club",
+    "date": "2026-09-16",
+    "distanceMiles": 24,
+    "url": "https://huntinghawk.play18.com/teetimes/searchmatrix?teedate=20260916"
+  },
+  "teeTimes": [
+    { "time": "12:33 PM", "price": 59, "players": "2 to 4 players", "holes": 18 },
+    { "time": "4:36 PM", "price": 49, "players": "2 to 4 players", "holes": 18 },
+    { "time": "5:03 PM", "price": 44, "players": "2 to 4 players", "holes": 18 }
+  ]
+}
