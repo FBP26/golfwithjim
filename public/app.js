@@ -96,7 +96,7 @@ function trackedCoursesHtml(filtered) {
     else if (check) status = state.date ? "No qualifying tee times for this date" : "No qualifying tee times in latest check";
     return `<div class="tracked-course"><span><strong>${escapeHtml(course.course)}</strong><small>${course.distanceMiles} miles · ${escapeHtml(status)}</small></span><a href="${escapeHtml(dateUrl(course.url, state.date))}" target="_blank" rel="noopener">Check course</a></div>`;
   }).join("");
-  return `<section class="tracked-group"><div><p class="eyebrow">Also tracked</p><h3>Courses without matching inventory</h3></div>${rows}</section>`;
+  return `<section class="tracked-group"><div><p class="eyebrow">Also tracked</p><h3>Courses with no tee times</h3></div>${rows}</section>`;
 }
 
 function renderResults() {
@@ -150,7 +150,7 @@ function renderDates() {
 function renderDirectory() {
   const inventoryCourses = new Set(state.teeTimes.map(teeTime => teeTime.course));
   elements["course-directory"].innerHTML = state.courses.toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course)).map(course =>
-    `<div class="directory-course"><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${inventoryCourses.has(course.course) ? "inventory connected" : course.source}</small></div>`).join("");
+    `<div class="directory-course"><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${inventoryCourses.has(course.course) ? "Tee times included" : course.source}</small></div>`).join("");
 }
 
 function selectDate(date) {
