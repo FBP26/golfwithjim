@@ -127,8 +127,8 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .course-summary small { margin-top: 3px; color: var(--muted); font-size: 10px; }
 .course-times { padding: 0 0 12px 29px; }
 .booking-link { display: inline-block; margin-bottom: 7px; color: var(--green-2); font-size: 10px; font-weight: 700; text-underline-offset: 3px; }
-.tee-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 5px; }
-.tee-time { min-width: 0; padding: 9px 10px; border-left: 3px solid var(--green-2); background: #eef1e9; }
+.tee-list { columns: 112px; column-gap: 5px; }
+.tee-time { min-width: 0; margin-bottom: 5px; padding: 9px 10px; break-inside: avoid; border-left: 3px solid var(--green-2); background: #eef1e9; }
 .tee-time.hot { border-left-color: var(--deal); background: #f6ece9; }
 .tee-time strong { display: block; font-size: 14px; }
 .tee-time span { display: flex; justify-content: space-between; gap: 5px; margin-top: 3px; color: var(--muted); font-size: 10px; }
@@ -174,7 +174,6 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
   .course-info { padding: 3px 4px 0 0; }
   .course-summary { grid-column: 2; padding: 0 4px 4px 0; text-align: left; }
   .course-times { padding-left: 17px; }
-  .tee-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .section-heading { display: block; }
   .section-heading > p { margin-top: 8px; }
   .course-directory { grid-template-columns: 1fr 1fr; }
