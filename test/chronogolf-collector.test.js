@@ -46,6 +46,9 @@ test("collects exact two-player 18-hole Chronogolf quotes", async () => {
   assert.equal(result[0].allInPrice, 58);
   assert.equal(result[0].holes, 18);
   assert.equal(requests.length, 2);
+  const listingUrl = new URL(requests[0].url);
+  assert.equal(listingUrl.searchParams.get("start_date"), "2026-09-18");
+  assert.equal(listingUrl.searchParams.get("course_ids"), "course-uuid");
   const quoteBody = JSON.parse(requests[1].options.body);
   assert.equal(quoteBody.rounds_attributes.length, 2);
   assert.equal(quoteBody.nb_holes, "18");

@@ -39,6 +39,9 @@ jobs:
           fi
       - name: Collect live tee times
         if: steps.timing.outputs.collect == 'true'
+        env:
+          CHRONOGOLF_PROXY_TOKEN: ${{ github.token }}
+          CHRONOGOLF_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/chronogolf
         run: node src/collect.js --base=fixtures/richmond-live-2026-09-16.json --output=fixtures/live-current.json
       - name: Save refreshed feed
         if: steps.timing.outputs.collect == 'true'

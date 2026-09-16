@@ -1,8 +1,18 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 
-const baseUrl = "https://www.chronogolf.com/marketplace";
+const directBaseUrl = "https://www.chronogolf.com/marketplace";
 const execFileAsync = promisify(execFile);
+
+function requestUrl(path, searchParams = {}) {
+  const target = new URL(path, `${directBaseUrl}/`);
+  for (const [name, value] of Object.entries(searchParams)) target.searchParams.set(name, value);
+  const proxyUrl = process.env.CHRONOGOLF_PROXY_URL;
+  if (!proxyUrl) return target;
+  const proxy = new URL(proxyUrl);
+  proxy.searchParams.set("target", target);
+  return proxy;
+}
 
 async function curlJson(url, options = {}) {
   const args = ["--silent", "--show-error", "--fail", "--retry", "5", "--retry-all-errors", "--retry-delay", "2", "--header", "Accept: application/json"];
@@ -13,11 +23,13 @@ async function curlJson(url, options = {}) {
 }
 
 async function jsonRequest(url, options, fetchImpl) {
-  if (fetchImpl === fetch && process.platform === "win32") return curlJson(url, options);
+  const proxyToken = process.env.CHRONOGOLF_PROXY_TOKEN;
+  if (fetchImpl === fetch && process.platform === "win32" && !proxyToken) return curlJson(url, options);
   const response = await fetchImpl(url, {
     ...options,
     headers: {
       Accept: "application/json",
+      ...(proxyToken ? { Authorization: `Bearer ${proxyToken}` } : {}),
       ...options?.headers,
     },
     signal: AbortSignal.timeout(20_000),
@@ -29,11 +41,12 @@ async function jsonRequest(url, options, fetchImpl) {
 async function listTeeTimes({ courseUuid, date, fetchImpl }) {
   const teeTimes = [];
   for (let page = 1; ; page += 1) {
-    const url = new URL(`${baseUrl}/v2/teetimes`);
-    url.searchParams.set("start_date", date);
-    url.searchParams.set("course_ids", courseUuid);
-    url.searchParams.set("holes", "18");
-    url.searchParams.set("page", page);
+    const url = requestUrl("v2/teetimes", {
+      start_date: date,
+      course_ids: courseUuid,
+      holes: "18",
+      page,
+    });
     const { payload, headers } = await jsonRequest(url, {}, fetchImpl);
     const pageTimes = payload.teetimes || [];
     teeTimes.push(...pageTimes);
@@ -53,12 +66,12 @@ async function quoteTeeTime(teeTime, affiliationTypeId, fetchImpl) {
   let detail = teeTime;
   let publicAffiliationTypeId = affiliationTypeId;
   if (!publicAffiliationTypeId) {
-    ({ payload: detail } = await jsonRequest(`${baseUrl}/v2/teetimes/${teeTime.uuid}`, {}, fetchImpl));
+    ({ payload: detail } = await jsonRequest(requestUrl(`v2/teetimes/${teeTime.uuid}`), {}, fetchImpl));
     publicAffiliationTypeId = publicAffiliation(detail)?.affiliation_type_id;
   }
   if (!publicAffiliationTypeId || Number(detail.max_player_size) < 2) return null;
   const round = { affiliation_type_id: String(publicAffiliationTypeId), extras: [], discounts: [] };
-  const { payload: options } = await jsonRequest(`${baseUrl}/reservations/options`, {
+  const { payload: options } = await jsonRequest(requestUrl("reservations/options"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

@@ -1,4 +1,5 @@
 const allowedOrigin = "https://fbp26.github.io";
+const repositoryApiUrl = "https://api.github.com/repos/FBP26/golfwithjim";
 
 function responseHeaders() {
   return {
@@ -10,11 +11,56 @@ function responseHeaders() {
   };
 }
 
+async function canPushRepository(request) {
+  const authorization = request.headers.get("Authorization");
+  if (!authorization?.startsWith("Bearer ")) return false;
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(authorization));
+  const key = [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
+  const cache = caches.default;
+  if (await cache.match(`https://golfwithjim-refresh.internal/auth/${key}`)) return true;
+  const verification = await fetch(repositoryApiUrl, {
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: authorization,
+      "User-Agent": "golfwithjim-refresh",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+  });
+  if (!verification.ok) return false;
+  const repository = await verification.json();
+  if (!repository.permissions?.push) return false;
+  await cache.put(`https://golfwithjim-refresh.internal/auth/${key}`, new Response("1", { headers: { "Cache-Control": "max-age=300" } }));
+  return true;
+}
+
+async function proxyChronogolf(request, url) {
+  if (!await canPushRepository(request)) return new Response("Unauthorized", { status: 401 });
+  const target = new URL(url.searchParams.get("target") || "https://invalid.local");
+  const allowedPath = /^\/marketplace\/(?:v2\/teetimes(?:\/[0-9a-f-]+)?|reservations\/options)$/;
+  if (target.origin !== "https://www.chronogolf.com" || !allowedPath.test(target.pathname)) {
+    return new Response("Target not allowed", { status: 403 });
+  }
+  const chronogolfResponse = await fetch(target, {
+    method: request.method,
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (compatible; golfwithjim/1.0)",
+    },
+    body: request.method === "POST" ? await request.text() : undefined,
+  });
+  const headers = new Headers({ "Cache-Control": "no-store", "Content-Type": "application/json" });
+  if (chronogolfResponse.headers.has("total")) headers.set("total", chronogolfResponse.headers.get("total"));
+  return new Response(chronogolfResponse.body, { status: chronogolfResponse.status, headers });
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
+    const url = new URL(request.url);
+    if (["GET", "POST"].includes(request.method) && url.pathname === "/chronogolf") return proxyChronogolf(request, url);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: responseHeaders() });
-    if (request.method !== "POST" || new URL(request.url).pathname !== "/refresh") {
+    if (request.method !== "POST" || url.pathname !== "/refresh") {
       return new Response(JSON.stringify({ ok: true }), { headers: responseHeaders() });
     }
     if (origin !== allowedOrigin) return new Response(JSON.stringify({ error: "Origin not allowed" }), { status: 403, headers: responseHeaders() });
