@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-16T16:35:24.535Z",
+  "checkedAt": "2026-09-16T16:40:43.386Z",
   "collection": "saved coverage with complete starts from configured live collectors",
   "completeSources": [
     "Spring Creek Golf Club",
@@ -20,15 +20,15 @@
   "sourceChecks": [
     {
       "course": "Spring Creek Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
-      "teeTimeCount": 76
+      "teeTimeCount": 75
     },
     {
       "course": "Hunting Hawk Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-20",
@@ -36,7 +36,7 @@
     },
     {
       "course": "Queenfield Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -44,14 +44,14 @@
     },
     {
       "course": "Sycamore Creek Golf Course",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
-      "error": "Chronogolf feed returned HTTP 403."
+      "error": "Chronogolf feed returned HTTP 401."
     },
     {
       "course": "Brickshire Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -59,7 +59,7 @@
     },
     {
       "course": "Meadowbrook Country Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -67,15 +67,15 @@
     },
     {
       "course": "Birkdale Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-10-06",
       "latestAvailableDate": "2026-10-06",
-      "teeTimeCount": 958
+      "teeTimeCount": 957
     },
     {
       "course": "Colonial Heritage Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -83,7 +83,7 @@
     },
     {
       "course": "Kiskiack Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -91,7 +91,7 @@
     },
     {
       "course": "Ford's Colony Country Club - Blackheath",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-19",
@@ -99,7 +99,7 @@
     },
     {
       "course": "Ford's Colony Country Club - Blue Heron",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-21",
@@ -107,7 +107,7 @@
     },
     {
       "course": "Ford's Colony Country Club - Marsh Hawk",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -115,15 +115,15 @@
     },
     {
       "course": "Lee's Hill Golf Club",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
-      "teeTimeCount": 271
+      "teeTimeCount": 270
     },
     {
       "course": "Lake Monticello Golf Course",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
@@ -131,11 +131,11 @@
     },
     {
       "course": "Meadows Farms Golf Course",
-      "checkedAt": "2026-09-16T16:35:24.535Z",
+      "checkedAt": "2026-09-16T16:40:43.386Z",
       "requestedFrom": "2026-09-16",
       "requestedThrough": "2026-09-22",
       "latestAvailableDate": "2026-09-22",
-      "teeTimeCount": 173
+      "teeTimeCount": 172
     }
   ],
   "teeTimes": [
@@ -1167,21 +1167,6 @@
       "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/dgfdabab/slots?date=09%2F21%2F2026&player=2&holes=18&ratetype=any"
     },
     {
-      "id": "golfnow--874489575",
-      "source": "GolfNow",
-      "course": "Spring Creek Golf Club",
-      "date": "2026-09-16",
-      "time": "12:40 PM",
-      "availablePlayers": 2,
-      "holes": 18,
-      "allInPrice": 177.49,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Member for a Day - Meal Included",
-      "distanceMiles": 44,
-      "url": "https://www.golfnow.com/tee-times/facility/5732/tee-time/-874489575"
-    },
-    {
       "id": "golfnow--874489574",
       "source": "GolfNow",
       "course": "Spring Creek Golf Club",
@@ -1307,7 +1292,7 @@
       "course": "Spring Creek Golf Club",
       "date": "2026-09-17",
       "time": "11:00 AM",
-      "availablePlayers": 2,
+      "availablePlayers": 4,
       "holes": 18,
       "allInPrice": 177.49,
       "priceIsExact": true,
@@ -1382,7 +1367,7 @@
       "course": "Spring Creek Golf Club",
       "date": "2026-09-17",
       "time": "12:00 PM",
-      "availablePlayers": 4,
+      "availablePlayers": 2,
       "holes": 18,
       "allInPrice": 177.49,
       "priceIsExact": true,
@@ -14207,21 +14192,6 @@
       "rateName": "Member For a Day",
       "distanceMiles": 7,
       "url": "https://www.golfnow.com/tee-times/facility/17421/tee-time/278699288"
-    },
-    {
-      "id": "golfnow--862050987",
-      "source": "GolfNow",
-      "course": "Birkdale Golf Club",
-      "date": "2026-09-16",
-      "time": "12:40 PM",
-      "availablePlayers": 4,
-      "holes": 18,
-      "allInPrice": 62.39,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.golfnow.com/tee-times/facility/16391/tee-time/-862050987"
     },
     {
       "id": "golfnow--862050986",
@@ -39664,21 +39634,6 @@
       "url": "https://www.golfnow.com/tee-times/facility/20416/tee-time/-856288071"
     },
     {
-      "id": "golfnow-268867907",
-      "source": "GolfNow",
-      "course": "Lee's Hill Golf Club",
-      "date": "2026-09-16",
-      "time": "12:40 PM",
-      "availablePlayers": 4,
-      "holes": 18,
-      "allInPrice": 67.99,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "18 Holes",
-      "distanceMiles": 46,
-      "url": "https://www.golfnow.com/tee-times/facility/3627/tee-time/268867907"
-    },
-    {
       "id": "golfnow-268867909",
       "source": "GolfNow",
       "course": "Lee's Hill Golf Club",
@@ -46564,21 +46519,6 @@
       "url": "https://www.golfnow.com/tee-times/facility/852/tee-time/-895056622"
     },
     {
-      "id": "golfnow-269266716",
-      "source": "GolfNow",
-      "course": "Meadows Farms Golf Course",
-      "date": "2026-09-16",
-      "time": "12:39 PM",
-      "availablePlayers": 4,
-      "holes": 18,
-      "allInPrice": 51.99,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "18 Holes",
-      "distanceMiles": 67,
-      "url": "https://www.golfnow.com/tee-times/facility/854/tee-time/269266716"
-    },
-    {
       "id": "golfnow-269266715",
       "source": "GolfNow",
       "course": "Meadows Farms Golf Course",
@@ -46614,7 +46554,7 @@
       "course": "Meadows Farms Golf Course",
       "date": "2026-09-16",
       "time": "2:27 PM",
-      "availablePlayers": 4,
+      "availablePlayers": 2,
       "holes": 18,
       "allInPrice": 51.99,
       "priceIsExact": true,
