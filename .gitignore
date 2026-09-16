@@ -1,4 +1,5 @@
 .env
+.wrangler/
 dist/
 state/*.json
 !state/.gitkeep
