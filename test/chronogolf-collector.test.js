@@ -50,3 +50,31 @@ test("collects exact two-player 18-hole Chronogolf quotes", async () => {
   assert.equal(quoteBody.rounds_attributes.length, 2);
   assert.equal(quoteBody.nb_holes, "18");
 });
+
+test("keeps successful Chronogolf quotes when another quote is blocked", async () => {
+  const fetchImpl = async (url, options = {}) => {
+    if (String(url).includes("reservations/options")) {
+      const teeTimeId = JSON.parse(options.body).teetime_id;
+      if (teeTimeId === "1") return { ok: false, status: 403 };
+      return response([{ holes: 18, invoice: { total: 90 } }]);
+    }
+    return response({ teetimes: [
+      { id: 1, uuid: "blocked", start_time: "10:00", max_player_size: 4, course: { bookable_holes: [18] } },
+      { id: 2, uuid: "available", start_time: "10:10", max_player_size: 4, course: { bookable_holes: [18] } },
+    ] }, { total: "2" });
+  };
+
+  const result = await collectChronogolfDay({
+    courseUuid: "course-uuid",
+    affiliationTypeId: "58874",
+    date: "2026-09-18",
+    course: "Sycamore Creek Golf Course",
+    distanceMiles: 20,
+    url: "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia",
+    fetchImpl,
+  });
+
+  assert.equal(result.length, 1);
+  assert.equal(result[0].id, "chronogolf-2");
+  assert.equal(result[0].allInPrice, 45);
+});

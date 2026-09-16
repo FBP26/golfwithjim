@@ -86,7 +86,7 @@ export async function collectChronogolfDay({ courseUuid, affiliationTypeId, date
   for (let index = 0; index < listed.length; index += 2) {
     quoted.push(...await Promise.all(listed.slice(index, index + 2).map(async teeTime => ({
       teeTime,
-      quote: await quoteTeeTime(teeTime, affiliationTypeId, fetchImpl),
+      quote: await quoteTeeTime(teeTime, affiliationTypeId, fetchImpl).catch(() => null),
     }))));
   }
   return quoted.filter(item => item.quote).map(({ teeTime, quote }) => ({
