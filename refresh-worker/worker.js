@@ -11,7 +11,7 @@ function responseHeaders() {
   };
 }
 
-async function canPushRepository(request) {
+async function hasValidGitHubToken(request) {
   const authorization = request.headers.get("Authorization");
   if (!authorization?.startsWith("Bearer ")) return false;
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(authorization));
@@ -28,13 +28,13 @@ async function canPushRepository(request) {
   });
   if (!verification.ok) return false;
   const repository = await verification.json();
-  if (!repository.permissions?.push) return false;
+  if (repository.full_name !== "FBP26/golfwithjim") return false;
   await cache.put(`https://golfwithjim-refresh.internal/auth/${key}`, new Response("1", { headers: { "Cache-Control": "max-age=300" } }));
   return true;
 }
 
 async function proxyChronogolf(request, url) {
-  if (!await canPushRepository(request)) return new Response("Unauthorized", { status: 401 });
+  if (!await hasValidGitHubToken(request)) return new Response("Unauthorized", { status: 401 });
   const target = new URL(url.searchParams.get("target") || "https://invalid.local");
   const allowedPath = /^\/marketplace\/(?:v2\/teetimes(?:\/[0-9a-f-]+)?|reservations\/options)$/;
   if (target.origin !== "https://www.chronogolf.com" || !allowedPath.test(target.pathname)) {
