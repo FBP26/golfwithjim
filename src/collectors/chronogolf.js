@@ -22,10 +22,21 @@ async function curlJson(url, options = {}) {
   return { payload: JSON.parse(stdout), headers: new Headers() };
 }
 
+// Chronogolf sits behind Cloudflare bot detection, which occasionally 403s even legitimate proxied traffic.
+async function fetchWithRetry(fetchImpl, url, options, attempts = 3) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const response = await fetchImpl(url, options);
+    if (response.ok || attempt === attempts - 1) return response;
+    const delay = Math.min(500 * 2 ** attempt, 4000) + Math.random() * 300;
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  throw new Error("Unreachable");
+}
+
 async function jsonRequest(url, options, fetchImpl) {
   const proxyToken = process.env.CHRONOGOLF_PROXY_TOKEN;
   if (fetchImpl === fetch && process.platform === "win32" && !proxyToken) return curlJson(url, options);
-  const response = await fetchImpl(url, {
+  const response = await fetchWithRetry(fetchImpl, url, {
     ...options,
     headers: {
       Accept: "application/json",
@@ -33,7 +44,7 @@ async function jsonRequest(url, options, fetchImpl) {
       ...options?.headers,
     },
     signal: AbortSignal.timeout(20_000),
-  });
+  }, 3);
   if (!response.ok) throw new Error(`Chronogolf feed returned HTTP ${response.status}.`);
   return { payload: await response.json(), headers: response.headers };
 }

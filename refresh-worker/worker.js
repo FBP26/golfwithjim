@@ -45,7 +45,10 @@ async function proxyChronogolf(request, url) {
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      "User-Agent": "Mozilla/5.0 (compatible; golfwithjim/1.0)",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+      "Accept-Language": "en-US,en;q=0.9",
+      Referer: "https://www.chronogolf.com/",
+      Origin: "https://www.chronogolf.com",
     },
     body: request.method === "POST" ? await request.text() : undefined,
   });
