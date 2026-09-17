@@ -199,8 +199,10 @@ function pinIcon(category, label) {
 
 function popupTimesTableHtml(times) {
   if (!times.length) return "";
-  const rows = sortResults(times).map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}"><td>${escapeHtml(teeTime.time)}</td><td>${money(teeTime.allInPrice)}</td><td>${teeTime.availablePlayers}</td></tr>`).join("");
-  return `<div class="map-popup-times-wrap"><table class="map-popup-times"><thead><tr><th>Time</th><th>Price</th><th>Spots</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const showDate = !state.date;
+  const ordered = times.toSorted((left, right) => (showDate ? left.date.localeCompare(right.date) : 0) || timeValue(left.time) - timeValue(right.time) || left.allInPrice - right.allInPrice);
+  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${money(teeTime.allInPrice)}</td><td>${teeTime.availablePlayers}</td></tr>`).join("");
+  return `<div class="map-popup-times-wrap"><table class="map-popup-times${showDate ? " has-date" : ""}"><thead><tr>${showDate ? "<th>Date</th>" : ""}<th>Time</th><th>Price</th><th>Spots</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function popupHtml(group, teeTimesByCourse) {

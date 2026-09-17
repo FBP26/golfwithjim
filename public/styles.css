@@ -274,6 +274,7 @@ button.legend-pill-action.active { color: white; background: var(--green); paddi
 .map-popup-times thead th { position: sticky; top: 0; padding: 4px 7px; background: #eef1e9; color: var(--muted); font-size: 9px; font-weight: 700; text-transform: uppercase; text-align: left; }
 .map-popup-times thead th:last-child, .map-popup-times td:last-child { text-align: right; }
 .map-popup-times td { padding: 3px 7px; border-top: 1px solid var(--line); color: var(--ink); }
+.map-popup-times.has-date th, .map-popup-times.has-date td { padding: 3px 5px; font-size: 10px; }
 .map-popup-times tr.hot td { background: #f6ece9; color: var(--deal); font-weight: 700; }
 .map-popup a.map-popup-link { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--green-2); text-decoration: underline; }
 
