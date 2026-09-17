@@ -17,13 +17,8 @@ body { margin: 0; background: linear-gradient(115deg, #ecebdd 0, var(--paper) 42
 button, input, select { font: inherit; }
 button, select, input { letter-spacing: 0; }
 button { cursor: pointer; }
-.site-header { min-height: 74px; padding: 12px clamp(16px, 3vw, 42px); display: flex; align-items: center; justify-content: space-between; gap: 18px; background: var(--green); color: white; border-bottom: 3px solid var(--lime); }
-.brand { display: flex; align-items: center; gap: 11px; color: white; text-decoration: none; }
-.brand-mark { width: 40px; height: 40px; display: grid; place-items: center; border: 1px solid #ffffff55; background: var(--lime); color: var(--green); font: 650 25px "Newsreader", serif; }
-.brand strong, .brand small { display: block; }
-.brand strong { font: 650 20px "Newsreader", serif; }
-.brand small { margin-top: 1px; color: #cad7d0; font-size: 10px; }
-.header-actions { min-width: 0; margin-left: auto; display: flex; align-items: flex-end; flex-direction: column; gap: 2px; }
+.site-header { min-height: 74px; padding: 12px clamp(16px, 3vw, 42px); display: flex; align-items: center; gap: 18px; background: var(--green); color: white; border-bottom: 3px solid var(--lime); }
+.header-actions { min-width: 0; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
 .refresh-action { display: flex; align-items: center; gap: 7px; padding: 3px 0; border: 0; background: transparent; color: white; font-size: 11px; font-weight: 700; }
 .refresh-action:hover, .refresh-action:focus-visible { color: var(--lime); outline: none; }
 .refresh-action:disabled { cursor: wait; opacity: .72; }
@@ -156,7 +151,6 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 }
 @media (max-width: 560px) {
   .site-header { min-height: 64px; padding: 9px 12px; }
-  .brand small { display: none; }
   main { padding: 20px 10px 42px; }
   .refresh-action { font-size: 10px; }
   .results-panel, .filters { padding: 14px 12px; }
