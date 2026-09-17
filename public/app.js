@@ -234,7 +234,7 @@ function initMap() {
 
   map.ringLayer = L.layerGroup().addTo(map);
   DISTANCE_RING_MILES.forEach(miles => {
-    L.circle(RICHMOND_CENTER, { radius: miles * 1609.34, color: "#245944", weight: 1, opacity: .3, fill: false, dashArray: "4 6" }).addTo(map.ringLayer);
+    L.circle(RICHMOND_CENTER, { radius: miles * 1609.34, color: "#d3a53b", weight: 2.5, opacity: .85, fill: true, fillColor: "#d3a53b", fillOpacity: .04, dashArray: "6 8" }).addTo(map.ringLayer);
     L.marker(ringLabelLatLng(miles), { icon: L.divIcon({ className: "map-ring-label", html: `${miles} mi`, iconSize: [40, 16] }), interactive: false }).addTo(map.ringLayer);
   });
 
