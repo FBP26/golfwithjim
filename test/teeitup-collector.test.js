@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { extractTeeItUpInventory } from "../src/collectors/teeitup.js";
+import { collectTeeItUpDay, extractTeeItUpInventory } from "../src/collectors/teeitup.js";
 
 const rate = (overrides = {}) => ({
   _id: 274086381,
@@ -59,4 +59,18 @@ test("marks hot deals reported by the provider", () => {
   const payload = [{ teetimes: [{ teetime: "2026-09-19T15:54:00.000Z", maxPlayers: 2, rates: [rate({ _id: 6, showAsHotDeal: true })] }] }];
   const result = extractTeeItUpInventory(payload, { course: "The Hollows Golf Club", date: "2026-09-19", distanceMiles: 29, url: "https://example.com" });
   assert.equal(result[0].hotDeal, true);
+});
+
+test("retries after a 429 response instead of failing the whole course", async () => {
+  const payload = [{ teetimes: [{ teetime: "2026-09-19T15:54:00.000Z", maxPlayers: 4, rates: [rate({ _id: 7 })] }] }];
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls++;
+    if (calls < 3) return { ok: false, status: 429, headers: { get: () => null } };
+    return { ok: true, status: 200, json: async () => payload };
+  };
+
+  const result = await collectTeeItUpDay({ url: "https://the-hollows-golf-club.book.teeitup.golf/", date: "2026-09-19", course: "The Hollows Golf Club", distanceMiles: 29, fetchImpl });
+  assert.equal(calls, 3);
+  assert.equal(result.length, 1);
 });

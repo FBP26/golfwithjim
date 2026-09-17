@@ -42,12 +42,26 @@ export function extractTeeItUpInventory(payload, defaults = {}) {
   });
 }
 
+async function fetchWithRetry(fetchImpl, requestUrl, options, attempts = 5) {
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    const response = await fetchImpl(requestUrl, options);
+    if (response.status !== 429 || attempt === attempts - 1) return response;
+    const retryAfterSeconds = Number(response.headers.get("retry-after"));
+    const delay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
+      ? retryAfterSeconds * 1000
+      : 500 * 2 ** attempt + Math.random() * 500;
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+  throw new Error("Unreachable");
+}
+
 export async function collectTeeItUpDay({ url, date, course, distanceMiles, fetchImpl = fetch }) {
   const alias = new URL(url).hostname.split(".")[0];
   const requestUrl = new URL(endpoint);
   requestUrl.searchParams.set("date", date);
   requestUrl.searchParams.set("returnPromotedRates", "true");
-  const response = await fetchImpl(requestUrl, { headers: { Accept: "application/json", "x-be-alias": alias }, signal: AbortSignal.timeout(20_000) });
+  // The shared TeeItUp API rate-limits bursts from a single IP (e.g. CI runners collecting many courses at once).
+  const response = await fetchWithRetry(fetchImpl, requestUrl, { headers: { Accept: "application/json", "x-be-alias": alias }, signal: AbortSignal.timeout(20_000) });
   if (!response.ok) throw new Error(`TeeItUp returned HTTP ${response.status} for ${alias}.`);
   return extractTeeItUpInventory(await response.json(), {
     course, date, distanceMiles,
