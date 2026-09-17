@@ -42,14 +42,15 @@ export function extractTeeItUpInventory(payload, defaults = {}) {
   });
 }
 
-async function fetchWithRetry(fetchImpl, requestUrl, options, attempts = 5) {
+async function fetchWithRetry(fetchImpl, requestUrl, options, attempts = 3) {
   for (let attempt = 0; attempt < attempts; attempt++) {
     const response = await fetchImpl(requestUrl, options);
     if (response.status !== 429 || attempt === attempts - 1) return response;
     const retryAfterSeconds = Number(response.headers.get("retry-after"));
+    // Cap the wait regardless of what the provider asks for, so one blocked course can't stall the whole collection run.
     const delay = Number.isFinite(retryAfterSeconds) && retryAfterSeconds > 0
-      ? retryAfterSeconds * 1000
-      : 500 * 2 ** attempt + Math.random() * 500;
+      ? Math.min(retryAfterSeconds * 1000, 4000)
+      : 400 * 2 ** attempt + Math.random() * 400;
     await new Promise(resolve => setTimeout(resolve, delay));
   }
   throw new Error("Unreachable");
