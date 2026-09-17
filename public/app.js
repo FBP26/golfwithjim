@@ -52,6 +52,35 @@ function dateUrl(url, date) {
   return `${url}${url.includes("?") ? "&" : "?"}date=${date}`;
 }
 
+// A course can be tracked through more than one booking source (e.g. GolfNow and its own direct platform).
+// GolfPass membership points only accrue when booking through GolfNow, so it wins ties on price.
+const isGolfNowSource = source => /golfnow/i.test(source);
+
+function bestBookingTeeTime(times) {
+  if (!times.length) return null;
+  const minPrice = Math.min(...times.map(teeTime => teeTime.allInPrice));
+  const cheapest = times.filter(teeTime => teeTime.allInPrice === minPrice);
+  return cheapest.find(teeTime => isGolfNowSource(teeTime.source)) || cheapest[0];
+}
+
+function dedupeByCourse(courses) {
+  const byName = new Map();
+  for (const course of courses) {
+    const existing = byName.get(course.course);
+    if (!existing || (course.collector === "golfnow" && existing.collector !== "golfnow")) byName.set(course.course, course);
+  }
+  return [...byName.values()];
+}
+
+function courseCheckMap(checks) {
+  const byName = new Map();
+  for (const check of checks) {
+    const existing = byName.get(check.course);
+    if (!existing || (check.error && !existing.error)) byName.set(check.course, check);
+  }
+  return byName;
+}
+
 function metricsHtml(summary) {
   const lowestPrice = state.exactPrice ?? summary.lowestPrice;
   return [
@@ -84,8 +113,8 @@ function sortCourseGroups(groups) {
 
 function trackedCoursesHtml(filtered) {
   const visible = new Set(filtered.map(teeTime => teeTime.course));
-  const checks = new Map(state.sourceChecks.map(check => [check.course, check]));
-  const courses = state.courses
+  const checks = courseCheckMap(state.sourceChecks);
+  const courses = dedupeByCourse(state.courses)
     .filter(course => course.watchlist && !visible.has(course.course))
     .filter(course => !state.course || course.course.toLowerCase().includes(state.course))
     .filter(course => course.distanceMiles <= state.maximumDistance);
@@ -126,7 +155,7 @@ function renderResults() {
       const inventorySummary = courseTimes.length === 1
         ? escapeHtml(timeRange)
         : `${escapeHtml(timeRange)} · ${courseTimes.length} tee times`;
-      return `<details class="course-row"><summary><span class="course-info"><span class="course-name">${escapeHtml(course)}</span><small>${first.distanceMiles} miles · ${escapeHtml(first.source)}</small></span><span class="course-summary"><strong>From ${money(lowestPrice)}</strong><small>${inventorySummary}${dealCount ? ` · ${dealCount} Hot Deal${dealCount === 1 ? "" : "s"}` : ""}</small></span></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(first.url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a><div class="tee-list">${tiles}</div></div></details>`;
+      return `<details class="course-row"><summary><span class="course-info"><span class="course-name">${escapeHtml(course)}</span><small>${first.distanceMiles} miles · ${escapeHtml(first.source)}</small></span><span class="course-summary"><strong>From ${money(lowestPrice)}</strong><small>${inventorySummary}${dealCount ? ` · ${dealCount} Hot Deal${dealCount === 1 ? "" : "s"}` : ""}</small></span></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a><div class="tee-list">${tiles}</div></div></details>`;
     }).join("");
     return `<details class="date-group" open><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${dateTimes.length} tee time${dateTimes.length === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
   }).join("") + trackedCoursesHtml(filtered);
@@ -153,20 +182,21 @@ function renderDates() {
 
 function renderDirectory() {
   const counts = Map.groupBy(state.teeTimes, teeTime => teeTime.course);
-  const checks = new Map(state.sourceChecks.map(check => [check.course, check]));
-  const sorted = state.courses.toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course));
+  const checks = courseCheckMap(state.sourceChecks);
+  const sorted = dedupeByCourse(state.courses).toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course));
   const columns = window.matchMedia("(max-width: 850px)").matches ? 2 : 4;
   elements["course-directory"].style.setProperty("--directory-rows", Math.ceil(sorted.length / columns) || 1);
   elements["course-directory"].innerHTML = sorted.map(course => {
-    const count = counts.get(course.course)?.length || 0;
+    const times = counts.get(course.course) || [];
     const check = checks.get(course.course);
     let detail = course.source;
     let flagged = false;
     if (course.collector) {
       if (check?.error) { detail = "Check failed"; flagged = true; }
-      else { detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
+      else { detail = `${times.length} tee time${times.length === 1 ? "" : "s"}`; flagged = times.length <= 1; }
     }
-    return `<div class="directory-course${flagged ? " flagged" : ""}"><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${escapeHtml(detail)}</small></div>`;
+    const href = bestBookingTeeTime(times)?.url || course.url;
+    return `<div class="directory-course${flagged ? " flagged" : ""}"><a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${escapeHtml(detail)}</small></div>`;
   }).join("");
 }
 window.addEventListener("resize", () => { if (state.courses.length) renderDirectory(); });
@@ -225,7 +255,8 @@ function popupHtml(group, teeTimesByCourse) {
       ? `${dealCount} Hot Deal${dealCount === 1 ? "" : "s"} of ${times.length} tee time${times.length === 1 ? "" : "s"}`
       : category === "available" ? `${times.length} tee time${times.length === 1 ? "" : "s"}`
       : "No qualifying tee times right now";
-    return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p><div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(course.url)}" target="_blank" rel="noopener">Book a tee time &rarr;</a></div>`;
+    const href = bestBookingTeeTime(times)?.url || course.url;
+    return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p><div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(href)}" target="_blank" rel="noopener">Book a tee time &rarr;</a></div>`;
   }).join("");
   return `<div class="map-popup">${rows}</div>`;
 }
@@ -287,7 +318,7 @@ function updateMapView() {
   const filtered = filterTeeTimes(state.teeTimes, state);
   const teeTimesByCourse = Map.groupBy(filtered, teeTime => teeTime.course);
   const searchTerm = state.course;
-  const mappable = state.courses.filter(course => course.latitude != null
+  const mappable = dedupeByCourse(state.courses).filter(course => course.latitude != null
     && course.distanceMiles <= state.maximumDistance
     && (!searchTerm || course.course.toLowerCase().includes(searchTerm)));
   const groups = new Map();
@@ -327,7 +358,7 @@ function locateUser(button) {
       icon: L.divIcon({ className: "user-location-wrap", html: '<span class="user-location-marker"><span class="user-location-ring"></span><span class="user-location-dot"></span></span>', iconSize: [18, 18] }),
       zIndexOffset: 1000,
     }).addTo(map).bindTooltip("You are here", { direction: "top", offset: [0, -6] });
-    const distances = state.courses
+    const distances = dedupeByCourse(state.courses)
       .filter(course => course.latitude != null)
       .map(course => ({ course, miles: haversineMiles(latitude, longitude, course.latitude, course.longitude) }))
       .toSorted((left, right) => left.miles - right.miles)

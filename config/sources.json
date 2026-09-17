@@ -362,6 +362,16 @@
       "longitude": -77.6850446
     },
     {
+      "source": "GolfNow Marketplace",
+      "course": "Independence Championship Course",
+      "distanceMiles": 20,
+      "collector": "golfnow",
+      "providerCourseId": "652",
+      "latitude": 37.5439683,
+      "longitude": -77.6850446,
+      "url": "https://www.golfnow.com/tee-times/facility/652-independence-golf-club/search"
+    },
+    {
       "source": "Club Caddie",
       "course": "Independence Bear Course",
       "distanceMiles": 20,
