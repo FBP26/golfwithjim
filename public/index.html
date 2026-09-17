@@ -8,7 +8,7 @@ or<!doctype html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260916-17">
+  <link rel="stylesheet" href="styles.css?v=20260917-1">
 </head>
 <body>
   <header class="site-header">
@@ -35,8 +35,7 @@ or<!doctype html>
     <div class="workspace">
       <aside class="filters" aria-label="Tee time filters">
         <div class="filter-heading">
-          <div><p class="eyebrow">Your round</p><h2>Filters</h2></div>
-          <button id="clear-filters" class="text-button">Reset</button>
+          <button id="clear-filters" class="text-button">Reset filters</button>
         </div>
 
         <fieldset>
@@ -79,7 +78,6 @@ or<!doctype html>
 
       <section class="results-panel" aria-live="polite">
         <div class="results-head">
-          <div><p class="eyebrow">Available inventory</p><h2 id="results-title">Tee times</h2></div>
           <div class="result-actions">
             <div class="disclosure-actions" aria-label="Result display">
               <button id="expand-results" type="button">Expand all</button>
@@ -102,31 +100,19 @@ or<!doctype html>
     </div>
 
     <section class="coverage-section">
-      <div class="section-heading"><div><p class="eyebrow">Course coverage</p><h2>Tracked around Richmond</h2></div><p>Courses without public inventory stay visible so nothing falls off the radar.</p></div>
+      <div class="section-heading"><h2>Tracked around Richmond</h2></div>
       <div id="course-directory" class="course-directory"></div>
     </section>
     </section>
 
     <section id="view-map-container" class="map-view-hidden">
       <div class="map-layout">
-        <div class="map-sidebar">
-          <div class="map-sidebar-header">
-            <div>
-              <p class="eyebrow">Richmond Courses</p>
-              <h2>Map Inventory</h2>
-            </div>
-            <span id="map-count" class="map-count-badge">0 courses</span>
-          </div>
+        <div class="map-topbar">
           <section class="date-strip map-date-strip" aria-label="Choose a date">
             <button class="date-option active" data-date="">All dates</button>
             <div id="map-date-options"></div>
           </section>
-          <div id="map-filters-summary" class="map-filters-summary">
-            Showing filtered tee times & tracked courses around Richmond. Click any course to inspect tee times.
-          </div>
-          <div id="map-course-list" class="map-course-list">
-            <!-- Populated via JS -->
-          </div>
+          <span id="map-count" class="map-count-badge">0 courses</span>
         </div>
         <div class="map-container-wrap">
           <div class="map-floating-controls">
@@ -146,6 +132,6 @@ or<!doctype html>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
-  <script type="module" src="app.js?v=20260916-22"></script>
+  <script type="module" src="app.js?v=20260917-1"></script>
 </body>
 </html>

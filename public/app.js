@@ -11,10 +11,10 @@ const state = {
 
 const elements = Object.fromEntries([
   "date-options", "distance", "distance-output", "price", "price-output", "earliest", "earliest-output", "latest", "latest-output",
-  "hot-deals", "course-search", "sort", "results", "metrics", "results-title", "feed-status",
+  "hot-deals", "course-search", "sort", "results", "metrics", "feed-status",
   "refresh", "refresh-label", "clear-filters", "players-filter", "course-directory", "expand-results", "collapse-results",
   "tab-list", "tab-map", "view-list-container", "view-map-container",
-  "map-count", "map-filters-summary", "map-course-list", "leaflet-map", "map-legend-locate", "map-date-options",
+  "map-count", "leaflet-map", "map-legend-locate", "map-date-options",
 ].map(id => [id, document.getElementById(id)]));
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
@@ -106,7 +106,6 @@ function renderResults() {
   if (state.course) filtered = filtered.filter(teeTime => teeTime.course.toLowerCase().includes(state.course));
   if (state.exactPrice != null) filtered = filtered.filter(teeTime => Math.abs(teeTime.allInPrice - state.exactPrice) < 0.001);
   elements.metrics.innerHTML = metricsHtml(summarizeResults(filtered));
-  elements["results-title"].textContent = state.date ? dateLabel(state.date) : "All tee times";
   if (!filtered.length) {
     elements.results.innerHTML = `<div class="empty">No tee times match these filters.</div>${trackedCoursesHtml(filtered)}`;
     updateMapView();
@@ -154,9 +153,13 @@ function renderDates() {
 
 function renderDirectory() {
   const inventoryCourses = new Set(state.teeTimes.map(teeTime => teeTime.course));
-  elements["course-directory"].innerHTML = state.courses.toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course)).map(course =>
+  const sorted = state.courses.toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course));
+  const columns = window.matchMedia("(max-width: 850px)").matches ? 2 : 4;
+  elements["course-directory"].style.setProperty("--directory-rows", Math.ceil(sorted.length / columns) || 1);
+  elements["course-directory"].innerHTML = sorted.map(course =>
     `<div class="directory-course"><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${inventoryCourses.has(course.course) ? "Tee times included" : course.source}</small></div>`).join("");
 }
+window.addEventListener("resize", () => { if (state.courses.length) renderDirectory(); });
 
 function selectDate(date) {
   state.date = date;
@@ -170,8 +173,6 @@ const DISTANCE_RING_MILES = [10, 25, 50, 75];
 let map = null;
 let markerLayer = null;
 let userLocationMarker = null;
-let activeMapKey = null;
-let currentMapGroups = new Map();
 
 const haversineMiles = (lat1, lon1, lat2, lon2) => {
   const toRad = degrees => degrees * Math.PI / 180;
@@ -219,15 +220,6 @@ function popupHtml(group, teeTimesByCourse) {
   return `<div class="map-popup">${rows}</div>`;
 }
 
-function sidebarCardHtml(group, teeTimesByCourse, key) {
-  const primary = group[0];
-  const categories = group.map(course => pinCategory(teeTimesByCourse.get(course.course) || []));
-  const bestCategory = categories.includes("hot") ? "hot" : categories.includes("available") ? "available" : "link";
-  const label = categories.includes("hot") ? "Hot Deal" : categories.includes("available") ? "Available" : "Tracked";
-  const names = group.map(course => escapeHtml(course.course)).join(" · ");
-  return `<div class="map-course-card${activeMapKey === key ? " highlight" : ""}" data-map-key="${key}"><h4>${names}<span class="map-card-tag ${bestCategory}">${label}</span></h4><p><span>${primary.distanceMiles} miles</span><span>${escapeHtml(primary.source)}</span></p></div>`;
-}
-
 function ringLabelLatLng(miles) {
   return [RICHMOND_CENTER[0] + miles / 69, RICHMOND_CENTER[1]];
 }
@@ -258,8 +250,6 @@ function initMap() {
     .addTo(map)
     .bindTooltip("Richmond · click to recenter", { direction: "top", offset: [0, -8] })
     .on("click", () => {
-      activeMapKey = null;
-      document.querySelectorAll(".map-course-card").forEach(card => card.classList.remove("highlight"));
       map.closePopup();
       map.flyTo(RICHMOND_CENTER, 8, { duration: .6 });
     });
@@ -268,20 +258,9 @@ function initMap() {
   requestAnimationFrame(() => map.invalidateSize());
 }
 
-function flyToMapKey(key, group, { openPopup = false } = {}) {
+function flyToMapKey(key, group) {
   if (!map || !group) return;
-  activeMapKey = key;
   map.flyTo([group[0].latitude, group[0].longitude], Math.max(map.getZoom(), 11), { duration: .6 });
-  // Sidebar navigation can target a marker that starts off-screen, so autoPan must be computed
-  // against the settled destination view, not the pre-flyTo position. Wait for "moveend", with a
-  // timeout fallback because flyTo never fires it when the map is already at the target view.
-  if (openPopup) {
-    let opened = false;
-    const open = () => { if (opened) return; opened = true; group.marker?.openPopup(); };
-    map.once("moveend", open);
-    setTimeout(open, 700);
-  }
-  document.querySelectorAll(".map-course-card").forEach(card => card.classList.toggle("highlight", card.dataset.mapKey === key));
 }
 
 function updateMapView() {
@@ -300,42 +279,25 @@ function updateMapView() {
     groups.get(key).push(course);
   });
 
-  const groupsByKey = new Map();
+  const bounds = [];
+  let visibleCount = 0;
   groups.forEach((group, key) => {
     const primary = group[0];
     const categories = group.map(course => pinCategory(teeTimesByCourse.get(course.course) || []));
     const bestCategory = categories.includes("hot") ? "hot" : categories.includes("available") ? "available" : "link";
     if (bestCategory === "link") return;
     const visibleCourses = group.filter(course => pinCategory(teeTimesByCourse.get(course.course) || []) !== "link");
-    visibleCourses.marker = null;
     const icon = pinIcon(bestCategory, visibleCourses.length > 1 ? String(visibleCourses.length) : "&#9971;");
     const marker = L.marker([primary.latitude, primary.longitude], { icon }).addTo(markerLayer);
     marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { maxWidth: 300, maxHeight: 320 });
     marker.on("click", () => flyToMapKey(key, visibleCourses));
-    visibleCourses.marker = marker;
-    groupsByKey.set(key, visibleCourses);
+    bounds.push([primary.latitude, primary.longitude]);
+    visibleCount += 1;
   });
 
-  const unmapped = state.courses.filter(course => course.latitude == null
-    && course.distanceMiles <= state.maximumDistance
-    && pinCategory(teeTimesByCourse.get(course.course) || []) !== "link"
-    && (!searchTerm || course.course.toLowerCase().includes(searchTerm)));
-
-  currentMapGroups = groupsByKey;
-  const sortedGroups = [...groupsByKey].toSorted(([, left], [, right]) => left[0].distanceMiles - right[0].distanceMiles);
-  const cardsHtml = sortedGroups.map(([key, group]) => sidebarCardHtml(group, teeTimesByCourse, key)).join("");
-  const unmappedHtml = unmapped.length ? `<p class="map-course-list-heading">No mapped location yet</p>${unmapped.toSorted((left, right) => left.distanceMiles - right.distanceMiles).map(course => `<div class="map-course-card unmapped"><h4>${escapeHtml(course.course)}</h4><p><span>${course.distanceMiles} miles</span><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">View course</a></p></div>`).join("")}` : "";
-  elements["map-course-list"].innerHTML = cardsHtml + unmappedHtml;
-
-  elements["map-count"].textContent = `${groupsByKey.size} location${groupsByKey.size === 1 ? "" : "s"}`;
-  elements["map-filters-summary"].innerHTML = `Showing <strong>${groupsByKey.size}</strong> location${groupsByKey.size === 1 ? "" : "s"} with tee times${state.date ? ` on <strong>${escapeHtml(dateLabel(state.date))}</strong>` : ""} within ${state.maximumDistance} miles.${unmapped.length ? ` ${unmapped.length} more course${unmapped.length === 1 ? "" : "s"} ${unmapped.length === 1 ? "has" : "have"} tee times but no mapped location yet.` : ""}`;
+  elements["map-count"].textContent = `${visibleCount} location${visibleCount === 1 ? "" : "s"}`;
+  if (bounds.length) map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 11, duration: .6 });
 }
-
-elements["map-course-list"].addEventListener("click", event => {
-  const card = event.target.closest("[data-map-key]");
-  if (!card || card.classList.contains("unmapped")) return;
-  flyToMapKey(card.dataset.mapKey, currentMapGroups.get(card.dataset.mapKey), { openPopup: true });
-});
 
 elements["map-legend-locate"].addEventListener("click", () => {
   if (!navigator.geolocation) { elements["map-legend-locate"].title = "Location is not supported in this browser."; return; }
@@ -354,13 +316,13 @@ elements["map-legend-locate"].addEventListener("click", () => {
       .slice(0, 3);
     if (distances.length) {
       const summary = distances.map(entry => `${entry.course.course} (${entry.miles.toFixed(1)} mi)`).join(", ");
-      elements["map-filters-summary"].innerHTML = `Nearest to you: <strong>${escapeHtml(summary)}</strong>.`;
+      elements["map-legend-locate"].title = `Nearest to you: ${summary}`;
     }
     map.flyTo([latitude, longitude], 10, { duration: .6 });
     elements["map-legend-locate"].classList.remove("active");
   }, () => {
     elements["map-legend-locate"].classList.remove("active");
-    elements["map-filters-summary"].textContent = "Location access was denied or unavailable.";
+    elements["map-legend-locate"].title = "Location access was denied or unavailable.";
   }, { enableHighAccuracy: true, timeout: 10_000 });
 });
 
@@ -380,6 +342,7 @@ function setActiveTab(view) {
 }
 elements["tab-list"].addEventListener("click", () => setActiveTab("list"));
 elements["tab-map"].addEventListener("click", () => setActiveTab("map"));
+window.addEventListener("resize", () => { if (map && !elements["view-map-container"].classList.contains("map-view-hidden")) map.invalidateSize(); });
 // -------------------------------------------------------------------------
 
 async function loadInventory({ liveRefresh = false } = {}) {
