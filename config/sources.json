@@ -258,7 +258,8 @@
       "distanceMiles": 26,
       "url": "https://magnolia-green-golf-club-formerly-westham-golf-club.book.teeitup.com/",
       "latitude": 37.4020077,
-      "longitude": -77.7433998
+      "longitude": -77.7433998,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -267,7 +268,8 @@
       "bookingWindowDays": 7,
       "url": "https://club-at-viniterra.book.teeitup.com/",
       "latitude": 37.5401074,
-      "longitude": -77.0743842
+      "longitude": -77.0743842,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -275,7 +277,8 @@
       "distanceMiles": 35,
       "url": "https://royal-new-kent-golf.book.teeitup.golf/",
       "latitude": 37.4736889,
-      "longitude": -77.0198833
+      "longitude": -77.0198833,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -283,7 +286,8 @@
       "distanceMiles": 34,
       "url": "https://mill-quarter-plantation-golf-course.book.teeitup.com/",
       "latitude": 37.4963025,
-      "longitude": -77.920129
+      "longitude": -77.920129,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -291,7 +295,8 @@
       "distanceMiles": 29,
       "url": "https://the-hollows-golf-club.book.teeitup.golf/",
       "latitude": 37.7882355,
-      "longitude": -77.5963428
+      "longitude": -77.5963428,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -299,7 +304,8 @@
       "distanceMiles": 32,
       "url": "https://acumen-public.book.teeitup.com/",
       "latitude": 37.2777181,
-      "longitude": -77.6457925
+      "longitude": -77.6457925,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -307,7 +313,8 @@
       "distanceMiles": 27,
       "url": "https://dogwood-trace-golf-course.book.teeitup.golf/",
       "latitude": 37.1917708,
-      "longitude": -77.3937537
+      "longitude": -77.3937537,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -315,7 +322,8 @@
       "distanceMiles": 47,
       "url": "https://mattaponi-springs-golf-club.book.teeitup.com/?course=19214",
       "latitude": 37.9479829,
-      "longitude": -77.3713625
+      "longitude": -77.3713625,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -323,7 +331,8 @@
       "distanceMiles": 22,
       "url": "https://hanover-golf-club-va.book.teeitup.com/",
       "latitude": 37.8016114,
-      "longitude": -77.5384554
+      "longitude": -77.5384554,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -331,7 +340,8 @@
       "distanceMiles": 20,
       "url": "https://providence-golf-club-2.book.teeitup.com/",
       "latitude": 37.4818139,
-      "longitude": -77.5587214
+      "longitude": -77.5587214,
+      "collector": "teeitup"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -339,7 +349,8 @@
       "distanceMiles": 24,
       "url": "https://the-golf-club-at-the-highlands.book.teeitup.com/",
       "latitude": 37.3361228,
-      "longitude": -77.5296733
+      "longitude": -77.5296733,
+      "collector": "teeitup"
     },
     {
       "source": "Club Caddie",

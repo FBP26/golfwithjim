@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { collectChronogolfDay } from "./collectors/chronogolf.js";
 import { collectGolfNowDay } from "./collectors/golfnow.js";
 import { collectPlay18Day } from "./collectors/play18.js";
+import { collectTeeItUpDay } from "./collectors/teeitup.js";
 import { collectTeeSnapDay } from "./collectors/teesnap.js";
 import { config, sourceRegistry } from "./config.js";
 
@@ -56,6 +57,15 @@ async function collectSource(source, date, fetchImpl) {
     return collectTeeSnapDay({
       baseUrl: source.url,
       courseId: source.providerCourseId,
+      date,
+      course: source.course,
+      distanceMiles: source.distanceMiles,
+      fetchImpl,
+    });
+  }
+  if (source.collector === "teeitup") {
+    return collectTeeItUpDay({
+      url: source.url,
       date,
       course: source.course,
       distanceMiles: source.distanceMiles,
