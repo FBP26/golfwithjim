@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { readFile, writeFile } from "node:fs/promises";
 import { extname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { isEligible, normalizeTeeTime } from "./analyze.js";
+import { isEligible, normalizeTeeTime, todayIso } from "./analyze.js";
 import { collectLiveInventory, mergeCollectedInventory } from "./collect.js";
 import { config, sourceRegistry } from "./config.js";
 import { loadFeed, teeTimeArray } from "./source.js";
@@ -55,11 +55,13 @@ async function inventory() {
   const inventoryCourses = new Set((sourceRegistry.interactiveOnly || [])
     .filter(source => source.showInventory !== false)
     .map(source => source.course));
+  const today = todayIso();
   const teeTimes = teeTimeArray(payload)
     .map(normalizeTeeTime)
     .filter(teeTime => inventoryCourses.has(teeTime.course)
       && isEligible(teeTime, config)
-      && teeTime.holes === config.preferredHoles);
+      && teeTime.holes === config.preferredHoles
+      && teeTime.date >= today);
   return {
     checkedAt: payload.checkedAt || new Date().toISOString(),
     feed: process.env.GOLF_FEED_URL ? "configured feed" : `merged Richmond feed (${payload.completeSources?.length || 0} complete live sources)`,

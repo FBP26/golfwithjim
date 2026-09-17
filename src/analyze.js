@@ -2,6 +2,15 @@ const RESTRICTED_RATE_PATTERN = /\b(junior|military|veteran|senior|resident)\b/i
 const MEMBER_RATE_PATTERN = /\bmember\b/i;
 const PUBLIC_MEMBER_FOR_DAY_PATTERN = /\bmember for (?:a|the) day\b/i;
 
+export function todayIso(timeZone = "America/New_York") {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" })
+      .formatToParts(new Date())
+      .map(part => [part.type, part.value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
 export function normalizeTeeTime(raw) {
   const standardAllInPrice = Number(raw.standardAllInPrice ?? raw.allInPrice);
   const golfPassAllInPrice = raw.golfPassAllInPrice == null ? null : Number(raw.golfPassAllInPrice);

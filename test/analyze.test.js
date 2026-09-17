@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { findPriceBreaks, isEligible, newestAvailableDate, normalizeTeeTime } from "../src/analyze.js";
+import { findPriceBreaks, isEligible, newestAvailableDate, normalizeTeeTime, todayIso } from "../src/analyze.js";
 import { adaptChronogolfTeeTime } from "../src/adapters/chronogolf.js";
 import { adaptClubCaddieTeeTime } from "../src/adapters/clubcaddie.js";
 import { adaptForeUpTeeTime } from "../src/adapters/foreup.js";
@@ -62,6 +62,11 @@ test("finds hot deals and material drops against adjacent 18-hole times", () => 
   ];
 
   assert.deepEqual(findPriceBreaks(times, config).map(result => result.id), ["drop", "hot"]);
+});
+
+test("todayIso returns the current date in the requested time zone", () => {
+  const expected = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
+  assert.equal(todayIso(), expected);
 });
 
 test("reports the farthest date currently posted", () => {
