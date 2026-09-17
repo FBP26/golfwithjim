@@ -11,6 +11,28 @@ export function todayIso(timeZone = "America/New_York") {
   return `${parts.year}-${parts.month}-${parts.day}`;
 }
 
+export function nowMinutes(timeZone = "America/New_York") {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", { timeZone, hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+      .formatToParts(new Date())
+      .map(part => [part.type, part.value]),
+  );
+  return Number(parts.hour) * 60 + Number(parts.minute);
+}
+
+export function parseTimeMinutes(time) {
+  const match = String(time).match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!match) return Number.POSITIVE_INFINITY;
+  const hour = Number(match[1]) % 12 + (match[3].toUpperCase() === "PM" ? 12 : 0);
+  return hour * 60 + Number(match[2]);
+}
+
+export function isUpcoming(teeTime, timeZone = "America/New_York") {
+  const today = todayIso(timeZone);
+  if (teeTime.date > today) return true;
+  return teeTime.date === today && parseTimeMinutes(teeTime.time) >= nowMinutes(timeZone);
+}
+
 export function normalizeTeeTime(raw) {
   const standardAllInPrice = Number(raw.standardAllInPrice ?? raw.allInPrice);
   const golfPassAllInPrice = raw.golfPassAllInPrice == null ? null : Number(raw.golfPassAllInPrice);

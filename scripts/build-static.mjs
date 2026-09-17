@@ -1,6 +1,6 @@
 import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { isEligible, normalizeTeeTime, todayIso } from "../src/analyze.js";
+import { isEligible, isUpcoming, normalizeTeeTime } from "../src/analyze.js";
 import { config, sourceRegistry } from "../src/config.js";
 import { teeTimeArray } from "../src/source.js";
 
@@ -10,13 +10,12 @@ const payload = JSON.parse(await readFile(resolve(root, "fixtures/live-current.j
 const inventoryCourses = new Set(sourceRegistry.interactiveOnly
   .filter(source => source.showInventory !== false)
   .map(source => source.course));
-const today = todayIso();
 const teeTimes = teeTimeArray(payload)
   .map(normalizeTeeTime)
   .filter(teeTime => inventoryCourses.has(teeTime.course)
     && isEligible(teeTime, config)
     && teeTime.holes === config.preferredHoles
-    && teeTime.date >= today);
+    && isUpcoming(teeTime));
 
 await rm(output, { recursive: true, force: true });
 await cp(resolve(root, "public"), output, { recursive: true });

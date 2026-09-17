@@ -2,6 +2,8 @@ import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { collectChronogolfDay } from "./collectors/chronogolf.js";
+import { collectClubCaddieDay } from "./collectors/clubcaddie.js";
+import { collectForeUpDay } from "./collectors/foreup.js";
 import { collectGolfNowDay } from "./collectors/golfnow.js";
 import { collectPlay18Day } from "./collectors/play18.js";
 import { collectTeeItUpDay } from "./collectors/teeitup.js";
@@ -65,6 +67,24 @@ async function collectSource(source, date, fetchImpl) {
   }
   if (source.collector === "teeitup") {
     return collectTeeItUpDay({
+      url: source.url,
+      date,
+      course: source.course,
+      distanceMiles: source.distanceMiles,
+      fetchImpl,
+    });
+  }
+  if (source.collector === "foreup") {
+    return collectForeUpDay({
+      url: source.url,
+      date,
+      course: source.course,
+      distanceMiles: source.distanceMiles,
+      fetchImpl,
+    });
+  }
+  if (source.collector === "clubcaddie") {
+    return collectClubCaddieDay({
       url: source.url,
       date,
       course: source.course,

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { findPriceBreaks, isEligible, newestAvailableDate, normalizeTeeTime, todayIso } from "../src/analyze.js";
+import { findPriceBreaks, isEligible, isUpcoming, newestAvailableDate, normalizeTeeTime, nowMinutes, parseTimeMinutes, todayIso } from "../src/analyze.js";
 import { adaptChronogolfTeeTime } from "../src/adapters/chronogolf.js";
 import { adaptClubCaddieTeeTime } from "../src/adapters/clubcaddie.js";
 import { adaptForeUpTeeTime } from "../src/adapters/foreup.js";
@@ -67,6 +67,39 @@ test("finds hot deals and material drops against adjacent 18-hole times", () => 
 test("todayIso returns the current date in the requested time zone", () => {
   const expected = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
   assert.equal(todayIso(), expected);
+});
+
+test("parseTimeMinutes converts 12-hour clock times to minutes since midnight", () => {
+  assert.equal(parseTimeMinutes("12:00 AM"), 0);
+  assert.equal(parseTimeMinutes("12:30 PM"), 750);
+  assert.equal(parseTimeMinutes("11:59 PM"), 1439);
+  assert.equal(parseTimeMinutes("garbage"), Number.POSITIVE_INFINITY);
+});
+
+test("isUpcoming always keeps future dates and drops past dates regardless of time", () => {
+  const today = todayIso();
+  const yesterday = new Date(`${today}T12:00:00Z`);
+  yesterday.setUTCDate(yesterday.getUTCDate() - 1);
+  const tomorrow = new Date(`${today}T12:00:00Z`);
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+
+  assert.equal(isUpcoming({ date: tomorrow.toISOString().slice(0, 10), time: "12:01 AM" }), true);
+  assert.equal(isUpcoming({ date: yesterday.toISOString().slice(0, 10), time: "11:59 PM" }), false);
+});
+
+test("isUpcoming drops same-day times that have already passed and keeps ones still ahead", () => {
+  const today = todayIso();
+  const currentMinutes = nowMinutes();
+  const minutesToTime = minutes => {
+    const wrapped = ((minutes % 1440) + 1440) % 1440;
+    const hour24 = Math.floor(wrapped / 60);
+    const minute = wrapped % 60;
+    const period = hour24 >= 12 ? "PM" : "AM";
+    return `${hour24 % 12 || 12}:${String(minute).padStart(2, "0")} ${period}`;
+  };
+
+  assert.equal(isUpcoming({ date: today, time: minutesToTime(currentMinutes + 10) }), true);
+  assert.equal(isUpcoming({ date: today, time: minutesToTime(currentMinutes - 10) }), false);
 });
 
 test("reports the farthest date currently posted", () => {

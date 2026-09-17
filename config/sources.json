@@ -69,6 +69,7 @@
       "course": "Pendleton Golf Club",
       "distanceMiles": 45,
       "bookingWindowDays": 7,
+      "collector": "foreup",
       "url": "https://foreupsoftware.com/index.php/booking/22537/11103#/teetimes",
       "latitude": 38.0057203,
       "longitude": -77.5450426
@@ -356,6 +357,7 @@
       "source": "Club Caddie",
       "course": "Independence Championship Course",
       "distanceMiles": 20,
+      "collector": "clubcaddie",
       "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/dgfdabab",
       "latitude": 37.5439683,
       "longitude": -77.6850446
