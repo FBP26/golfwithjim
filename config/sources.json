@@ -25,7 +25,9 @@
       "course": "Hunting Hawk Golf Club",
       "distanceMiles": 24,
       "collector": "play18",
-      "url": "https://huntinghawk.play18.com/teetimes/searchmatrix"
+      "url": "https://huntinghawk.play18.com/teetimes/searchmatrix",
+      "latitude": 37.713158,
+      "longitude": -77.621841
     },
     {
       "source": "TeeSnap",
@@ -279,7 +281,9 @@
       "source": "GolfNow/TeeItUp",
       "course": "Mill Quarter Plantation Golf Club",
       "distanceMiles": 34,
-      "url": "https://mill-quarter-plantation-golf-course.book.teeitup.com/"
+      "url": "https://mill-quarter-plantation-golf-course.book.teeitup.com/",
+      "latitude": 37.4963025,
+      "longitude": -77.920129
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -293,7 +297,9 @@
       "source": "GolfNow/TeeItUp",
       "course": "Lake Chesdin Golf Club",
       "distanceMiles": 32,
-      "url": "https://acumen-public.book.teeitup.com/"
+      "url": "https://acumen-public.book.teeitup.com/",
+      "latitude": 37.2777181,
+      "longitude": -77.6457925
     },
     {
       "source": "GolfNow/TeeItUp",
