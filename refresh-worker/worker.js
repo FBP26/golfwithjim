@@ -54,11 +54,31 @@ async function proxyChronogolf(request, url) {
   return new Response(chronogolfResponse.body, { status: chronogolfResponse.status, headers });
 }
 
+async function proxyTeeItUp(request, url) {
+  if (!await hasValidGitHubToken(request)) return new Response("Unauthorized", { status: 401 });
+  const target = new URL(url.searchParams.get("target") || "https://invalid.local");
+  const alias = url.searchParams.get("alias") || "";
+  if (target.origin !== "https://phx-api-be-east-1b.kenna.io" || target.pathname !== "/v2/tee-times" || !/^[a-z0-9-]+$/.test(alias)) {
+    return new Response("Target not allowed", { status: 403 });
+  }
+  const teeItUpResponse = await fetch(target, {
+    headers: {
+      Accept: "application/json",
+      "x-be-alias": alias,
+      "User-Agent": "Mozilla/5.0 (compatible; golfwithjim/1.0)",
+    },
+  });
+  const headers = new Headers({ "Cache-Control": "no-store", "Content-Type": "application/json" });
+  if (teeItUpResponse.headers.has("retry-after")) headers.set("retry-after", teeItUpResponse.headers.get("retry-after"));
+  return new Response(teeItUpResponse.body, { status: teeItUpResponse.status, headers });
+}
+
 export default {
   async fetch(request, env) {
     const origin = request.headers.get("Origin") || "";
     const url = new URL(request.url);
     if (["GET", "POST"].includes(request.method) && url.pathname === "/chronogolf") return proxyChronogolf(request, url);
+    if (request.method === "GET" && url.pathname === "/teeitup") return proxyTeeItUp(request, url);
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: responseHeaders() });
     if (request.method !== "POST" || url.pathname !== "/refresh") {
       return new Response(JSON.stringify({ ok: true }), { headers: responseHeaders() });

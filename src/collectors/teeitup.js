@@ -42,6 +42,19 @@ export function extractTeeItUpInventory(payload, defaults = {}) {
   });
 }
 
+function requestTarget(date, alias) {
+  const target = new URL(endpoint);
+  target.searchParams.set("date", date);
+  target.searchParams.set("returnPromotedRates", "true");
+  const proxyUrl = process.env.TEEITUP_PROXY_URL;
+  if (!proxyUrl) return { url: target, headers: { Accept: "application/json", "x-be-alias": alias } };
+  const proxy = new URL(proxyUrl);
+  proxy.searchParams.set("target", target);
+  proxy.searchParams.set("alias", alias);
+  const proxyToken = process.env.TEEITUP_PROXY_TOKEN;
+  return { url: proxy, headers: { Accept: "application/json", ...(proxyToken ? { Authorization: `Bearer ${proxyToken}` } : {}) } };
+}
+
 async function fetchWithRetry(fetchImpl, requestUrl, options, attempts = 3) {
   for (let attempt = 0; attempt < attempts; attempt++) {
     const response = await fetchImpl(requestUrl, options);
@@ -58,11 +71,9 @@ async function fetchWithRetry(fetchImpl, requestUrl, options, attempts = 3) {
 
 export async function collectTeeItUpDay({ url, date, course, distanceMiles, fetchImpl = fetch }) {
   const alias = new URL(url).hostname.split(".")[0];
-  const requestUrl = new URL(endpoint);
-  requestUrl.searchParams.set("date", date);
-  requestUrl.searchParams.set("returnPromotedRates", "true");
+  const { url: requestUrl, headers } = requestTarget(date, alias);
   // The shared TeeItUp API rate-limits bursts from a single IP (e.g. CI runners collecting many courses at once).
-  const response = await fetchWithRetry(fetchImpl, requestUrl, { headers: { Accept: "application/json", "x-be-alias": alias }, signal: AbortSignal.timeout(20_000) });
+  const response = await fetchWithRetry(fetchImpl, requestUrl, { headers, signal: AbortSignal.timeout(20_000) });
   if (!response.ok) throw new Error(`TeeItUp returned HTTP ${response.status} for ${alias}.`);
   return extractTeeItUpInventory(await response.json(), {
     course, date, distanceMiles,

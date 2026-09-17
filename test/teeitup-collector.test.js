@@ -74,3 +74,26 @@ test("retries after a 429 response instead of failing the whole course", async (
   assert.equal(calls, 3);
   assert.equal(result.length, 1);
 });
+
+test("routes requests through the proxy with the alias and target when configured", async () => {
+  process.env.TEEITUP_PROXY_URL = "https://golfwithjim-refresh.fbp-api-worker.workers.dev/teeitup";
+  process.env.TEEITUP_PROXY_TOKEN = "test-token";
+  const payload = [{ teetimes: [] }];
+  let requestedUrl;
+  let requestedHeaders;
+  const fetchImpl = async (url, options) => {
+    requestedUrl = new URL(url);
+    requestedHeaders = options.headers;
+    return { ok: true, status: 200, json: async () => payload };
+  };
+  try {
+    await collectTeeItUpDay({ url: "https://the-hollows-golf-club.book.teeitup.golf/", date: "2026-09-19", course: "The Hollows Golf Club", distanceMiles: 29, fetchImpl });
+  } finally {
+    delete process.env.TEEITUP_PROXY_URL;
+    delete process.env.TEEITUP_PROXY_TOKEN;
+  }
+  assert.equal(requestedUrl.origin, "https://golfwithjim-refresh.fbp-api-worker.workers.dev");
+  assert.equal(requestedUrl.searchParams.get("alias"), "the-hollows-golf-club");
+  assert.match(requestedUrl.searchParams.get("target"), /^https:\/\/phx-api-be-east-1b\.kenna\.io\/v2\/tee-times\?date=2026-09-19/);
+  assert.equal(requestedHeaders.Authorization, "Bearer test-token");
+});
