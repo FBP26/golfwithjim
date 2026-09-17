@@ -272,10 +272,15 @@ function flyToMapKey(key, group, { openPopup = false } = {}) {
   if (!map || !group) return;
   activeMapKey = key;
   map.flyTo([group[0].latitude, group[0].longitude], Math.max(map.getZoom(), 11), { duration: .6 });
-  // Marker clicks already trigger Leaflet's own correctly-autoPanned popup open; only sidebar
-  // navigation needs an explicit call, and it must happen immediately (not deferred to a pan
-  // event that may never fire when the map is already at the target view).
-  if (openPopup) group.marker?.openPopup();
+  // Sidebar navigation can target a marker that starts off-screen, so autoPan must be computed
+  // against the settled destination view, not the pre-flyTo position. Wait for "moveend", with a
+  // timeout fallback because flyTo never fires it when the map is already at the target view.
+  if (openPopup) {
+    let opened = false;
+    const open = () => { if (opened) return; opened = true; group.marker?.openPopup(); };
+    map.once("moveend", open);
+    setTimeout(open, 700);
+  }
   document.querySelectorAll(".map-course-card").forEach(card => card.classList.toggle("highlight", card.dataset.mapKey === key));
 }
 
