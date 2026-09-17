@@ -178,3 +178,102 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
   .section-heading > p { margin-top: 8px; }
   .course-directory { grid-template-columns: 1fr 1fr; }
 }
+
+/* Map View & Navigation Tabs */
+.header-nav-tabs { display: flex; gap: 4px; background: #0f2820; padding: 3px; border-radius: 6px; border: 1px solid #1e4a3b; }
+.nav-tab { background: transparent; border: 0; color: #cad7d0; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .15s; }
+.nav-tab:hover { color: white; background: #1e4a3b; }
+.nav-tab.active { background: var(--lime); color: var(--green); }
+
+.map-view-hidden { display: none !important; }
+.map-layout { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 16px; height: calc(100vh - 160px); min-height: 550px; margin-top: 10px; }
+.map-sidebar { background: var(--panel); border: 1px solid var(--line); border-radius: 7px; display: flex; flex-direction: column; overflow: hidden; }
+.map-sidebar-header { padding: 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
+.map-count-badge { background: var(--green); color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; }
+.map-filters-summary { padding: 10px 16px; background: #eef1e988; border-bottom: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.4; }
+.map-course-list { overflow-y: auto; flex: 1; padding: 10px; }
+.map-course-card { padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 5px; background: white; cursor: pointer; transition: .15s; }
+.map-course-card:hover { border-color: var(--green-2); background: #f4f8f2; }
+.map-course-card.highlight { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); background: #eef1e9; }
+.map-course-card h4 { margin: 0 0 3px; font: 600 14px "Newsreader", serif; color: var(--green); }
+.map-course-card p { margin: 0; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; }
+
+.map-container-wrap { position: relative; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: #e2e8f0; }
+.map-canvas { width: 100%; height: 100%; z-index: 1; }
+.map-floating-controls { position: absolute; top: 12px; right: 12px; z-index: 10; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+#map-locate-btn { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--green); box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
+#map-locate-btn:hover { background: #f4f6f1; }
+.map-legend-pills { display: flex; gap: 6px; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); box-shadow: 0 2px 6px rgba(0,0,0,.15); }
+.legend-pill { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--muted); }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.dot.available { background: #2f855a; }
+.dot.hot { background: var(--deal); }
+.dot.link { background: #718096; }
+
+@media (max-width: 900px) {
+  .map-layout { grid-template-columns: 1fr; height: auto; }
+  .map-sidebar { max-height: 350px; }
+  .map-container-wrap { height: 450px; }
+}
+
+/* Map floating controls: locate/location buttons + ring toggle */
+#map-locate-user { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--green); box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
+#map-locate-user:hover { background: #f4f6f1; }
+#map-locate-user.active { background: var(--green); color: white; border-color: var(--green); }
+.map-ring-toggle { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--line); padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--muted); box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
+.map-ring-toggle input { margin: 0; }
+
+/* Golf flag pin markers (custom Leaflet divIcon) */
+.golf-pin-wrap { background: transparent; border: 0; }
+.golf-pin { position: relative; display: block; width: 34px; height: 44px; }
+.golf-pin-shape {
+  position: absolute; top: 0; left: 2px; width: 30px; height: 30px;
+  border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white; box-shadow: 0 3px 8px rgba(0,0,0,.35);
+}
+.golf-pin-glyph { transform: rotate(45deg); font-size: 14px; line-height: 1; color: white; font-weight: 700; }
+.golf-pin-available .golf-pin-shape { background: #2f855a; }
+.golf-pin-hot .golf-pin-shape { background: var(--deal); }
+.golf-pin-link .golf-pin-shape { background: #718096; }
+.golf-pin-cluster .golf-pin-shape { border-radius: 50%; transform: none; }
+.golf-pin-cluster .golf-pin-glyph { transform: none; font-size: 13px; }
+.golf-pin-hot .golf-pin-ring {
+  position: absolute; top: 2px; left: 4px; width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid var(--deal); animation: golf-pin-pulse 1.8s ease-out infinite;
+}
+@keyframes golf-pin-pulse {
+  0% { transform: scale(1); opacity: .75; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+/* Richmond center + user location markers */
+.richmond-marker-dot { display: block; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); border: 2px solid white; box-shadow: 0 0 0 2px var(--green); }
+.user-location-marker { position: relative; width: 18px; height: 18px; }
+.user-location-dot { position: absolute; inset: 4px; border-radius: 50%; background: #2b6cb0; border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+.user-location-ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid #2b6cb0; animation: golf-pin-pulse 1.8s ease-out infinite; }
+
+/* Distance ring labels */
+.map-ring-label { color: var(--green-2); font: 700 10px "DM Sans", sans-serif; text-shadow: 0 0 3px white, 0 0 3px white, 0 0 3px white; white-space: nowrap; }
+
+/* Leaflet popup theming */
+.leaflet-popup-content-wrapper { border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.leaflet-popup-content { margin: 12px 14px; font-family: "DM Sans", sans-serif; }
+.map-popup h4 { margin: 0 0 4px; font: 600 15px "Newsreader", serif; color: var(--green); }
+.map-popup .map-popup-meta { margin: 0 0 8px; font-size: 11px; color: var(--muted); }
+.map-popup .map-popup-course { padding: 6px 0; border-top: 1px solid var(--line); }
+.map-popup .map-popup-course:first-of-type { border-top: 0; padding-top: 0; }
+.map-popup .map-popup-status { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
+.map-popup .map-popup-status strong { color: var(--green); }
+.map-popup .map-popup-status.hot strong { color: var(--deal); }
+.map-popup a.map-popup-link { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--green-2); text-decoration: underline; }
+
+/* Sidebar course-count badges + unmapped list */
+.map-course-card .map-card-tag { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 10px; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.map-card-tag.hot { background: #fbe3e0; color: var(--deal); }
+.map-card-tag.available { background: #e1f0e6; color: #245944; }
+.map-card-tag.link { background: #eceff1; color: #55606b; }
+.map-course-list-heading { margin: 12px 0 6px; padding: 0 2px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.map-course-card.unmapped { cursor: default; background: #f7f6f0; }
+.map-course-card.unmapped:hover { border-color: var(--line); background: #f7f6f0; }
+.map-course-card.unmapped a { color: var(--green-2); font-weight: 700; text-decoration: none; }

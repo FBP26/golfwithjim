@@ -1,4 +1,4 @@
-<!doctype html>
+or<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260916-8">
+  <link rel="stylesheet" href="styles.css?v=20260916-9">
 </head>
 <body>
   <header class="site-header">
@@ -16,7 +16,11 @@
       <span class="brand-mark" aria-hidden="true">R</span>
       <span><strong>Richmond Tee Times</strong><small>One search. Every public tee sheet.</small></span>
     </a>
-    <div class="header-actions">
+        <div class="header-actions">
+      <div class="header-nav-tabs" role="tablist">
+        <button id="tab-list" class="nav-tab active" role="tab" aria-selected="true">List view</button>
+        <button id="tab-map" class="nav-tab" role="tab" aria-selected="false">Map view</button>
+      </div>
       <button id="refresh" class="refresh-action" title="Refresh tee times">
         <span id="refresh-label">Click to refresh tee times</span>
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5"/></svg>
@@ -25,7 +29,8 @@
     </div>
   </header>
 
-  <main id="top">
+    <main id="top">
+    <section id="view-list-container">
     <section class="date-strip" aria-label="Choose a date">
       <button class="date-option active" data-date="">All dates</button>
       <div id="date-options"></div>
@@ -104,9 +109,52 @@
       <div class="section-heading"><div><p class="eyebrow">Course coverage</p><h2>Tracked around Richmond</h2></div><p>Courses without public inventory stay visible so nothing falls off the radar.</p></div>
       <div id="course-directory" class="course-directory"></div>
     </section>
+    </section>
+
+    <section id="view-map-container" class="map-view-hidden">
+      <div class="map-layout">
+        <div class="map-sidebar">
+          <div class="map-sidebar-header">
+            <div>
+              <p class="eyebrow">Richmond Courses</p>
+              <h2>Map Inventory</h2>
+            </div>
+            <span id="map-count" class="map-count-badge">0 courses</span>
+          </div>
+          <div id="map-filters-summary" class="map-filters-summary">
+            Showing filtered tee times & tracked courses around Richmond. Click any course to inspect tee times.
+          </div>
+          <div id="map-course-list" class="map-course-list">
+            <!-- Populated via JS -->
+          </div>
+        </div>
+        <div class="map-container-wrap">
+          <div class="map-floating-controls">
+            <button id="map-locate-btn" title="Center on Richmond">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+              Richmond Center
+            </button>
+            <button id="map-locate-user" title="Find courses near you">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="6"/></svg>
+              My Location
+            </button>
+            <label class="map-ring-toggle"><input id="map-rings-toggle" type="checkbox" checked><span>Distance rings</span></label>
+            <div class="map-legend-pills">
+              <span class="legend-pill"><span class="dot available"></span> Tee times available</span>
+              <span class="legend-pill"><span class="dot hot"></span> Hot Deal</span>
+              <span class="legend-pill"><span class="dot link"></span> Link only / Tracked</span>
+            </div>
+          </div>
+          <div id="leaflet-map" class="map-canvas"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
   <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
-  <script type="module" src="app.js?v=20260916-11"></script>
+  <script type="module" src="app.js?v=20260916-13"></script>
 </body>
 </html>

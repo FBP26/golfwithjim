@@ -5,7 +5,9 @@
       "course": "Elson Redmond Memorial Driving Range",
       "distanceMiles": 5,
       "showInventory": false,
-      "url": "https://firstteegreaterrichmond.org/"
+      "url": "https://firstteegreaterrichmond.org/",
+      "latitude": 37.5602079,
+      "longitude": -77.4384761
     },
     {
       "source": "GolfNow Marketplace",
@@ -31,21 +33,27 @@
       "distanceMiles": 29,
       "collector": "teesnap",
       "providerCourseId": "1512",
-      "url": "https://queenfieldgc.teesnap.net/"
+      "url": "https://queenfieldgc.teesnap.net/",
+      "latitude": 37.7056384,
+      "longitude": -77.1921565
     },
     {
       "source": "Whoosh",
       "course": "Windy Hill Lake Course",
       "distanceMiles": 23,
       "showInventory": false,
-      "url": "https://app.whoosh.io/patron/club/windy-hill/agenda/golf-course/today"
+      "url": "https://app.whoosh.io/patron/club/windy-hill/agenda/golf-course/today",
+      "latitude": 37.5108115,
+      "longitude": -77.7174882
     },
     {
       "source": "Chronogolf",
       "course": "Belmont Golf Course",
       "distanceMiles": 8,
       "showInventory": false,
-      "url": "https://www.chronogolf.com/club/14281/ping"
+      "url": "https://www.chronogolf.com/club/14281/ping",
+      "latitude": 37.6161494,
+      "longitude": -77.4653281
     },
     {
       "source": "Chronogolf",
@@ -59,7 +67,9 @@
       "course": "Pendleton Golf Club",
       "distanceMiles": 45,
       "bookingWindowDays": 7,
-      "url": "https://foreupsoftware.com/index.php/booking/22537/11103#/teetimes"
+      "url": "https://foreupsoftware.com/index.php/booking/22537/11103#/teetimes",
+      "latitude": 38.0057203,
+      "longitude": -77.5450426
     },
     {
       "source": "Chronogolf",
@@ -70,7 +80,9 @@
       "providerCourseId": "16657",
       "providerCourseUuid": "0dae1010-7f89-43af-993b-bc31d65edd4d",
       "providerAffiliationTypeId": "58874",
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia"
+      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia",
+      "latitude": 37.6767688,
+      "longitude": -77.6937328
     },
     {
       "source": "GolfNow Marketplace",
@@ -87,7 +99,9 @@
       "course": "Amelia Golf & Country Club",
       "distanceMiles": 40,
       "showInventory": false,
-      "url": "https://www.chronogolf.com/club/amelia-golf-country-club"
+      "url": "https://www.chronogolf.com/club/amelia-golf-country-club",
+      "latitude": 37.3528762,
+      "longitude": -77.9647923
     },
     {
       "source": "GolfNow Marketplace",
@@ -179,19 +193,25 @@
       "source": "GolfNow Marketplace",
       "course": "Hobbs Hole Golf Course",
       "distanceMiles": 40,
-      "url": "https://www.golfnow.com/tee-times/facility/2425-hobbs-hole-golf-course/search"
+      "url": "https://www.golfnow.com/tee-times/facility/2425-hobbs-hole-golf-course/search",
+      "latitude": 37.8996732,
+      "longitude": -76.8560352
     },
     {
       "source": "GolfNow Marketplace",
       "course": "Green Course at The Golden Horseshoe",
       "distanceMiles": 45,
-      "url": "https://www.golfnow.com/tee-times/facility/15458-green-course-at-the-golden-horseshoe/search"
+      "url": "https://www.golfnow.com/tee-times/facility/15458-green-course-at-the-golden-horseshoe/search",
+      "latitude": 37.2596804,
+      "longitude": -76.6876493
     },
     {
       "source": "GolfNow Marketplace",
       "course": "Gold Course at The Golden Horseshoe",
       "distanceMiles": 45,
-      "url": "https://www.golfnow.com/tee-times/facility/15459-gold-course-at-the-golden-horseshoe/search"
+      "url": "https://www.golfnow.com/tee-times/facility/15459-gold-course-at-the-golden-horseshoe/search",
+      "latitude": 37.2610138,
+      "longitude": -76.6972495
     },
     {
       "source": "GolfNow Marketplace",
@@ -234,20 +254,26 @@
       "source": "GolfNow/TeeItUp",
       "course": "Magnolia Green Golf Club",
       "distanceMiles": 26,
-      "url": "https://magnolia-green-golf-club-formerly-westham-golf-club.book.teeitup.com/"
+      "url": "https://magnolia-green-golf-club-formerly-westham-golf-club.book.teeitup.com/",
+      "latitude": 37.4020077,
+      "longitude": -77.7433998
     },
     {
       "source": "GolfNow/TeeItUp",
       "course": "The Club at Viniterra",
       "distanceMiles": 32,
       "bookingWindowDays": 7,
-      "url": "https://club-at-viniterra.book.teeitup.com/"
+      "url": "https://club-at-viniterra.book.teeitup.com/",
+      "latitude": 37.5401074,
+      "longitude": -77.0743842
     },
     {
       "source": "GolfNow/TeeItUp",
       "course": "Royal New Kent Golf Club",
       "distanceMiles": 35,
-      "url": "https://royal-new-kent-golf.book.teeitup.golf/"
+      "url": "https://royal-new-kent-golf.book.teeitup.golf/",
+      "latitude": 37.4736889,
+      "longitude": -77.0198833
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -259,7 +285,9 @@
       "source": "GolfNow/TeeItUp",
       "course": "The Hollows Golf Club",
       "distanceMiles": 29,
-      "url": "https://the-hollows-golf-club.book.teeitup.golf/"
+      "url": "https://the-hollows-golf-club.book.teeitup.golf/",
+      "latitude": 37.7882355,
+      "longitude": -77.5963428
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -271,44 +299,58 @@
       "source": "GolfNow/TeeItUp",
       "course": "Dogwood Trace Golf Course",
       "distanceMiles": 27,
-      "url": "https://dogwood-trace-golf-course.book.teeitup.golf/"
+      "url": "https://dogwood-trace-golf-course.book.teeitup.golf/",
+      "latitude": 37.1917708,
+      "longitude": -77.3937537
     },
     {
       "source": "GolfNow/TeeItUp",
       "course": "Mattaponi Springs Golf Club",
       "distanceMiles": 47,
-      "url": "https://mattaponi-springs-golf-club.book.teeitup.com/?course=19214"
+      "url": "https://mattaponi-springs-golf-club.book.teeitup.com/?course=19214",
+      "latitude": 37.9479829,
+      "longitude": -77.3713625
     },
     {
       "source": "GolfNow/TeeItUp",
       "course": "Hanover Golf Club",
       "distanceMiles": 22,
-      "url": "https://hanover-golf-club-va.book.teeitup.com/"
+      "url": "https://hanover-golf-club-va.book.teeitup.com/",
+      "latitude": 37.8016114,
+      "longitude": -77.5384554
     },
     {
       "source": "GolfNow/TeeItUp",
       "course": "Providence Golf Club",
       "distanceMiles": 20,
-      "url": "https://providence-golf-club-2.book.teeitup.com/"
+      "url": "https://providence-golf-club-2.book.teeitup.com/",
+      "latitude": 37.4818139,
+      "longitude": -77.5587214
     },
     {
       "source": "GolfNow/TeeItUp",
       "course": "The Golf Club at The Highlands",
       "distanceMiles": 24,
-      "url": "https://the-golf-club-at-the-highlands.book.teeitup.com/"
+      "url": "https://the-golf-club-at-the-highlands.book.teeitup.com/",
+      "latitude": 37.3361228,
+      "longitude": -77.5296733
     },
     {
       "source": "Club Caddie",
       "course": "Independence Championship Course",
       "distanceMiles": 20,
-      "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/dgfdabab"
+      "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/dgfdabab",
+      "latitude": 37.5439683,
+      "longitude": -77.6850446
     },
     {
       "source": "Club Caddie",
       "course": "Independence Bear Course",
       "distanceMiles": 20,
       "showInventory": false,
-      "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/egfdabab"
+      "url": "https://apimanager-cc12.clubcaddie.com/webapi/view/egfdabab",
+      "latitude": 37.5439683,
+      "longitude": -77.6850446
     }
   ],
   "dealSources": [
