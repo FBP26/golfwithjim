@@ -268,11 +268,12 @@ function initMap() {
   requestAnimationFrame(() => map.invalidateSize());
 }
 
-function flyToMapKey(key, group) {
+function flyToMapKey(key, group, { openPopup = false } = {}) {
   if (!map || !group) return;
   activeMapKey = key;
   map.flyTo([group[0].latitude, group[0].longitude], Math.max(map.getZoom(), 11), { duration: .6 });
-  group.marker?.openPopup();
+  // Opening the popup before the pan/zoom settles miscalculates autoPan and clips it against the map edge.
+  if (openPopup) map.once("moveend", () => group.marker?.openPopup());
   document.querySelectorAll(".map-course-card").forEach(card => card.classList.toggle("highlight", card.dataset.mapKey === key));
 }
 
@@ -326,7 +327,7 @@ function updateMapView() {
 elements["map-course-list"].addEventListener("click", event => {
   const card = event.target.closest("[data-map-key]");
   if (!card || card.classList.contains("unmapped")) return;
-  flyToMapKey(card.dataset.mapKey, currentMapGroups.get(card.dataset.mapKey));
+  flyToMapKey(card.dataset.mapKey, currentMapGroups.get(card.dataset.mapKey), { openPopup: true });
 });
 
 elements["map-legend-locate"].addEventListener("click", () => {
