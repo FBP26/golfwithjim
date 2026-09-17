@@ -234,7 +234,7 @@ function pinIcon(category, label) {
   return L.divIcon({
     className: "golf-pin-wrap",
     html: `<span class="golf-pin golf-pin-${category}"><span class="golf-pin-shape"><span class="golf-pin-glyph">${label}</span></span>${category === "hot" ? '<span class="golf-pin-ring"></span>' : ""}</span>`,
-    iconSize: [34, 44], iconAnchor: [17, 40], popupAnchor: [0, -36],
+    iconSize: [34, 44], iconAnchor: [17, 40], popupAnchor: [17, -18],
   });
 }
 
@@ -264,6 +264,21 @@ function popupHtml(group, teeTimesByCourse) {
 function ringLabelLatLng(miles) {
   return [RICHMOND_CENTER[0] + miles / 69, RICHMOND_CENTER[1]];
 }
+
+// Leaflet popups open centered above their anchor by default; override the layout math so they
+// open to the right of the marker (vertically centered on it) and never get placed above it.
+L.Popup.prototype._updatePosition = function () {
+  if (!this._map) return;
+  const point = this._map.latLngToLayerPoint(this._latlng);
+  const offset = L.point(this.options.offset || [0, 0]);
+  const anchor = this._getAnchor();
+  if (this._zoomAnimated) L.DomUtil.setPosition(this._container, point.add(anchor));
+  const height = this._container.offsetHeight || 0;
+  this._containerBottom = -Math.round(height / 2) - offset.y;
+  this._containerLeft = 14 + offset.x;
+  this._container.style.bottom = `${this._containerBottom}px`;
+  this._container.style.left = `${this._containerLeft}px`;
+};
 
 function initMap() {
   if (map) return;
