@@ -414,8 +414,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     renderDirectory();
     selectDate(state.date);
     const checked = new Date(payload.checkedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
-    const liveSources = payload.sourceChecks.filter(check => !check.error).length;
-    elements["feed-status"].textContent = `(${liveSources} live sources) - ${checked}`;
+    elements["feed-status"].textContent = `Last updated ${checked}`;
   } catch (error) {
     elements.results.innerHTML = `<div class="empty">Could not load tee times. ${escapeHtml(error.message)}</div>`;
     elements["feed-status"].textContent = "Inventory unavailable";
