@@ -278,16 +278,20 @@ function updateMapView() {
     const primary = group[0];
     const categories = group.map(course => pinCategory(teeTimesByCourse.get(course.course) || []));
     const bestCategory = categories.includes("hot") ? "hot" : categories.includes("available") ? "available" : "link";
-    const icon = pinIcon(bestCategory, group.length > 1 ? String(group.length) : "&#9971;");
+    if (bestCategory === "link") return;
+    const visibleCourses = group.filter(course => pinCategory(teeTimesByCourse.get(course.course) || []) !== "link");
+    visibleCourses.marker = null;
+    const icon = pinIcon(bestCategory, visibleCourses.length > 1 ? String(visibleCourses.length) : "&#9971;");
     const marker = L.marker([primary.latitude, primary.longitude], { icon }).addTo(markerLayer);
-    marker.bindPopup(popupHtml(group, teeTimesByCourse));
-    marker.on("click", () => flyToMapKey(key, group));
-    group.marker = marker;
-    groupsByKey.set(key, group);
+    marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse));
+    marker.on("click", () => flyToMapKey(key, visibleCourses));
+    visibleCourses.marker = marker;
+    groupsByKey.set(key, visibleCourses);
   });
 
   const unmapped = state.courses.filter(course => course.latitude == null
     && course.distanceMiles <= state.maximumDistance
+    && pinCategory(teeTimesByCourse.get(course.course) || []) !== "link"
     && (!searchTerm || course.course.toLowerCase().includes(searchTerm)));
 
   currentMapGroups = groupsByKey;
@@ -297,7 +301,7 @@ function updateMapView() {
   elements["map-course-list"].innerHTML = cardsHtml + unmappedHtml;
 
   elements["map-count"].textContent = `${groupsByKey.size} location${groupsByKey.size === 1 ? "" : "s"}`;
-  elements["map-filters-summary"].innerHTML = `Showing <strong>${mappable.length}</strong> mapped course${mappable.length === 1 ? "" : "s"} within ${state.maximumDistance} miles.${unmapped.length ? ` ${unmapped.length} more course${unmapped.length === 1 ? "" : "s"} ${unmapped.length === 1 ? "has" : "have"} no mapped location yet.` : ""}`;
+  elements["map-filters-summary"].innerHTML = `Showing <strong>${groupsByKey.size}</strong> location${groupsByKey.size === 1 ? "" : "s"} with current tee times within ${state.maximumDistance} miles.${unmapped.length ? ` ${unmapped.length} more course${unmapped.length === 1 ? "" : "s"} ${unmapped.length === 1 ? "has" : "have"} tee times but no mapped location yet.` : ""}`;
 }
 
 elements["map-course-list"].addEventListener("click", event => {
