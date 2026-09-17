@@ -262,6 +262,16 @@
       "collector": "teeitup"
     },
     {
+      "source": "GolfNow Marketplace",
+      "course": "Magnolia Green Golf Club",
+      "distanceMiles": 26,
+      "collector": "golfnow",
+      "providerCourseId": "5670",
+      "latitude": 37.4020077,
+      "longitude": -77.7433998,
+      "url": "https://www.golfnow.com/tee-times/facility/5670-magnolia-green-golf-club-formerly-westham-golf-club/search"
+    },
+    {
       "source": "GolfNow/TeeItUp",
       "course": "The Club at Viniterra",
       "distanceMiles": 32,
@@ -270,6 +280,16 @@
       "latitude": 37.5401074,
       "longitude": -77.0743842,
       "collector": "teeitup"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "The Club at Viniterra",
+      "distanceMiles": 32,
+      "collector": "golfnow",
+      "providerCourseId": "6270",
+      "latitude": 37.5401074,
+      "longitude": -77.0743842,
+      "url": "https://www.golfnow.com/tee-times/facility/6270-the-golf-club-at-viniterra/search"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -281,6 +301,16 @@
       "collector": "teeitup"
     },
     {
+      "source": "GolfNow Marketplace",
+      "course": "Royal New Kent Golf Club",
+      "distanceMiles": 35,
+      "collector": "golfnow",
+      "providerCourseId": "119",
+      "latitude": 37.4736889,
+      "longitude": -77.0198833,
+      "url": "https://www.golfnow.com/tee-times/facility/119-royal-new-kent-golf-club/search"
+    },
+    {
       "source": "GolfNow/TeeItUp",
       "course": "Mill Quarter Plantation Golf Club",
       "distanceMiles": 34,
@@ -290,6 +320,16 @@
       "collector": "teeitup"
     },
     {
+      "source": "GolfNow Marketplace",
+      "course": "Mill Quarter Plantation Golf Club",
+      "distanceMiles": 34,
+      "collector": "golfnow",
+      "providerCourseId": "6014",
+      "latitude": 37.4963025,
+      "longitude": -77.920129,
+      "url": "https://www.golfnow.com/tee-times/facility/6014-mill-quarter-plantation-golf-course/search"
+    },
+    {
       "source": "GolfNow/TeeItUp",
       "course": "The Hollows Golf Club",
       "distanceMiles": 29,
@@ -297,6 +337,16 @@
       "latitude": 37.7882355,
       "longitude": -77.5963428,
       "collector": "teeitup"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "The Hollows Golf Club",
+      "distanceMiles": 29,
+      "collector": "golfnow",
+      "providerCourseId": "2473",
+      "latitude": 37.7882355,
+      "longitude": -77.5963428,
+      "url": "https://www.golfnow.com/tee-times/facility/2473-the-hollows-golf-club/search"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -317,6 +367,16 @@
       "collector": "teeitup"
     },
     {
+      "source": "GolfNow Marketplace",
+      "course": "Dogwood Trace Golf Course",
+      "distanceMiles": 27,
+      "collector": "golfnow",
+      "providerCourseId": "10500",
+      "latitude": 37.1917708,
+      "longitude": -77.3937537,
+      "url": "https://www.golfnow.com/tee-times/facility/10500-dogwood-trace-golf-course/search"
+    },
+    {
       "source": "GolfNow/TeeItUp",
       "course": "Mattaponi Springs Golf Club",
       "distanceMiles": 47,
@@ -324,6 +384,16 @@
       "latitude": 37.9479829,
       "longitude": -77.3713625,
       "collector": "teeitup"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Mattaponi Springs Golf Club",
+      "distanceMiles": 47,
+      "collector": "golfnow",
+      "providerCourseId": "19214",
+      "latitude": 37.9479829,
+      "longitude": -77.3713625,
+      "url": "https://www.golfnow.com/tee-times/facility/19214-mattaponi-springs-golf-club/search"
     },
     {
       "source": "GolfNow/TeeItUp",
@@ -335,6 +405,16 @@
       "collector": "teeitup"
     },
     {
+      "source": "GolfNow Marketplace",
+      "course": "Hanover Golf Club",
+      "distanceMiles": 22,
+      "collector": "golfnow",
+      "providerCourseId": "8095",
+      "latitude": 37.8016114,
+      "longitude": -77.5384554,
+      "url": "https://www.golfnow.com/tee-times/facility/8095-hanover-golf-club/search"
+    },
+    {
       "source": "GolfNow/TeeItUp",
       "course": "Providence Golf Club",
       "distanceMiles": 20,
@@ -342,6 +422,16 @@
       "latitude": 37.4818139,
       "longitude": -77.5587214,
       "collector": "teeitup"
+    },
+    {
+      "source": "GolfNow Marketplace",
+      "course": "Providence Golf Club",
+      "distanceMiles": 20,
+      "collector": "golfnow",
+      "providerCourseId": "10065",
+      "latitude": 37.4818139,
+      "longitude": -77.5587214,
+      "url": "https://www.golfnow.com/tee-times/facility/10065-providence-golf-club/search"
     },
     {
       "source": "GolfNow/TeeItUp",
