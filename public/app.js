@@ -14,7 +14,7 @@ const elements = Object.fromEntries([
   "hot-deals", "course-search", "sort", "results", "metrics", "feed-status",
   "refresh", "refresh-label", "clear-filters", "players-filter", "course-directory", "expand-results", "collapse-results",
   "tab-list", "tab-map", "view-list-container", "view-map-container",
-  "map-count", "leaflet-map", "map-legend-locate", "map-date-options",
+  "map-count", "leaflet-map", "map-date-options",
 ].map(id => [id, document.getElementById(id)]));
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
@@ -152,12 +152,22 @@ function renderDates() {
 }
 
 function renderDirectory() {
-  const inventoryCourses = new Set(state.teeTimes.map(teeTime => teeTime.course));
+  const counts = Map.groupBy(state.teeTimes, teeTime => teeTime.course);
+  const checks = new Map(state.sourceChecks.map(check => [check.course, check]));
   const sorted = state.courses.toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course));
   const columns = window.matchMedia("(max-width: 850px)").matches ? 2 : 4;
   elements["course-directory"].style.setProperty("--directory-rows", Math.ceil(sorted.length / columns) || 1);
-  elements["course-directory"].innerHTML = sorted.map(course =>
-    `<div class="directory-course"><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${inventoryCourses.has(course.course) ? "Tee times included" : course.source}</small></div>`).join("");
+  elements["course-directory"].innerHTML = sorted.map(course => {
+    const count = counts.get(course.course)?.length || 0;
+    const check = checks.get(course.course);
+    let detail = course.source;
+    let flagged = false;
+    if (course.collector) {
+      if (check?.error) { detail = "Check failed"; flagged = true; }
+      else { detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
+    }
+    return `<div class="directory-course${flagged ? " flagged" : ""}"><a href="${escapeHtml(course.url)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${escapeHtml(detail)}</small></div>`;
+  }).join("");
 }
 window.addEventListener("resize", () => { if (state.courses.length) renderDirectory(); });
 
@@ -215,7 +225,7 @@ function popupHtml(group, teeTimesByCourse) {
       ? `${dealCount} Hot Deal${dealCount === 1 ? "" : "s"} of ${times.length} tee time${times.length === 1 ? "" : "s"}`
       : category === "available" ? `${times.length} tee time${times.length === 1 ? "" : "s"}`
       : "No qualifying tee times right now";
-    return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p><div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(course.url)}" target="_blank" rel="noopener">View course &rarr;</a></div>`;
+    return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p><div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(course.url)}" target="_blank" rel="noopener">Book a tee time &rarr;</a></div>`;
   }).join("");
   return `<div class="map-popup">${rows}</div>`;
 }
@@ -238,6 +248,22 @@ function initMap() {
     maxZoom: 17, subdomains: "abc",
   });
   map = L.map(elements["leaflet-map"], { scrollWheelZoom: true, layers: [streetLayer] }).setView(RICHMOND_CENTER, 8);
+  const LocateControl = L.Control.extend({
+    options: { position: "topleft" },
+    onAdd() {
+      const container = L.DomUtil.create("div", "leaflet-bar leaflet-control");
+      const button = L.DomUtil.create("a", "map-locate-button", container);
+      button.href = "#";
+      button.title = "Find courses near you";
+      button.setAttribute("role", "button");
+      button.setAttribute("aria-label", "Find courses near you");
+      button.innerHTML = "&#128205;";
+      L.DomEvent.disableClickPropagation(container);
+      L.DomEvent.on(button, "click", event => { L.DomEvent.preventDefault(event); locateUser(button); });
+      return container;
+    },
+  });
+  new LocateControl().addTo(map);
   L.control.layers({ Street: streetLayer, Satellite: satelliteLayer, Terrain: terrainLayer }, null, { position: "topleft" }).addTo(map);
 
   map.ringLayer = L.layerGroup().addTo(map);
@@ -245,14 +271,6 @@ function initMap() {
     L.circle(RICHMOND_CENTER, { radius: miles * 1609.34, color: "#d3a53b", weight: 2.5, opacity: .85, fill: true, fillColor: "#d3a53b", fillOpacity: .04, dashArray: "6 8" }).addTo(map.ringLayer);
     L.marker(ringLabelLatLng(miles), { icon: L.divIcon({ className: "map-ring-label", html: `${miles} mi`, iconSize: [40, 16] }), interactive: false }).addTo(map.ringLayer);
   });
-
-  L.marker(RICHMOND_CENTER, { icon: L.divIcon({ className: "richmond-marker", html: '<span class="richmond-marker-dot"></span>', iconSize: [16, 16] }) })
-    .addTo(map)
-    .bindTooltip("Richmond · click to recenter", { direction: "top", offset: [0, -8] })
-    .on("click", () => {
-      map.closePopup();
-      map.flyTo(RICHMOND_CENTER, 8, { duration: .6 });
-    });
 
   markerLayer = L.layerGroup().addTo(map);
   requestAnimationFrame(() => map.invalidateSize());
@@ -289,7 +307,7 @@ function updateMapView() {
     const visibleCourses = group.filter(course => pinCategory(teeTimesByCourse.get(course.course) || []) !== "link");
     const icon = pinIcon(bestCategory, visibleCourses.length > 1 ? String(visibleCourses.length) : "&#9971;");
     const marker = L.marker([primary.latitude, primary.longitude], { icon }).addTo(markerLayer);
-    marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { maxWidth: 300, maxHeight: 320 });
+    marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { maxWidth: 300, maxHeight: 320, autoPanPaddingTopLeft: [20, 70], autoPanPaddingBottomRight: [20, 20] });
     marker.on("click", () => flyToMapKey(key, visibleCourses));
     bounds.push([primary.latitude, primary.longitude]);
     visibleCount += 1;
@@ -299,9 +317,9 @@ function updateMapView() {
   if (bounds.length) map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 11, duration: .6 });
 }
 
-elements["map-legend-locate"].addEventListener("click", () => {
-  if (!navigator.geolocation) { elements["map-legend-locate"].title = "Location is not supported in this browser."; return; }
-  elements["map-legend-locate"].classList.add("active");
+function locateUser(button) {
+  if (!navigator.geolocation) { button.title = "Location is not supported in this browser."; return; }
+  button.classList.add("active");
   navigator.geolocation.getCurrentPosition(position => {
     const { latitude, longitude } = position.coords;
     if (userLocationMarker) map.removeLayer(userLocationMarker);
@@ -316,15 +334,15 @@ elements["map-legend-locate"].addEventListener("click", () => {
       .slice(0, 3);
     if (distances.length) {
       const summary = distances.map(entry => `${entry.course.course} (${entry.miles.toFixed(1)} mi)`).join(", ");
-      elements["map-legend-locate"].title = `Nearest to you: ${summary}`;
+      button.title = `Nearest to you: ${summary}`;
     }
     map.flyTo([latitude, longitude], 10, { duration: .6 });
-    elements["map-legend-locate"].classList.remove("active");
+    button.classList.remove("active");
   }, () => {
-    elements["map-legend-locate"].classList.remove("active");
-    elements["map-legend-locate"].title = "Location access was denied or unavailable.";
+    button.classList.remove("active");
+    button.title = "Location access was denied or unavailable.";
   }, { enableHighAccuracy: true, timeout: 10_000 });
-});
+}
 
 function setActiveTab(view) {
   const showMap = view === "map";
