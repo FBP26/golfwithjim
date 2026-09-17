@@ -190,6 +190,9 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .map-sidebar { background: var(--panel); border: 1px solid var(--line); border-radius: 7px; display: flex; flex-direction: column; overflow: hidden; }
 .map-sidebar-header { padding: 16px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
 .map-count-badge { background: var(--green); color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 12px; }
+.map-date-strip { padding: 10px 12px 0; margin: 0; border: 0; }
+.map-date-strip .date-option { min-width: 66px; padding: 6px 9px; font-size: 10px; }
+.map-date-strip .date-option strong { font-size: 11px; }
 .map-filters-summary { padding: 10px 16px; background: #eef1e988; border-bottom: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.4; }
 .map-course-list { overflow-y: auto; flex: 1; padding: 10px; }
 .map-course-card { padding: 10px 12px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 5px; background: white; cursor: pointer; transition: .15s; }
@@ -201,14 +204,15 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .map-container-wrap { position: relative; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: #e2e8f0; }
 .map-canvas { width: 100%; height: 100%; z-index: 1; }
 .map-floating-controls { position: absolute; top: 12px; right: 12px; z-index: 10; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
-#map-locate-btn { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--green); box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
-#map-locate-btn:hover { background: #f4f6f1; }
 .map-legend-pills { display: flex; gap: 6px; background: white; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); box-shadow: 0 2px 6px rgba(0,0,0,.15); }
 .legend-pill { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 600; color: var(--muted); }
+button.legend-pill-action { border: 0; background: transparent; padding: 0; font-family: inherit; cursor: pointer; }
+button.legend-pill-action:hover { color: var(--green); }
+button.legend-pill-action.active { color: white; background: var(--green); padding: 3px 7px; border-radius: 10px; margin: -3px -7px; }
 .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
 .dot.available { background: #2f855a; }
 .dot.hot { background: var(--deal); }
-.dot.link { background: #718096; }
+.dot.mine { background: #2b6cb0; }
 
 @media (max-width: 900px) {
   .map-layout { grid-template-columns: 1fr; height: auto; }
@@ -216,12 +220,11 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
   .map-container-wrap { height: 450px; }
 }
 
-/* Map floating controls: locate/location buttons + ring toggle */
-#map-locate-user { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--line); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; color: var(--green); box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
-#map-locate-user:hover { background: #f4f6f1; }
-#map-locate-user.active { background: var(--green); color: white; border-color: var(--green); }
-.map-ring-toggle { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--line); padding: 6px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; color: var(--muted); box-shadow: 0 2px 6px rgba(0,0,0,.15); cursor: pointer; }
-.map-ring-toggle input { margin: 0; }
+/* Leaflet base-layer switcher */
+.leaflet-control-layers { font-family: "DM Sans", sans-serif; border-radius: 6px !important; box-shadow: 0 2px 6px rgba(0,0,0,.15) !important; }
+.leaflet-control-layers-toggle { width: 34px !important; height: 34px !important; }
+.leaflet-control-layers-expanded { padding: 8px 10px !important; font-size: 12px; }
+.leaflet-control-layers label { margin-bottom: 3px; }
 
 /* Golf flag pin markers (custom Leaflet divIcon) */
 .golf-pin-wrap { background: transparent; border: 0; }
@@ -266,6 +269,12 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .map-popup .map-popup-status { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
 .map-popup .map-popup-status strong { color: var(--green); }
 .map-popup .map-popup-status.hot strong { color: var(--deal); }
+.map-popup-times-wrap { max-height: 190px; margin-top: 6px; overflow-y: auto; border: 1px solid var(--line); border-radius: 5px; }
+.map-popup-times { width: 100%; border-collapse: collapse; font-size: 11px; }
+.map-popup-times thead th { position: sticky; top: 0; padding: 4px 7px; background: #eef1e9; color: var(--muted); font-size: 9px; font-weight: 700; text-transform: uppercase; text-align: left; }
+.map-popup-times thead th:last-child, .map-popup-times td:last-child { text-align: right; }
+.map-popup-times td { padding: 3px 7px; border-top: 1px solid var(--line); color: var(--ink); }
+.map-popup-times tr.hot td { background: #f6ece9; color: var(--deal); font-weight: 700; }
 .map-popup a.map-popup-link { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--green-2); text-decoration: underline; }
 
 /* Sidebar course-count badges + unmapped list */

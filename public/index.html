@@ -8,7 +8,7 @@ or<!doctype html>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260916-11">
+  <link rel="stylesheet" href="styles.css?v=20260916-13">
 </head>
 <body>
   <header class="site-header">
@@ -121,6 +121,10 @@ or<!doctype html>
             </div>
             <span id="map-count" class="map-count-badge">0 courses</span>
           </div>
+          <section class="date-strip map-date-strip" aria-label="Choose a date">
+            <button class="date-option active" data-date="">All dates</button>
+            <div id="map-date-options"></div>
+          </section>
           <div id="map-filters-summary" class="map-filters-summary">
             Showing filtered tee times & tracked courses around Richmond. Click any course to inspect tee times.
           </div>
@@ -130,18 +134,10 @@ or<!doctype html>
         </div>
         <div class="map-container-wrap">
           <div class="map-floating-controls">
-            <button id="map-locate-btn" title="Center on Richmond">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
-              Richmond Center
-            </button>
-            <button id="map-locate-user" title="Find courses near you">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="6"/></svg>
-              My Location
-            </button>
-            <label class="map-ring-toggle"><input id="map-rings-toggle" type="checkbox" checked><span>Distance rings</span></label>
             <div class="map-legend-pills">
               <span class="legend-pill"><span class="dot available"></span> Tee times available</span>
               <span class="legend-pill"><span class="dot hot"></span> Hot Deal</span>
+              <button id="map-legend-locate" class="legend-pill legend-pill-action" type="button" title="Find courses near you"><span class="dot mine"></span> My Location</button>
             </div>
           </div>
           <div id="leaflet-map" class="map-canvas"></div>
@@ -154,6 +150,6 @@ or<!doctype html>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
-  <script type="module" src="app.js?v=20260916-15"></script>
+  <script type="module" src="app.js?v=20260916-17"></script>
 </body>
 </html>
