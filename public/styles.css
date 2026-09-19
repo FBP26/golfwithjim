@@ -128,6 +128,7 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .tee-time { min-width: 0; margin-bottom: 5px; padding: 9px 10px; break-inside: avoid; border-left: 3px solid var(--green-2); background: #eef1e9; }
 .tee-time.hot { border-left-color: var(--deal); background: #f6ece9; }
 .tee-time strong { display: block; font-size: 14px; }
+.tee-time-source { display: block; margin-top: 2px; color: var(--muted); font-size: 9px; text-transform: uppercase; letter-spacing: .03em; }
 .tee-time span { display: flex; justify-content: space-between; gap: 5px; margin-top: 3px; color: var(--muted); font-size: 10px; }
 .tee-time b { color: var(--ink); font-size: 12px; }
 .deal-label { color: var(--deal); font-weight: 700; }

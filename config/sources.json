@@ -203,6 +203,8 @@
       "source": "GolfNow Marketplace",
       "course": "Green Course at The Golden Horseshoe",
       "distanceMiles": 45,
+      "collector": "golfnow",
+      "providerCourseId": "15458",
       "url": "https://www.golfnow.com/tee-times/facility/15458-green-course-at-the-golden-horseshoe/search",
       "latitude": 37.2596804,
       "longitude": -76.6876493
@@ -211,6 +213,8 @@
       "source": "GolfNow Marketplace",
       "course": "Gold Course at The Golden Horseshoe",
       "distanceMiles": 45,
+      "collector": "golfnow",
+      "providerCourseId": "15459",
       "url": "https://www.golfnow.com/tee-times/facility/15459-gold-course-at-the-golden-horseshoe/search",
       "latitude": 37.2610138,
       "longitude": -76.6972495

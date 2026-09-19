@@ -58,7 +58,7 @@ async function inventory() {
   const teeTimes = teeTimeArray(payload)
     .map(normalizeTeeTime)
     .filter(teeTime => inventoryCourses.has(teeTime.course)
-      && isEligible(teeTime, config)
+      && isEligible(teeTime, { ...config, minimumPlayers: config.collectionMinimumPlayers })
       && teeTime.holes === config.preferredHoles
       && isUpcoming(teeTime));
   return {

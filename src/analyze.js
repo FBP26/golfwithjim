@@ -59,6 +59,14 @@ export function normalizeTeeTime(raw) {
   };
 }
 
+export function isSycamoreNineHoleException(teeTime) {
+  return String(teeTime.course).trim().toLowerCase() === "sycamore creek golf course" && Number(teeTime.holes) === 9;
+}
+
+export function isAllowedHoleCount(teeTime) {
+  return Number(teeTime.holes) === 18;
+}
+
 export function isEligible(teeTime, config) {
   return teeTime.availablePlayers >= config.minimumPlayers
     && teeTime.distanceMiles <= config.maximumDistanceMiles

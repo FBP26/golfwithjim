@@ -17,7 +17,7 @@ function allInPrice(rate) {
 export function extractGolfNowInventory(payload, defaults = {}) {
   return (payload.ttResults?.teeTimes || []).flatMap(teeTime => {
     const rates = (teeTime.teeTimeRates || [])
-      .filter(rate => rate.isEighteen && !teeTime.isReservationRestricted && availablePlayers(rate.playerRule || teeTime.playerRule) >= 2)
+      .filter(rate => rate.isEighteen && !teeTime.isReservationRestricted && availablePlayers(rate.playerRule || teeTime.playerRule) >= 1)
       .filter(rate => allInPrice(rate) > 0)
       .toSorted((left, right) => allInPrice(left) - allInPrice(right));
     const rate = rates[0];
@@ -58,7 +58,7 @@ export async function collectGolfNowDay({ facilityId, date, course, distanceMile
     promotedCampaignsOnly: false,
     priceMin: 0,
     priceMax: 10000,
-    players: 2,
+    players: 1,
     timePeriod: "Any",
     timeMin: 10,
     timeMax: 42,

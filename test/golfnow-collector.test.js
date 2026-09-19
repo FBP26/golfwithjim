@@ -44,6 +44,7 @@ test("extracts exact GolfNow 18-hole inventory for two or more players", () => {
 
   assert.deepEqual(result.map(item => ({ time: item.time, players: item.availablePlayers, price: item.allInPrice })), [
     { time: "11:20 AM", players: 4, price: 62.39 },
+    { time: "11:30 AM", players: 1, price: 62.39 },
   ]);
   assert.equal(result[0].url, "https://www.golfnow.com/tee-times/facility/16391/tee-time/123");
 });
@@ -61,4 +62,22 @@ test("accepts GolfNow Any player rules returned by a two-player search", () => {
 
   assert.equal(result.length, 1);
   assert.equal(result[0].availablePlayers, 4);
+});
+
+test("retains GolfNow one-player inventory for the optional one-player filter", () => {
+  const result = extractGolfNowInventory({ ttResults: { teeTimes: [{
+    time: { formatted: "7:10", formattedTimeMeridian: "AM" },
+    playerRule: "One",
+    teeTimeRates: [rate({ playerRule: "One", allInPrice: undefined, singlePlayerPrice: {
+      feeMessagingDisplayRates: { totalPrice: money(39.99) },
+    } })],
+  }] } }, {
+    course: "Birkdale Golf Club",
+    date: "2026-09-25",
+    distanceMiles: 17,
+  });
+
+  assert.equal(result.length, 1);
+  assert.equal(result[0].availablePlayers, 1);
+  assert.equal(result[0].allInPrice, 39.99);
 });

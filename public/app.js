@@ -54,7 +54,17 @@ function dateUrl(url, date) {
 
 // A course can be tracked through more than one booking source (e.g. GolfNow and its own direct platform).
 // GolfPass membership points only accrue when booking through GolfNow, so it wins ties on price.
-const isGolfNowSource = source => /golfnow/i.test(source);
+// Exact match only: the TeeItUp collector's own source label ('GolfNow/TeeItUp') also contains "golfnow"
+// but is NOT the GolfNow marketplace, so a loose substring match would misidentify it.
+const isGolfNowSource = source => /^golfnow$/i.test(source);
+
+// Human-readable label for a tee time's source, distinguishing GolfNow marketplace listings
+// from a course's own direct booking platform (which the TeeItUp collector mislabels as "GolfNow/TeeItUp").
+function sourceDisplayLabel(source) {
+  if (isGolfNowSource(source)) return "GolfNow";
+  if (/teeitup/i.test(source)) return "Course website";
+  return source;
+}
 
 function bestBookingTeeTime(times) {
   if (!times.length) return null;
@@ -151,7 +161,8 @@ function renderResults() {
       const lowestPrice = Math.min(...courseTimes.map(teeTime => teeTime.allInPrice));
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
       const dealCount = courseTimes.filter(teeTime => teeTime.hotDeal).length;
-      const tiles = ordered.map(teeTime => `<div class="tee-time${teeTime.hotDeal ? " hot" : ""}"><strong>${escapeHtml(teeTime.time)}</strong><span><b>${money(teeTime.allInPrice)}</b>${teeTime.hotDeal ? '<em class="deal-label">Hot Deal</em>' : `${teeTime.availablePlayers} spots`}</span></div>`).join("");
+      const multiSource = new Set(courseTimes.map(teeTime => teeTime.source)).size > 1;
+      const tiles = ordered.map(teeTime => `<div class="tee-time${teeTime.hotDeal ? " hot" : ""}"><strong>${escapeHtml(teeTime.time)}</strong>${multiSource ? `<small class="tee-time-source">${escapeHtml(sourceDisplayLabel(teeTime.source))}</small>` : ""}<span><b>${money(teeTime.allInPrice)}</b>${teeTime.hotDeal ? '<em class="deal-label">Hot Deal</em>' : `${teeTime.availablePlayers} spots`}</span></div>`).join("");
       const inventorySummary = courseTimes.length === 1
         ? escapeHtml(timeRange)
         : `${escapeHtml(timeRange)} · ${courseTimes.length} tee times`;
@@ -241,9 +252,10 @@ function pinIcon(category, label) {
 function popupTimesTableHtml(times) {
   if (!times.length) return "";
   const showDate = !state.date;
+  const showSource = new Set(times.map(teeTime => teeTime.source)).size > 1;
   const ordered = times.toSorted((left, right) => (showDate ? left.date.localeCompare(right.date) : 0) || timeValue(left.time) - timeValue(right.time) || left.allInPrice - right.allInPrice);
-  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${money(teeTime.allInPrice)}</td><td>${teeTime.availablePlayers}</td></tr>`).join("");
-  return `<div class="map-popup-times-wrap"><table class="map-popup-times${showDate ? " has-date" : ""}"><thead><tr>${showDate ? "<th>Date</th>" : ""}<th>Time</th><th>Price</th><th>Spots</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${money(teeTime.allInPrice)}</td>${showSource ? `<td>${escapeHtml(sourceDisplayLabel(teeTime.source))}</td>` : ""}<td>${teeTime.availablePlayers}</td></tr>`).join("");
+  return `<div class="map-popup-times-wrap"><table class="map-popup-times${showDate ? " has-date" : ""}"><thead><tr>${showDate ? "<th>Date</th>" : ""}<th>Time</th><th>Price</th>${showSource ? "<th>Source</th>" : ""}<th>Spots</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 function popupHtml(group, teeTimesByCourse) {

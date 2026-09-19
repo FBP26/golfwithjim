@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 export const config = {
   recipient: process.env.ALERT_TO || "fbpool07@gmail.com",
   minimumPlayers: 2,
+  collectionMinimumPlayers: 1,
   maximumDistanceMiles: 75,
   preferredHoles: 18,
   minimumDropDollars: 10,
