@@ -4,13 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#15372c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tee Times">
   <title>Richmond Tee Times</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="golf-icon.svg">
+  <link rel="apple-touch-icon" href="golf-icon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=20260917-3">
 </head>
 <body>
+  <div id="pull-refresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-icon">&#8635;</span><span id="pull-refresh-label">Pull to refresh</span></div>
   <header class="site-header">
     <div class="header-actions">
       <div class="header-nav-tabs" role="tablist">

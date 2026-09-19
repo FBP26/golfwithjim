@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Richmond Tee Times</title>
+  <desc id="desc">A golf ball beside a golden flag on a green course</desc>
+  <rect width="512" height="512" rx="112" fill="#15372c"/>
+  <path d="M0 356c94-54 178-54 256 0s162 54 256 0v156H0Z" fill="#245944"/>
+  <path d="M0 420c102-45 184-40 256 3 75 44 159 47 256 0v89H0Z" fill="#c7e04a" opacity=".92"/>
+  <path d="M331 112v253" fill="none" stroke="#fffdf8" stroke-width="18" stroke-linecap="round"/>
+  <path d="M331 116h116l-58 57h-58Z" fill="#d3a53b"/>
+  <circle cx="194" cy="335" r="91" fill="#fffdf8"/>
+  <path d="M151 287c22 8 35 23 39 45m-67-7c24 4 42 16 53 36m18-106c20 12 31 27 34 45" fill="none" stroke="#d8d8cc" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="226" cy="307" r="8" fill="#d8d8cc"/>
+</svg>

@@ -15,6 +15,7 @@ const elements = Object.fromEntries([
   "refresh", "refresh-label", "clear-filters", "players-filter", "course-directory", "expand-results", "collapse-results",
   "tab-list", "tab-map", "view-list-container", "view-map-container",
   "map-count", "leaflet-map", "map-date-options",
+  "pull-refresh", "pull-refresh-label",
 ].map(id => [id, document.getElementById(id)]));
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
@@ -469,6 +470,50 @@ async function loadInventory({ liveRefresh = false } = {}) {
     elements.results.removeAttribute("aria-busy");
   }
 }
+
+let pullStartY = 0;
+let pullDistance = 0;
+let pulling = false;
+let pullRefreshRunning = false;
+const pullThreshold = 72;
+
+function updatePullRefresh(distance, ready = false) {
+  const visibleDistance = Math.min(distance, pullThreshold + 18);
+  elements["pull-refresh"].style.setProperty("--pull-distance", `${visibleDistance}px`);
+  elements["pull-refresh"].classList.toggle("visible", visibleDistance > 0);
+  elements["pull-refresh"].classList.toggle("ready", ready);
+  elements["pull-refresh-label"].textContent = ready ? "Release to refresh" : "Pull to refresh";
+}
+
+document.addEventListener("touchstart", event => {
+  if (window.scrollY > 0 || pullRefreshRunning || event.touches.length !== 1) return;
+  pullStartY = event.touches[0].clientY;
+  pullDistance = 0;
+  pulling = true;
+}, { passive: true });
+
+document.addEventListener("touchmove", event => {
+  if (!pulling || window.scrollY > 0 || event.touches.length !== 1) return;
+  pullDistance = Math.max(0, (event.touches[0].clientY - pullStartY) * .55);
+  if (pullDistance > 0) event.preventDefault();
+  updatePullRefresh(pullDistance, pullDistance >= pullThreshold);
+}, { passive: false });
+
+document.addEventListener("touchend", () => {
+  if (!pulling) return;
+  const shouldRefresh = pullDistance >= pullThreshold;
+  pulling = false;
+  pullDistance = 0;
+  updatePullRefresh(0);
+  if (shouldRefresh && !pullRefreshRunning) {
+    pullRefreshRunning = true;
+    elements["pull-refresh"].classList.add("refreshing");
+    loadInventory({ liveRefresh: true }).finally(() => {
+      pullRefreshRunning = false;
+      elements["pull-refresh"].classList.remove("refreshing");
+    });
+  }
+}, { passive: true });
 
 document.querySelectorAll(".date-strip").forEach(strip => strip.addEventListener("click", event => {
   const button = event.target.closest("[data-date]");
