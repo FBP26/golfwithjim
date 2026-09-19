@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-19T18:31:18.838Z",
+  "checkedAt": "2026-09-19T18:34:52.201Z",
   "collection": "saved coverage with complete starts from configured live collectors",
   "completeSources": [
     "Spring Creek Golf Club",
@@ -45,7 +45,7 @@
   "sourceChecks": [
     {
       "course": "Spring Creek Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-24",
@@ -53,7 +53,7 @@
     },
     {
       "course": "Hunting Hawk Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -61,7 +61,7 @@
     },
     {
       "course": "Queenfield Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -69,7 +69,7 @@
     },
     {
       "course": "Pendleton Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-24",
@@ -77,14 +77,14 @@
     },
     {
       "course": "Sycamore Creek Golf Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "error": "Chronogolf feed returned HTTP 403."
     },
     {
       "course": "Brickshire Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -92,7 +92,7 @@
     },
     {
       "course": "Meadowbrook Country Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -100,7 +100,7 @@
     },
     {
       "course": "Birkdale Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-10-09",
       "latestAvailableDate": "2026-10-09",
@@ -108,7 +108,7 @@
     },
     {
       "course": "Colonial Heritage Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -116,7 +116,7 @@
     },
     {
       "course": "Kiskiack Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -124,7 +124,7 @@
     },
     {
       "course": "Ford's Colony Country Club - Blackheath",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": null,
@@ -132,7 +132,7 @@
     },
     {
       "course": "Ford's Colony Country Club - Blue Heron",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -140,7 +140,7 @@
     },
     {
       "course": "Ford's Colony Country Club - Marsh Hawk",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -148,7 +148,7 @@
     },
     {
       "course": "Green Course at The Golden Horseshoe",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -156,7 +156,7 @@
     },
     {
       "course": "Gold Course at The Golden Horseshoe",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -164,7 +164,7 @@
     },
     {
       "course": "Lee's Hill Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -172,7 +172,7 @@
     },
     {
       "course": "Lake Monticello Golf Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -180,7 +180,7 @@
     },
     {
       "course": "Meadows Farms Golf Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -188,7 +188,7 @@
     },
     {
       "course": "Magnolia Green Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": null,
@@ -196,7 +196,7 @@
     },
     {
       "course": "Magnolia Green Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-24",
@@ -204,7 +204,7 @@
     },
     {
       "course": "The Club at Viniterra",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -212,7 +212,7 @@
     },
     {
       "course": "The Club at Viniterra",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -220,7 +220,7 @@
     },
     {
       "course": "Royal New Kent Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -228,7 +228,7 @@
     },
     {
       "course": "Royal New Kent Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -236,7 +236,7 @@
     },
     {
       "course": "Mill Quarter Plantation Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -244,7 +244,7 @@
     },
     {
       "course": "Mill Quarter Plantation Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -252,7 +252,7 @@
     },
     {
       "course": "The Hollows Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -260,7 +260,7 @@
     },
     {
       "course": "The Hollows Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -268,7 +268,7 @@
     },
     {
       "course": "Lake Chesdin Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -276,7 +276,7 @@
     },
     {
       "course": "Dogwood Trace Golf Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -284,7 +284,7 @@
     },
     {
       "course": "Dogwood Trace Golf Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -292,7 +292,7 @@
     },
     {
       "course": "Mattaponi Springs Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -300,7 +300,7 @@
     },
     {
       "course": "Mattaponi Springs Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -308,7 +308,7 @@
     },
     {
       "course": "Hanover Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -316,7 +316,7 @@
     },
     {
       "course": "Hanover Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -324,7 +324,7 @@
     },
     {
       "course": "Providence Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -332,7 +332,7 @@
     },
     {
       "course": "Providence Golf Club",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -340,7 +340,7 @@
     },
     {
       "course": "The Golf Club at The Highlands",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -348,7 +348,7 @@
     },
     {
       "course": "Independence Championship Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
@@ -356,7 +356,7 @@
     },
     {
       "course": "Independence Championship Course",
-      "checkedAt": "2026-09-19T18:31:18.838Z",
+      "checkedAt": "2026-09-19T18:34:52.201Z",
       "requestedFrom": "2026-09-19",
       "requestedThrough": "2026-09-25",
       "latestAvailableDate": "2026-09-25",
