@@ -508,10 +508,7 @@ document.addEventListener("touchend", () => {
   if (shouldRefresh && !pullRefreshRunning) {
     pullRefreshRunning = true;
     elements["pull-refresh"].classList.add("refreshing");
-    loadInventory({ liveRefresh: true }).finally(() => {
-      pullRefreshRunning = false;
-      elements["pull-refresh"].classList.remove("refreshing");
-    });
+    window.location.reload();
   }
 }, { passive: true });
 
