@@ -100,3 +100,15 @@ test("replaces collector-owned minima while preserving other saved coverage", ()
   assert.deepEqual(result.teeTimes.map(item => item.id), ["other", "new-one", "new-two"]);
   assert.deepEqual(result.completeSources, ["Queenfield Golf Club"]);
 });
+
+test("preserves a previous source feed when that collector fails", () => {
+  const result = mergeCollectedInventory({ teeTimes: [
+    { id: "old-sycamore", course: "Sycamore Creek Golf Course" },
+  ] }, {
+    checkedAt: "2026-09-19T18:00:00Z",
+    sources: [],
+    teeTimes: [],
+  });
+
+  assert.deepEqual(result.teeTimes.map(item => item.id), ["old-sycamore"]);
+});

@@ -44,7 +44,7 @@ jobs:
           CHRONOGOLF_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/chronogolf
           TEEITUP_PROXY_TOKEN: ${{ github.token }}
           TEEITUP_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/teeitup
-        run: node src/collect.js --base=fixtures/richmond-live-2026-09-16.json --output=fixtures/live-current.json
+        run: node src/collect.js --base=fixtures/live-current.json --output=fixtures/live-current.json
       - name: Save refreshed feed
         if: steps.timing.outputs.collect == 'true'
         shell: bash
