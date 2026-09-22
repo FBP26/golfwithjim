@@ -31,8 +31,10 @@ jobs:
         id: timing
         shell: bash
         run: |
-          hour=$(TZ=America/New_York date +%H)
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" || ("${{ github.event_name }}" == "schedule" && ("$hour" == "06" || "$hour" == "18")) ]]; then
+          # GitHub's cron scheduler frequently fires scheduled runs well outside their configured
+          # hour (observed multi-hour drift), so gating collection on an exact hour match caused
+          # the feed to go stale for days at a time. Collect on every schedule/workflow_dispatch run.
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" || "${{ github.event_name }}" == "schedule" ]]; then
             echo "collect=true" >> "$GITHUB_OUTPUT"
           else
             echo "collect=false" >> "$GITHUB_OUTPUT"
