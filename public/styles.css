@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light;
   --ink: #17241e;
   --muted: #657168;
   --paper: #f4f1e8;
@@ -11,6 +12,20 @@
   --deal: #9d2e25;
 }
 
+:root[data-theme="dark"] { color-scheme: dark; --ink: #edf2ee; --muted: #adbbb2; --paper: #151d18; --panel: #202b24; --green: #78cfa6; --green-2: #91d3b1; --lime: #c7e04a; --gold: #dfbd69; --line: #3c4a40; --deal: #ff9d8b; }
+html .theme-switch { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 12px; text-transform: none; letter-spacing: 0; color: white; cursor: pointer; }
+html .theme-switch input { width: 34px; height: 20px; margin: 0; appearance: none; border: 1px solid #c1d4c8; border-radius: 12px; background: #345d46; cursor: pointer; }
+html .theme-switch input::before { content: ""; display: block; width: 14px; height: 14px; margin: 2px; border-radius: 50%; background: white; transition: transform .15s; }
+html .theme-switch input:checked::before { transform: translateX(14px); background: var(--lime); }
+html .theme-switch input:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
+html[data-theme="dark"] body { background: linear-gradient(115deg, #1c2920, var(--paper) 42%, #17251f); }
+html[data-theme="dark"] .site-header { background: #183729; }
+html[data-theme="dark"] .nav-tab.active { color: #183729; }
+@media (max-width: 600px) { html .site-header { flex-wrap: wrap; gap: 10px; } html .header-actions { width: 100%; } }
+html[data-theme="dark"] :is(.date-option,.segmented button,input[type="time"],input[type="search"],select,.disclosure-actions button) { background: var(--panel); color: var(--ink); }
+html[data-theme="dark"] :is(.date-option.active,.segmented button.active) { background: #315f46; color: white; }
+html[data-theme="dark"] :is(.tee-time,.metric-action.active,.metric-action:hover) { background: #2c3d31; }
+html[data-theme="dark"] :is(.tee-time.hot,.metric-action[data-metric-filter="hot"].active) { background: #422d29; }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: linear-gradient(115deg, #ecebdd 0, var(--paper) 42%, #edf1e8 100%); color: var(--ink); font-family: "DM Sans", sans-serif; overscroll-behavior-y: none; }
