@@ -45,8 +45,12 @@ elements.price.innerHTML = Array.from({ length: 26 }, (_, index) => 30 + index *
 elements.price.value = 160;
 if (matchMedia("(max-width: 850px)").matches) document.querySelector(".filters").open = false;
 
+function selectableCourses() {
+  return dedupeByCourse(state.courses.filter(course => course.collector && course.showInventory !== false));
+}
+
 function renderCourseSelection() {
-  const courses = dedupeByCourse(state.courses);
+  const courses = selectableCourses();
   elements["course-selection"].innerHTML = courses.toSorted((left, right) => left.course.localeCompare(right.course)).map(course => `<label><input type="checkbox" data-course="${escapeHtml(course.course)}"${state.hiddenCourses.has(course.course) ? "" : " checked"}><span>${escapeHtml(shortCourseName(course.course))}</span></label>`).join("");
   elements["course-selection-count"].textContent = `${courses.filter(course => !state.hiddenCourses.has(course.course)).length}/${courses.length}`;
 }
@@ -560,7 +564,7 @@ elements["course-selection"].addEventListener("change", event => {
   saveCourseSelection();
 });
 elements["show-courses"].addEventListener("click", () => { state.hiddenCourses.clear(); saveCourseSelection(); });
-elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses = new Set(state.courses.map(course => course.course)); saveCourseSelection(); });
+elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses = new Set(selectableCourses().map(course => course.course)); saveCourseSelection(); });
 elements.distance.addEventListener("input", () => { state.maximumDistance = Number(elements.distance.value); elements["distance-output"].value = `${state.maximumDistance} miles`; renderResults(); });
 elements.price.addEventListener("input", () => { state.maximumPrice = Number(elements.price.value) === 160 ? Infinity : Number(elements.price.value); state.exactPrice = null; elements["price-output"].value = Number.isFinite(state.maximumPrice) ? money(state.maximumPrice) : "Any"; renderResults(); });
 elements.earliest.addEventListener("input", () => updateTimeWindow("earliest"));

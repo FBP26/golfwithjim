@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { collectTeeItUpDay, extractTeeItUpInventory } from "../src/collectors/teeitup.js";
+import { filterTeeTimes } from "../src/dashboard.js";
 
 const rate = (overrides = {}) => ({
   _id: 274086381,
@@ -44,6 +45,21 @@ test("extracts the cheapest exact 18-hole rate for each tee time", () => {
   assert.equal(result[0].holes, 18);
   assert.equal(result[0].priceIsExact, true);
   assert.equal(result[0].source, "GolfNow/TeeItUp");
+});
+
+test("keeps regular alternatives and applies each rate's allowed party sizes", () => {
+  const payload = [{ teetimes: [{ teetime: "2026-09-26T14:00:00.000Z", maxPlayers: 4, rates: [
+    rate({ _id: 11, name: "4 Player Promotion", allowedPlayers: [4], greenFeeCart: 4400 }),
+    rate({ _id: 12, name: "18 Holes", allowedPlayers: [1, 2, 3, 4], greenFeeCart: 5400 }),
+  ] }] }];
+  const defaults = { course: "Highlands", date: "2026-09-26", distanceMiles: 24, url: "https://example.com" };
+  const offers = extractTeeItUpInventory(payload, defaults);
+  assert.equal(offers.length, 2);
+  assert.deepEqual(offers[0].availablePartySizes, [4]);
+  assert.deepEqual(filterTeeTimes(offers, { players: 2 }).map(offer => offer.rateName), ["18 Holes"]);
+  assert.equal(filterTeeTimes(offers, { players: 4 }).length, 2);
+  payload[0].teetimes[0].maxPlayers = 2;
+  assert.deepEqual(extractTeeItUpInventory(payload, defaults).map(offer => offer.rateName), ["18 Holes"]);
 });
 
 test("skips tee times with no 18-hole rate and filters to the requested date", () => {

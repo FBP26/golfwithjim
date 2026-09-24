@@ -20,27 +20,33 @@ export function extractTeeItUpInventory(payload, defaults = {}) {
   return teetimes.flatMap(teetime => {
     const eighteenHoleRates = (teetime.rates || []).filter(rate => rate.holes === 18 && isPublicRate(rate.name));
     if (!eighteenHoleRates.length) return [];
-    const best = eighteenHoleRates.toSorted((left, right) => ratePrice(left) - ratePrice(right))[0];
-    const price = ratePrice(best);
-    if (!(price > 0)) return [];
     const { date, time } = localDateTime(teetime.teetime);
     if (defaults.date && date !== defaults.date) return [];
     const stableTime = time.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-    return [{
-      id: `teeitup-${stableCourse}-${date}-${stableTime}`,
-      source: "GolfNow/TeeItUp",
-      course: defaults.course,
-      date,
-      time,
-      availablePlayers: Number(teetime.maxPlayers) || 0,
-      holes: 18,
-      allInPrice: Math.round(price * 100) / 100,
-      priceIsExact: true,
-      hotDeal: best.showAsHotDeal === true,
-      rateName: String(best.name || "Standard"),
-      distanceMiles: defaults.distanceMiles,
-      url: defaults.url,
-    }];
+    return eighteenHoleRates.toSorted((left, right) => ratePrice(left) - ratePrice(right)).flatMap(rate => {
+      const price = ratePrice(rate);
+      const capacity = Math.max(0, Math.min(4, Number(teetime.maxPlayers) || 0));
+      const availablePartySizes = (Array.isArray(rate.allowedPlayers) ? rate.allowedPlayers.map(Number)
+        : Array.from({ length: capacity }, (_, index) => index + 1))
+        .filter(players => Number.isInteger(players) && players >= 1 && players <= capacity);
+      if (!(price > 0) || !availablePartySizes.length) return [];
+      return [{
+        id: `teeitup-${stableCourse}-${date}-${stableTime}-${rate._id}`,
+        source: "GolfNow/TeeItUp",
+        course: defaults.course,
+        date,
+        time,
+        availablePlayers: Math.max(...availablePartySizes),
+        availablePartySizes,
+        holes: 18,
+        allInPrice: Math.round(price * 100) / 100,
+        priceIsExact: true,
+        hotDeal: rate.showAsHotDeal === true,
+        rateName: String(rate.name || "Standard"),
+        distanceMiles: defaults.distanceMiles,
+        url: defaults.url,
+      }];
+    });
   });
 }
 
