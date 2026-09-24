@@ -1,3 +1,14 @@
+export const RICHMOND_CENTER = [37.5407, -77.436];
+
+export function haversineMiles(latitudeFrom, longitudeFrom, latitudeTo, longitudeTo) {
+  const toRadians = degrees => degrees * Math.PI / 180;
+  const latitudeDelta = toRadians(latitudeTo - latitudeFrom);
+  const longitudeDelta = toRadians(longitudeTo - longitudeFrom);
+  const arc = Math.sin(latitudeDelta / 2) ** 2
+    + Math.cos(toRadians(latitudeFrom)) * Math.cos(toRadians(latitudeTo)) * Math.sin(longitudeDelta / 2) ** 2;
+  return 3958.8 * 2 * Math.asin(Math.sqrt(Math.min(1, arc)));
+}
+
 function timeMinutes(time) {
   const match = String(time).match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
   if (!match) return Number.POSITIVE_INFINITY;

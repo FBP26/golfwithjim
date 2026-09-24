@@ -33,7 +33,23 @@ Builds two email reports from a permitted JSON tee-time feed:
 - `daily`: seven compact daily tables with every qualifying exact-price 18-hole start. Course rows show the usual start cadence, group repeating times into ranges, and separate regular rates from Hot Deals; only course names link to booking.
 - `alert`: new Hot Deals, new material local price breaks, and existing tee times whose price falls by at least both $10 and 15%.
 
-Defaults include availability for one through four golfers within 75 miles of Richmond. The monitor prefers explicit GolfPass+ all-in pricing, marks `GP+` and waived-fee benefits, and excludes junior, military, veteran, senior, resident, club-member-only, and member-guest rates. Regular/public/adult and prepaid rates qualify, as do publicly bookable member-for-a-day offers. Restricted rates are removed before choosing a public price, so a cheaper senior rate cannot hide an eligible regular alternative. Availability is a checked snapshot, not a held reservation; the provider's booking page remains authoritative.
+Defaults include availability for one through four golfers within 100 miles of Richmond. The monitor prefers explicit GolfPass+ all-in pricing, marks `GP+` and waived-fee benefits, and excludes junior, military, veteran, senior, resident, club-member-only, and member-guest rates. Regular/public/adult and prepaid rates qualify, as do publicly bookable member-for-a-day offers. Restricted rates are removed before choosing a public price, so a cheaper senior rate cannot hide an eligible regular alternative. Availability is a checked snapshot, not a held reservation; the provider's booking page remains authoritative.
+
+## Coverage and location
+
+The default radius and outer map ring are 100 miles around Richmond (37.5407, -77.436). The map initially frames the selected radius. Coordinate-backed distances are straight-line miles, rounded up to a tenth, not driving distances; existing unmapped local links retain their estimates. The shared distance calculation is used by the registry and the existing locate-me control.
+
+The September 24 expansion cross-checked GolfNow regional course results, VSGA listings, and Census street-address geocoding. `fixtures/course-discovery-100mi.json` records added courses, unresolved addresses, and out-of-radius exclusions. Course listings are not a guarantee of current tee times or an exhaustive census of every facility. Public/resort booking links may appear on the main list without live collection; short, private, and military facilities remain separate. Map availability pins continue to represent qualifying inventory, not every directory link. New sources are labelled as not checked until an actual collection result exists.
+
+Discovery was a one-time interactive review, not a new scheduled crawler. Only the existing collector implementations are used for live inventory. VSGA/GHIN membership is not proof of VIP Card ownership, and VIP offers are not included as generally available prices.
+
+### Future phone-centered searches
+
+The existing location button can locate a consenting user and show nearby catalog courses, but the search radius and filtering remain Richmond-based. Re-centering the radius and recomputing catalog distances from a phone is a modest frontend change; GPS requires HTTPS, permission, and a manual-location fallback. This release does not enable that change.
+
+Reliable live availability while travelling requires a backend that selects nearby mapped courses, queries supported provider APIs for the chosen date and party size, and caches results with per-source freshness and failure status. The phone should request results, not scrape arbitrary booking websites itself: browser cross-origin rules, authentication, rate limits, and provider changes make that unreliable. Mobile browsers also suspend background work.
+
+A global catalog is not required upfront. Regions can be added incrementally or discovered on demand, but a course's location, access rules, booking URL/provider ID, and supported integration must be verified before claiming live coverage. Unsupported courses should remain useful booking links. A phone-centered catalog would be reliable; universal, instant, exact tee times from every course would not be a credible promise. Live collection must remain provider-permitted and rate-limited.
 
 ## Feed
 
@@ -53,7 +69,7 @@ Verified GolfNow/TeeItUp engines cover Magnolia Green, Viniterra, Royal New Kent
 
 The Highlands also uses TeeItUp. Independence exposes separate Championship and Bear course views through Club Caddie; those captures likewise require an exact selected price rather than the static daily rate page.
 
-The source registry also records investigated exclusions. Private clubs, stale booking engines, unrelated expired domains, and courses outside the 75-mile Richmond boundary must not enter scheduled alerts.
+The source registry also records investigated exclusions. Private-only rates, stale booking engines, unrelated expired domains, and courses outside the 100-mile Richmond boundary must not enter scheduled alerts.
 
 Elson Redmond Memorial Driving Range appears in `Other courses` as a link-only First Tee facility. Coverage reviews also search current GolfNow marketplace results for newly listed public courses; a stale or broken direct-booking URL is not sufficient reason to exclude a course that has live marketplace inventory. Marketplace discovery restored Birkdale and Meadowbrook and added the currently visible full-size courses, including the three Ford's Colony courses. The 75-mile review also added Williamsburg National's public online tee sheet and Kiln Creek as a phone-booked public course.
 

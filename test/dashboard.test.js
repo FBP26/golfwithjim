@@ -1,6 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse } from "../src/dashboard.js";
+import { config, sourceRegistry } from "../src/config.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER } from "../src/dashboard.js";
+
+test("uses Richmond-centered straight-line miles consistently", () => {
+  assert.equal(haversineMiles(...RICHMOND_CENTER, ...RICHMOND_CENTER), 0);
+  assert.ok(Math.abs(haversineMiles(37, -77, 38, -77) - 69.094) < 0.01);
+  for (const course of sourceRegistry.interactiveOnly.filter(course => Number.isFinite(course.latitude))) {
+    const distance = haversineMiles(...RICHMOND_CENTER, course.latitude, course.longitude);
+    assert.equal(course.distanceMiles, Math.ceil(distance * 10) / 10);
+    assert.ok(distance <= config.maximumDistanceMiles, course.course);
+  }
+});
 
 test("main-list placement can include booking links without enabling live inventory", () => {
   assert.equal(isMainCourse({ collector: "golfnow" }), true);
@@ -11,6 +22,22 @@ test("main-list placement can include booking links without enabling live invent
   assert.equal(isMainCourse({ course: "Other booking link" }), false);
 });
 
+test("expanded catalog preserves verified links and separates restricted facilities", () => {
+  const courses = sourceRegistry.interactiveOnly;
+  assert.ok(new Set(courses.map(course => course.course)).size > 100);
+  for (const name of ["Piankatank River Golf Club", "Forest Greens Golf Club", "Wicomico Shores Golf Course", "Old Trail Golf Club", "Valley Pine Country Club"]) {
+    assert.ok(courses.some(course => course.course === name), name);
+  }
+  for (const course of courses.filter(course => course.collector === "golfnow")) {
+    assert.ok(new URL(course.url).pathname.startsWith(`/tee-times/facility/${course.providerCourseId}-`), course.course);
+    assert.ok(!new URL(course.url).pathname.includes(`/${course.providerCourseId}-${course.providerCourseId}-`), course.course);
+    assert.ok(!["Private", "Military"].includes(course.access), course.course);
+  }
+  for (const name of ["Hobbs Hole Golf Course", "Williamsburg National Golf Club"]) {
+    assert.ok(isMainCourse(courses.find(course => course.course === name)), name);
+  }
+});
+
 const teeTimes = [
   { course: "Later", date: "2026-09-19", time: "1:00 PM", availablePlayers: 4, holes: 18, allInPrice: 55, distanceMiles: 20, hotDeal: true },
   { course: "Early", date: "2026-09-19", time: "9:00 AM", availablePlayers: 2, holes: 18, allInPrice: 45, distanceMiles: 30, hotDeal: false },
@@ -18,6 +45,12 @@ const teeTimes = [
   { course: "Far", date: "2026-09-19", time: "10:00 AM", availablePlayers: 4, holes: 18, allInPrice: 40, distanceMiles: 55, hotDeal: true },
   { course: "Nine", date: "2026-09-19", time: "11:00 AM", availablePlayers: 4, holes: 9, allInPrice: 30, distanceMiles: 10, hotDeal: true },
 ];
+
+test("includes the 100-mile boundary and rejects courses beyond it", () => {
+  assert.equal(config.maximumDistanceMiles, 100);
+  const offers = [75, 99.9, 100, 100.1].map(distanceMiles => ({ ...teeTimes[0], distanceMiles }));
+  assert.deepEqual(filterTeeTimes(offers, { maximumDistance: config.maximumDistanceMiles }).map(offer => offer.distanceMiles), [75, 99.9, 100]);
+});
 
 test("counts one start across providers while retaining offers and verified party sizes", () => {
   const offers = [{ ...teeTimes[1], source: "Direct" }, { ...teeTimes[1], source: "GolfNow", allInPrice: 40, availablePlayers: 4, availablePartySizes: [1, 2, 4] }];

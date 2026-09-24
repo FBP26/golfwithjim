@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse } from "./src/dashboard.js?v=20260924-main-list";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER } from "./src/dashboard.js?v=20260924-100mi";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -6,7 +6,7 @@ const refreshBridgeUrl = "https://golfwithjim-refresh.fbp-api-worker.workers.dev
 
 const state = {
   teeTimes: [], courses: [], sourceChecks: [], date: "", players: 0, earliest: "05:00", latest: "20:00", hiddenCourses: new Set(),
-  maximumDistance: 75, maximumPrice: Infinity, exactPrice: null, hotDealsOnly: false, course: "", sort: "price", checkedAt: "",
+  maximumDistance: 100, maximumPrice: Infinity, exactPrice: null, hotDealsOnly: false, course: "", sort: "price", checkedAt: "",
 };
 
 try {
@@ -239,10 +239,11 @@ function renderDirectory() {
     elements[directoryId].innerHTML = courses.map(course => {
       const times = counts.get(course.course) || [];
       const check = checks.get(course.course);
-      let detail = course.source;
+      let detail = [course.access, course.holes ? `${course.holes} holes` : "", course.source].filter(Boolean).join(" · ");
       let flagged = false;
       if (course.collector) {
         if (check?.error) { detail = "Check failed"; flagged = true; }
+        else if (!check) { detail = "Not checked yet"; flagged = true; }
         else { const count = groupTeeTimes(times).length; detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
       }
       const href = bestBookingTeeTime(times)?.url || course.url;
@@ -259,19 +260,10 @@ function selectDate(date) {
 }
 
 // ---- Map view ----------------------------------------------------------
-const RICHMOND_CENTER = [37.5407, -77.436];
-const DISTANCE_RING_MILES = [10, 25, 50, 75];
+const DISTANCE_RING_MILES = [10, 25, 50, 75, 100];
 let map = null;
 let markerLayer = null;
 let userLocationMarker = null;
-
-const haversineMiles = (lat1, lon1, lat2, lon2) => {
-  const toRad = degrees => degrees * Math.PI / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-  return 3958.8 * 2 * Math.asin(Math.sqrt(a));
-};
 
 const courseGroupKey = course => `${course.latitude.toFixed(3)},${course.longitude.toFixed(3)}`;
 
@@ -395,7 +387,7 @@ function updateMapView() {
     groups.get(key).push(course);
   });
 
-  const bounds = [];
+  const bounds = L.latLng(RICHMOND_CENTER).toBounds(state.maximumDistance * 2 * 1609.34);
   let visibleCount = 0;
   groups.forEach((group, key) => {
     const primary = group[0];
@@ -407,12 +399,11 @@ function updateMapView() {
     const marker = L.marker([primary.latitude, primary.longitude], { icon }).addTo(markerLayer);
     marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { maxWidth: 300, maxHeight: 320, autoPanPaddingTopLeft: [20, 70], autoPanPaddingBottomRight: [20, 20] });
     marker.on("click", () => flyToMapKey(key, visibleCourses));
-    bounds.push([primary.latitude, primary.longitude]);
     visibleCount += 1;
   });
 
   elements["map-count"].textContent = `${visibleCount} location${visibleCount === 1 ? "" : "s"}`;
-  if (bounds.length) map.flyToBounds(bounds, { padding: [40, 40], maxZoom: 11, duration: .6 });
+  map.flyToBounds(bounds, { padding: [24, 24], maxZoom: 11, duration: .6 });
 }
 
 function locateUser(button) {
@@ -473,7 +464,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
       response = await fetch(refreshBridgeUrl, { method: "POST" });
       if (!response.ok) throw new Error(`Refresh request returned HTTP ${response.status}`);
       const previousCheckedAt = state.checkedAt;
-      const deadline = Date.now() + 12 * 60_000;
+      const deadline = Date.now() + 45 * 60_000;
       do {
         await new Promise(resolve => setTimeout(resolve, 10_000));
         response = await fetch(`${staticFeedUrl}?refresh=${Date.now()}`, { cache: "no-store" });
@@ -595,12 +586,12 @@ elements["expand-results"].addEventListener("click", () => elements.results.quer
 elements["collapse-results"].addEventListener("click", () => elements.results.querySelectorAll("details").forEach(details => { details.open = false; }));
 elements.refresh.addEventListener("click", () => loadInventory({ liveRefresh: true }));
 elements["clear-filters"].addEventListener("click", () => {
-  state.players = 0; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 75;
+  state.players = 0; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 100;
   state.maximumPrice = Infinity; state.exactPrice = null; state.hotDealsOnly = false; state.course = ""; state.sort = "price";
-  elements.earliest.value = 300; elements.latest.value = 1200; elements.distance.value = 75;
+  elements.earliest.value = 300; elements.latest.value = 1200; elements.distance.value = 100;
   elements.price.value = 160; elements["hot-deals"].checked = false; elements["course-search"].value = ""; elements.sort.value = "price";
   elements["earliest-output"].value = "5:00 AM"; elements["latest-output"].value = "8:00 PM";
-  elements["distance-output"].value = "75 miles"; elements["price-output"].value = "Any";
+  elements["distance-output"].value = "100 miles"; elements["price-output"].value = "Any";
   elements["players-filter"].querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.players === "0"));
   state.hiddenCourses.clear();
   saveCourseSelection();

@@ -104,7 +104,7 @@ export async function collectGolfNowDay({ facilityId, date, course, distanceMile
     facilityType: "GolfCourse",
     latitude,
     longitude,
-    radius: 75,
+    radius: 100,
     facilityId: Number(facilityId),
     facilityIds: [],
     searchType: "Facility",

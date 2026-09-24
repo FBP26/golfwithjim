@@ -1,0 +1,563 @@
+{
+  "checkedAt": "2026-09-24T21:05:52.498Z",
+  "center": [
+    37.5407,
+    -77.436
+  ],
+  "radiusMiles": 100,
+  "golfNowSearchDates": ["2026-09-25", "2026-09-26", "2026-10-01"],
+  "exhaustive": false,
+  "coverageNote": "Verified directory expansion, not a census of all courses. Course listings, live collection support and current bookable availability are separate.",
+  "sources": [
+    "https://www.golfnow.com/tee-times/city/richmond/state/va/search",
+    "https://vsga.org/member-clubs",
+    "https://geocoding.geo.census.gov/geocoder/"
+  ],
+  "added": [
+    {
+      "course": "South Riding Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/2476-south-riding-golf-club/search",
+      "distanceMiles": 94.5
+    },
+    {
+      "course": "The Shoe Course at Golden Horseshoe Resort",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/19866-the-shoe-course-at-golden-horseshoe-resort/search",
+      "distanceMiles": 44.7
+    },
+    {
+      "course": "Piankatank River Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/3557-piankatank-river-golf-club/search",
+      "distanceMiles": 52.7
+    },
+    {
+      "course": "Lake of the Woods Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/15125-lake-of-the-woods-golf-course/search",
+      "distanceMiles": 55.9
+    },
+    {
+      "course": "Somerset Farms Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10275-somerset-farms-golf-course-formerly-rapidan-golf-course/search",
+      "distanceMiles": 60.7
+    },
+    {
+      "course": "Cypress Creek Golfers Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/7420-cypress-creek-golfers-club/search",
+      "distanceMiles": 59.4
+    },
+    {
+      "course": "Swan Point Yacht & Country Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/952-swan-point-yacht-country-club/search",
+      "distanceMiles": 59.9
+    },
+    {
+      "course": "Aquia Harbour Golf & Country Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/5689-aquia-harbour-golf-country-club/search",
+      "distanceMiles": 61.9
+    },
+    {
+      "course": "Augustine Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/1122-augustine-golf-club/search",
+      "distanceMiles": 62.5
+    },
+    {
+      "course": "Meadowcreek Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/18684-meadowcreek-golf-course/search",
+      "distanceMiles": 65.7
+    },
+    {
+      "course": "Wicomico Shores Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/16056-wicomico-shores-golf-course/search",
+      "distanceMiles": 66.8
+    },
+    {
+      "course": "Forest Greens Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/2816-forest-greens-golf-club/search",
+      "distanceMiles": 69.6
+    },
+    {
+      "course": "Sleepy Hole Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/4842-sleepy-hole-golf-course/search",
+      "distanceMiles": 69.8
+    },
+    {
+      "course": "Potomac Shores Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/11574-potomac-shores-golf-club/search",
+      "distanceMiles": 72.2
+    },
+    {
+      "course": "Suffolk Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/5868-suffolk-golf-course/search",
+      "distanceMiles": 72.4
+    },
+    {
+      "course": "Montclair Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/9922-montclair-golf-club/search",
+      "distanceMiles": 73.8
+    },
+    {
+      "course": "Sewell's Point Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17907-sewells-point-golf-course/search",
+      "distanceMiles": 76.3
+    },
+    {
+      "course": "Ocean View Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/3247-ocean-view-golf-course/search",
+      "distanceMiles": 77.1
+    },
+    {
+      "course": "Lake Ridge Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/8396-lake-ridge-golf-course/search",
+      "distanceMiles": 79.9
+    },
+    {
+      "course": "Pohick Bay Regional Parks Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/1172-pohick-bay-regional-parks-golf-course/search",
+      "distanceMiles": 79.9
+    },
+    {
+      "course": "Old Hickory Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/654-old-hickory-golf-club/search",
+      "distanceMiles": 80
+    },
+    {
+      "course": "Fauquier Springs Country Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/18281-fauquier-springs-country-club/search",
+      "distanceMiles": 80.5
+    },
+    {
+      "course": "Bristow Manor Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/75-bristow-manor-golf-club/search",
+      "distanceMiles": 80.7
+    },
+    {
+      "course": "Laurel Hill Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/4595-laurel-hill-golf-club/search",
+      "distanceMiles": 82
+    },
+    {
+      "course": "Valley Pine Country Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/7867-valley-pine-country-club/search",
+      "distanceMiles": 82.6
+    },
+    {
+      "course": "Cypress Point Country Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10304-cypress-point-country-club/search",
+      "distanceMiles": 83.7
+    },
+    {
+      "course": "Prince William Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/2814-prince-william-golf-course/search",
+      "distanceMiles": 84.2
+    },
+    {
+      "course": "National Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17658-national-golf-club/search",
+      "distanceMiles": 84.5
+    },
+    {
+      "course": "Burke Lake Golf Center",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/3485-burke-lake-golf-center/search",
+      "distanceMiles": 84.6
+    },
+    {
+      "course": "Chesapeake Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10303-chesapeake-golf-club/search",
+      "distanceMiles": 85.3
+    },
+    {
+      "course": "Stonewall Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/8642-stonewall-golf-club/search",
+      "distanceMiles": 86.4
+    },
+    {
+      "course": "Kempsville Greens Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10136-kempsville-greens-golf-course/search",
+      "distanceMiles": 86.6
+    },
+    {
+      "course": "Greendale Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/7742-greendale-golf-course/search",
+      "distanceMiles": 86.8
+    },
+    {
+      "course": "Hat Creek Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/18171-hat-creek-golf-course/search",
+      "distanceMiles": 87.8
+    },
+    {
+      "course": "Stumpy Lake Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10305-stumpy-lake-golf-course/search",
+      "distanceMiles": 88.5
+    },
+    {
+      "course": "Twin Lakes Golf Course - Lakes Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/7743-twin-lakes-golf-course-lakes-course/search",
+      "distanceMiles": 88.6
+    },
+    {
+      "course": "Twin Lakes Golf Course - Oaks Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/7756-twin-lakes-golf-course-oaks-course/search",
+      "distanceMiles": 88.6
+    },
+    {
+      "course": "Virginia Golf Center",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/12658-virginia-golf-center/search",
+      "distanceMiles": 89
+    },
+    {
+      "course": "Honey Bee Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10310-honey-bee-golf-club/search",
+      "distanceMiles": 89.4
+    },
+    {
+      "course": "Poplar Grove Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/579-poplar-grove-golf-club/search",
+      "distanceMiles": 89.4
+    },
+    {
+      "course": "Pinecrest Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17005-pinecrest-golf-course/search",
+      "distanceMiles": 89.9
+    },
+    {
+      "course": "Battlefield Golf Club at Centerville",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/5886-battlefield-golf-club-at-centerville/search",
+      "distanceMiles": 90.5
+    },
+    {
+      "course": "Woodstone Meadows Golf Course at Massanutten Resort",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/1082-woodstone-meadows-golf-course-at-massanutten-resort/search",
+      "distanceMiles": 91.9
+    },
+    {
+      "course": "Mountain Greens Golf Course at Massanutten Resort",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/7789-mountain-greens-golf-course-at-massanutten-resort/search",
+      "distanceMiles": 92.1
+    },
+    {
+      "course": "Penderbrook Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/4634-penderbrook-golf-club/search",
+      "distanceMiles": 92.2
+    },
+    {
+      "course": "Oakmont Golf Center",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17002-oakmont-golf-center/search",
+      "distanceMiles": 92.6
+    },
+    {
+      "course": "Jefferson District Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17001-jefferson-district-golf-course/search",
+      "distanceMiles": 93.1
+    },
+    {
+      "course": "Bull Run Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/650-bull-run-golf-club/search",
+      "distanceMiles": 93.2
+    },
+    {
+      "course": "Pleasant Valley Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/4020-pleasant-valley-golf-club/search",
+      "distanceMiles": 93.3
+    },
+    {
+      "course": "Hell's Point Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/4929-hells-point-golf-club/search",
+      "distanceMiles": 94.5
+    },
+    {
+      "course": "East Potomac Golf Links- Blue Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17637-east-potomac-golf-links-blue-course/search",
+      "distanceMiles": 94.9
+    },
+    {
+      "course": "East Potomac Golf Links- Red Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17644-east-potomac-golf-links-red-course/search",
+      "distanceMiles": 94.9
+    },
+    {
+      "course": "East Potomac Golf Links- White Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17645-east-potomac-golf-links-white-course/search",
+      "distanceMiles": 94.9
+    },
+    {
+      "course": "Red Wing Lake Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/10137-red-wing-lake-golf-course/search",
+      "distanceMiles": 94.9
+    },
+    {
+      "course": "Lakeview Golf Club - Harrisonburg VA",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/14620-lakeview-golf-club-harrisonburg-va/search",
+      "distanceMiles": 96
+    },
+    {
+      "course": "The Club of Staunton",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/16989-the-club-of-staunton/search",
+      "distanceMiles": 96.5
+    },
+    {
+      "course": "Reston National Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/74-reston-national-golf-course/search",
+      "distanceMiles": 97.4
+    },
+    {
+      "course": "Langston Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/17638-langston-golf-course/search",
+      "distanceMiles": 97.6
+    },
+    {
+      "course": "Lake Presidential Golf Club",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/3618-lake-presidential-golf-club/search",
+      "distanceMiles": 99
+    },
+    {
+      "course": "Herndon Centennial Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/1200-herndon-centennial-golf-course/search",
+      "distanceMiles": 99.2
+    },
+    {
+      "course": "Green's Folly Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/16971-greens-folly-golf-course/search",
+      "distanceMiles": 99.2
+    },
+    {
+      "course": "Oak Creek Golf Course",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/5894-oak-creek-golf-course/search",
+      "distanceMiles": 99.7
+    },
+    {
+      "course": "Bide-A-Wee Golf Course",
+      "source": "VSGA",
+      "url": "https://parks.portsmouthva.gov/231/Bide-A-Wee-Golf-Course",
+      "distanceMiles": 79
+    },
+    {
+      "course": "Birdwood Golf at Boar's Head Resort",
+      "source": "VSGA",
+      "url": "https://www.boarsheadresort.com/birdwood-golf",
+      "distanceMiles": 69.6
+    },
+    {
+      "course": "Briery Country Club",
+      "source": "VSGA",
+      "url": "https://vsga.org/courselisting/11750?hsLang=en",
+      "distanceMiles": 65.8
+    },
+    {
+      "course": "Brookwoods Golf Club",
+      "source": "VSGA",
+      "url": "https://brookwoodsgolf.com/",
+      "distanceMiles": 14.6
+    },
+    {
+      "course": "Eaglewood Golf Course",
+      "source": "VSGA",
+      "url": "https://jbleforcesupport.com/golf/",
+      "distanceMiles": 66.3
+    },
+    {
+      "course": "Fort Belvoir Golf Club",
+      "source": "VSGA",
+      "url": "https://belvoir.armymwr.com/programs/golf-club",
+      "distanceMiles": 83.3
+    },
+    {
+      "course": "Gauntlet Golf Club",
+      "source": "VSGA",
+      "url": "https://golfgauntlet.com/",
+      "distanceMiles": 62
+    },
+    {
+      "course": "Golden Eagle Golf Club",
+      "source": "VSGA",
+      "url": "https://tidesinn.com/irvington-va-hotel-experiences/golf/",
+      "distanceMiles": 55.9
+    },
+    {
+      "course": "Heron Ridge Golf Club",
+      "source": "VSGA",
+      "url": "https://www.heronridge.com/",
+      "distanceMiles": 95.4
+    },
+    {
+      "course": "Ingleside Golf Resort",
+      "source": "VSGA",
+      "url": "https://vsga.org/courselisting/11862?hsLang=en",
+      "distanceMiles": 97.7
+    },
+    {
+      "course": "Keswick Club",
+      "source": "VSGA",
+      "url": "https://www.keswick.com/",
+      "distanceMiles": 60.5
+    },
+    {
+      "course": "Kiln Creek Golf Club & Resort",
+      "source": "VSGA",
+      "url": "https://www.kilncreekgolf.com/",
+      "distanceMiles": 60
+    },
+    {
+      "course": "Kinderton Country Club",
+      "source": "VSGA",
+      "url": "https://kindertoncountryclub.com/",
+      "distanceMiles": 88.7
+    },
+    {
+      "course": "Kingsmill Resort",
+      "source": "VSGA",
+      "url": "https://kingsmill.com/",
+      "distanceMiles": 47.4
+    },
+    {
+      "course": "Lake Gaston Golf Club",
+      "source": "VSGA",
+      "url": "https://www.playlggc.com/",
+      "distanceMiles": 72.6
+    },
+    {
+      "course": "Old Trail Golf Club",
+      "source": "VSGA",
+      "url": "https://oldtrailclub.com/",
+      "distanceMiles": 78.6
+    },
+    {
+      "course": "Quinton Oaks Golf Course",
+      "source": "VSGA",
+      "url": "https://quintonoaks.com/",
+      "distanceMiles": 54.6
+    },
+    {
+      "course": "Riverfront Golf Club",
+      "source": "VSGA",
+      "url": "https://www.riverfrontgolf.com/",
+      "distanceMiles": 71.2
+    },
+    {
+      "course": "The Manor Golf Club",
+      "source": "VSGA",
+      "url": "https://golfthemanor.com/",
+      "distanceMiles": 57.1
+    },
+    {
+      "course": "Westfields Golf Club",
+      "source": "VSGA",
+      "url": "https://www.westfieldsgolf.com/",
+      "distanceMiles": 86.9
+    },
+    {
+      "course": "Wintergreen Resort - Stoney Creek",
+      "source": "VSGA and GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/625-stoney-creek-golf-course/search",
+      "distanceMiles": 82.8
+    },
+    {
+      "course": "Gypsy Hill Golf Club",
+      "source": "VSGA and GolfNow directory",
+      "url": "https://www.golfnow.com/courses/1037585-gypsy-hill-golf-course-details"
+    },
+    {
+      "course": "The Schoolhouse Nine",
+      "source": "VSGA and GolfNow directory",
+      "url": "https://www.golfnow.com/courses/-5333-schoolhouse-nine-details"
+    },
+    {
+      "course": "The Courses at Andrews - South",
+      "source": "GolfNow",
+      "url": "https://www.golfnow.com/tee-times/facility/15461-the-courses-at-andrews-south/search"
+    },
+    {
+      "course": "Winton Farm",
+      "source": "VSGA",
+      "url": "https://wintonfarm.co/",
+      "distanceMiles": 87.2
+    }
+  ],
+  "unresolved": [
+    {
+      "course": "Medal of Honor Golf Course",
+      "address": "3313 Fuller Heights Road, Quantico, VA 22134",
+      "evidenceUrl": "https://vsga.org/courselisting/11908?hsLang=en",
+      "reason": "No unambiguous geocode"
+    },
+    {
+      "course": "The Pines Golf Course",
+      "address": "3518 Mulberry Island Road, Fort Eustis, VA 23604",
+      "evidenceUrl": "https://vsga.org/courselisting/11931?hsLang=en",
+      "reason": "No unambiguous geocode"
+    },
+    {
+      "course": "Virginia Beach National Golf Club",
+      "address": "2500 Tournament Drive, Virginia Beach, VA 23456",
+      "evidenceUrl": "https://vsga.org/courselisting/11995?hsLang=en",
+      "reason": "No unambiguous geocode"
+    }
+  ],
+  "outsideRadius": [
+    {
+      "course": "Heritage Oaks Golf Course",
+      "distanceMiles": 101.7
+    }
+  ]
+}
