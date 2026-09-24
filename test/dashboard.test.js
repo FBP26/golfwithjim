@@ -19,6 +19,7 @@ test("counts one start across providers while retaining offers and verified part
   assert.equal(shortCourseName("The Hollows Golf Club"), "Hollows");
   assert.equal(shortCourseName("The Golf Club at The Highlands"), "Highlands");
   assert.equal(shortCourseName("The Club at Viniterra"), "Viniterra");
+  assert.equal(shortCourseName("Amelia Golf & Country Club"), "Amelia");
   const groupOnly = [{ ...offers[1], availablePartySizes: [2, 4] }];
   assert.equal(filterTeeTimes(groupOnly).length, 1);
   assert.equal(filterTeeTimes(groupOnly, { players: 1 }).length, 0);

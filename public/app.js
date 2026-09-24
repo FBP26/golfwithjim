@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "./src/dashboard.js?v=20260924-directory";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "./src/dashboard.js?v=20260924-directory2";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
