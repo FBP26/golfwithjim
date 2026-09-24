@@ -80,14 +80,15 @@ async function quoteTeeTime(teeTime, affiliationTypeId, fetchImpl) {
     ({ payload: detail } = await jsonRequest(requestUrl(`v2/teetimes/${teeTime.uuid}`), {}, fetchImpl));
     publicAffiliationTypeId = publicAffiliation(detail)?.affiliation_type_id;
   }
-  if (!publicAffiliationTypeId || Number(detail.max_player_size) < 2) return null;
+  if (!publicAffiliationTypeId || Number(detail.max_player_size) < 1) return null;
+  const players = Math.min(2, Number(detail.max_player_size));
   const round = { affiliation_type_id: String(publicAffiliationTypeId), extras: [], discounts: [] };
   const { payload: options } = await jsonRequest(requestUrl("reservations/options"), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       nb_holes: "18",
-      rounds_attributes: [round, round],
+      rounds_attributes: Array.from({ length: players }, () => round),
       source: "chronogolf",
       medium: "profile",
       teetime_id: String(detail.id),
@@ -95,7 +96,7 @@ async function quoteTeeTime(teeTime, affiliationTypeId, fetchImpl) {
   }, fetchImpl);
   const option = options.find(item => Number(item.holes) === 18 && Number(item.invoice?.total) > 0);
   if (!option) return null;
-  return { detail, price: Number(option.invoice.total) / 2 };
+  return { detail, price: Number(option.invoice.total) / players };
 }
 
 function displayTime(value) {
@@ -105,7 +106,7 @@ function displayTime(value) {
 
 export async function collectChronogolfDay({ courseUuid, affiliationTypeId, date, course, distanceMiles, url, fetchImpl = fetch }) {
   const listed = (await listTeeTimes({ courseUuid, date, fetchImpl }))
-    .filter(teeTime => Number(teeTime.max_player_size) >= 2 && teeTime.course?.bookable_holes?.includes(18));
+    .filter(teeTime => Number(teeTime.max_player_size) >= 1 && teeTime.course?.bookable_holes?.includes(18));
   const quoted = [];
   for (let index = 0; index < listed.length; index += 2) {
     quoted.push(...await Promise.all(listed.slice(index, index + 2).map(async teeTime => ({

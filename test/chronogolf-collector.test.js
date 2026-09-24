@@ -54,6 +54,21 @@ test("collects exact two-player 18-hole Chronogolf quotes", async () => {
   assert.equal(quoteBody.nb_holes, "18");
 });
 
+test("quotes single openings with one player and a per-player total", async () => {
+  let quotedPlayers;
+  const fetchImpl = async (url, options = {}) => {
+    if (String(url).includes("reservations/options")) {
+      quotedPlayers = JSON.parse(options.body).rounds_attributes.length;
+      return response([{ holes: 18, invoice: { total: 58 } }]);
+    }
+    return response({ teetimes: [{ id: 1, uuid: "single", start_time: "10:00", max_player_size: 1, course: { bookable_holes: [18] } }] }, { total: "1" });
+  };
+  const result = await collectChronogolfDay({ courseUuid: "course", affiliationTypeId: "58874", date: "2026-09-26", course: "Test", distanceMiles: 20, url: "https://example.com", fetchImpl });
+  assert.equal(quotedPlayers, 1);
+  assert.equal(result[0].availablePlayers, 1);
+  assert.equal(result[0].allInPrice, 58);
+});
+
 test("keeps successful Chronogolf quotes when another quote is blocked", async () => {
   const fetchImpl = async (url, options = {}) => {
     if (String(url).includes("reservations/options")) {

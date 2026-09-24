@@ -70,7 +70,7 @@ h2 { margin: 0; font-size: 25px; font-weight: 600; }
 .text-button { border: 0; background: transparent; color: var(--green-2); padding: 4px; font-size: 11px; font-weight: 700; }
 fieldset { margin: 20px 0 16px; padding: 0; border: 0; }
 legend, label { color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; }
-.segmented { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 6px; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
+.segmented { display: grid; grid-template-columns: repeat(5, 1fr); margin-top: 6px; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; }
 .segmented button { height: 36px; border: 0; border-right: 1px solid var(--line); background: white; color: var(--muted); }
 .segmented button:last-child { border-right: 0; }
 .segmented button.active { background: var(--green); color: white; }
@@ -192,6 +192,47 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
   .course-summary { grid-column: 2; padding: 0 4px 4px 0; text-align: left; }
   .course-times { padding-left: 17px; }
   .section-heading { display: block; }
+}
+
+/* Map View & Navigation Tabs */
+.filters > summary, .course-picker > summary { cursor: pointer; font-size: 13px; font-weight: 700; min-height: 32px; padding: 7px 0; }
+.time-selects { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.time-selects select, #price, .segmented button { min-height: 44px; font-size: 16px; }
+#distance { min-height: 44px; }
+#distance::-webkit-slider-thumb { width: 28px; height: 28px; }
+.course-picker { margin-top: 16px; border-top: 1px solid var(--line); }
+.course-selection-actions { display: flex; gap: 8px; }
+.course-selection-actions button { min-height: 44px; border: 0; background: transparent; color: var(--green); font-size: 12px; }
+#course-selection { max-height: 260px; overflow-y: auto; }
+#course-selection label { display: flex; align-items: center; gap: 10px; min-height: 44px; text-transform: none; letter-spacing: 0; font-size: 13px; }
+#course-selection input { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--green-2); }
+.course-row > summary { grid-template-columns: 9px minmax(0, 1fr) auto auto; gap: 3px 8px; min-height: 54px; padding: 7px 0; }
+.course-row > summary::before { grid-row: 1 / 3; }
+.course-name { font-family: "DM Sans", sans-serif; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.course-distance { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.course-price { font-size: 12px; white-space: nowrap; }
+.course-window { grid-column: 2 / -1; font-size: 11px; color: var(--muted); }
+.tee-offer { display: block; color: var(--ink); text-decoration: none; padding: 5px 0; border-top: 1px solid var(--line); }
+.tee-offer small { font-size: 10px; color: var(--muted); }
+.tee-offer.hot small { color: var(--deal); }
+.tee-offer:hover { text-decoration: underline; }
+@media (max-width: 560px) {
+  main { padding-top: 12px; }
+  .filters { padding: 6px 10px; }
+  .results-panel { padding: 8px; }
+  .result-actions { flex-direction: row; align-items: end; justify-content: space-between; width: 100%; }
+  .sort-control { width: 145px; }
+  .disclosure-actions button { min-height: 40px; }
+  .metrics { grid-template-columns: repeat(4, 1fr); margin-top: 10px; }
+  .metric { padding: 6px; }
+  .metric:nth-child(-n+2) { border-bottom: 0; }
+  .metric:nth-child(2) { border-right: 1px solid var(--line); }
+  .metric strong { font-size: 20px; margin-top: 2px; }
+  .date-heading { padding-block: 6px; }
+  .date-heading > span { display: flex; }
+  .date-heading strong { font-size: 16px; }
+  .course-row > summary { min-height: 49px; }
+  .tee-list { columns: 135px; }
 }
 
 /* Map View & Navigation Tabs */

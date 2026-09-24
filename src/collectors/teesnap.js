@@ -19,6 +19,7 @@ function bookingSizes(bookings) {
 
 function availablePlayers(section, sizes) {
   if (!section || section.isHeld) return 0;
+  if ((section.bookings || []).some(bookingId => !sizes.get(String(bookingId)))) return 0;
   const bookedPlayers = (section.bookings || [])
     .reduce((total, bookingId) => total + (sizes.get(String(bookingId)) || 0), 0);
   return Math.max(0, 4 - bookedPlayers);
@@ -34,7 +35,7 @@ export function extractTeeSnapInventory(payload, defaults = {}) {
     const rate = (raw.prices || []).find(item => item.roundType === "EIGHTEEN_HOLE");
     const openPlayers = availablePlayers(section, sizes);
     const price = Number(rate?.priceWithAddOn);
-    if (!dateTime || openPlayers < 2 || !Number.isFinite(price) || price <= 0) return [];
+    if (!dateTime || openPlayers < 1 || !Number.isFinite(price) || price <= 0) return [];
 
     return [adaptTeeSnapTeeTime({
       id: `teesnap-${defaults.courseId || "course"}-${dateTime.date}-${dateTime.time.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
@@ -50,7 +51,7 @@ export function extractTeeSnapInventory(payload, defaults = {}) {
 
 export async function collectTeeSnapDay({ baseUrl, courseId, date, course, distanceMiles, fetchImpl = fetch }) {
   const url = new URL("/customer-api/teetimes-day", baseUrl);
-  url.search = new URLSearchParams({ course: courseId, date, players: "2", holes: "18", addons: "on" });
+  url.search = new URLSearchParams({ course: courseId, date, players: "1", holes: "18", addons: "on" });
   const response = await fetchImpl(url, {
     headers: {
       Accept: "application/json",

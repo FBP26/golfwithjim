@@ -2,6 +2,8 @@
 
 The project also includes a personal tee-time website that puts the normalized inventory in one searchable view. It supports date, player count, time window, distance, maximum price, Hot Deal, course-name, and sort controls.
 
+The mobile list uses compact two-line course summaries with shortened names, distance, a price range, and unique tee-start counts. Expand a course to compare sources and rate names under each start. `Filters & courses` contains tap-friendly time/price selectors and course checkboxes; hidden courses are remembered on that browser. The default player setting is `All`, including single spots and offers restricted to particular group sizes.
+
 ```powershell
 npm.cmd start
 ```
@@ -16,7 +18,7 @@ $env:GOLF_FEED_URL = "fixtures/live-current.json"
 npm.cmd start
 ```
 
-The command collects complete Queenfield TeeSnap and Hunting Hawk Play18 inventory plus exact GolfNow inventory for configured public courses. GolfNow rows use the displayed per-player total including its transaction fee, and exclude starts that do not allow at least two golfers. Birkdale is checked for 21 days; other collectors use the normal seven-day window. Sycamore Creek remains link-only because Chronogolf's list price is for nine holes and its 18-hole quote is produced by a reservation-options POST.
+The command collects configured public sources, including Queenfield TeeSnap, Hunting Hawk Play18, GolfNow, TeeItUp, ForeUp, Club Caddie, and exact Chronogolf reservation-option quotes. GolfNow rows use the displayed per-player total including its transaction fee. Separate searches verify bookable party sizes from one through four; `Any` is never assumed to mean four available spots. These searches share a paced queue and honor bounded provider cooldowns, so a full refresh can take several minutes. Birkdale is checked for 21 days; other collectors use the normal seven-day window. Failed-source saved rows are retained with `stale: true` but excluded from available results.
 
 The generated feed records `checkedAt` plus a `sourceChecks` entry for every collector with its requested range, latest available date, row count, and any error. A full 14-source run measured about nine seconds on September 16, 2026. For a twice-daily refresh, schedule collection around 6:05 AM and 6:05 PM Eastern. This captures rolling morning releases and evening cancellations without excessive polling. Provider data does not expose when a tee time was first posted; determining release patterns requires comparing saved snapshots over several weeks.
 
@@ -27,7 +29,7 @@ Builds two email reports from a permitted JSON tee-time feed:
 - `daily`: seven compact daily tables with every qualifying exact-price 18-hole start. Course rows show the usual start cadence, group repeating times into ranges, and separate regular rates from Hot Deals; only course names link to booking.
 - `alert`: new Hot Deals, new material local price breaks, and existing tee times whose price falls by at least both $10 and 15%.
 
-Defaults require availability for at least two golfers within 75 miles of Richmond. The monitor prefers explicit GolfPass+ all-in pricing, marks `GP+` and waived-fee benefits, and excludes junior, military, veteran, senior, resident, and unrelated member rates.
+Defaults include availability for one through four golfers within 75 miles of Richmond. The monitor prefers explicit GolfPass+ all-in pricing, marks `GP+` and waived-fee benefits, and excludes junior, military, veteran, senior, resident, club-member-only, and member-guest rates. Regular/public/adult and prepaid rates qualify, as do publicly bookable member-for-a-day offers. Restricted rates are removed before choosing a public price, so a cheaper senior rate cannot hide an eligible regular alternative. Availability is a checked snapshot, not a held reservation; the provider's booking page remains authoritative.
 
 ## Feed
 
@@ -37,7 +39,7 @@ Known Richmond-area Chronogolf courses are listed in `config/sources.json` for i
 
 Pendleton Golf Club is registered as an interactive ForeUp source with a seven-day booking window. ForeUp rows expose exact displayed rates, available-player counts, and 9/18-hole choices; the adapter prefers 18 holes when both are offered.
 
-Hunting Hawk Golf Club is registered through Sagacity/Play18, and Queenfield Golf Club is registered through TeeSnap. Both expose exact displayed prices and availability for at least two golfers. Queenfield's observed rate includes the selected cart option; Play18 rates are labeled `Regular` unless a captured row explicitly supplies another rate name.
+Hunting Hawk Golf Club is registered through Sagacity/Play18, and Queenfield Golf Club is registered through TeeSnap. Both expose exact displayed prices and include single openings. Queenfield's observed rate includes the selected cart option; unknown booking sizes are not assumed to be empty spots. Play18 rates are labeled `Regular` unless a captured row explicitly supplies another rate name.
 
 Windy Hill's Lake Course is registered through Whoosh. Whoosh list pages show price ranges for 9/18-hole choices, so those rows are excluded until an exact selected price is available. Belmont and Tattersall are registered through their direct Chronogolf club links. Glenwood and Brookwoods are tracked as manual-only because they currently require phone booking or lack a functioning online inventory widget.
 

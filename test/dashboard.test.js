@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { filterTeeTimes, summarizeResults } from "../src/dashboard.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "../src/dashboard.js";
 
 const teeTimes = [
   { course: "Later", date: "2026-09-19", time: "1:00 PM", availablePlayers: 4, holes: 18, allInPrice: 55, distanceMiles: 20, hotDeal: true },
@@ -9,6 +9,21 @@ const teeTimes = [
   { course: "Far", date: "2026-09-19", time: "10:00 AM", availablePlayers: 4, holes: 18, allInPrice: 40, distanceMiles: 55, hotDeal: true },
   { course: "Nine", date: "2026-09-19", time: "11:00 AM", availablePlayers: 4, holes: 9, allInPrice: 30, distanceMiles: 10, hotDeal: true },
 ];
+
+test("counts one start across providers while retaining offers and verified party sizes", () => {
+  const offers = [{ ...teeTimes[1], source: "Direct" }, { ...teeTimes[1], source: "GolfNow", allInPrice: 40, availablePlayers: 4, availablePartySizes: [1, 2, 4] }];
+  assert.equal(summarizeResults(offers).starts, 1);
+  assert.equal(groupTeeTimes(offers)[0].offers.length, 2);
+  assert.equal(filterTeeTimes(offers, { players: 3 }).length, 0);
+  assert.equal(filterTeeTimes(offers, { hiddenCourses: new Set(["Early"]) }).length, 0);
+  assert.equal(shortCourseName("The Hollows Golf Club"), "Hollows");
+  assert.equal(shortCourseName("The Golf Club at The Highlands"), "Highlands");
+  assert.equal(shortCourseName("The Club at Viniterra"), "Viniterra");
+  const groupOnly = [{ ...offers[1], availablePartySizes: [2, 4] }];
+  assert.equal(filterTeeTimes(groupOnly).length, 1);
+  assert.equal(filterTeeTimes(groupOnly, { players: 1 }).length, 0);
+  assert.equal(shortCourseName("Independence Championship Course"), "Independence Championship Course");
+});
 
 test("filters tee times across the dashboard controls and orders them chronologically", () => {
   const result = filterTeeTimes(teeTimes, {

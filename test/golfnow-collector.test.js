@@ -1,8 +1,43 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { extractGolfNowInventory } from "../src/collectors/golfnow.js";
+import { extractGolfNowInventory, collectGolfNowDay } from "../src/collectors/golfnow.js";
 
 const money = value => ({ value });
+
+test("serializes course requests and honors a rate-limit retry", async () => {
+  let active = 0;
+  let peak = 0;
+  let calls = 0;
+  const fetchImpl = async () => {
+    active++;
+    peak = Math.max(peak, active);
+    await Promise.resolve();
+    active--;
+    calls++;
+    if (calls === 1) return { ok: false, status: 429, headers: new Headers({ "retry-after": "0.001" }) };
+    return { ok: true, json: async () => ({ ttResults: { teeTimes: [] } }) };
+  };
+  await Promise.all([1, 2].map(facilityId => collectGolfNowDay({ facilityId, date: "2026-09-26", course: "Test", distanceMiles: 20, fetchImpl })));
+  assert.equal(peak, 1);
+  assert.equal(calls, 9);
+});
+
+test("verifies party sizes instead of converting Any to four and retains public alternatives", async () => {
+  const requested = [];
+  const result = await collectGolfNowDay({ facilityId: 2473, date: "2026-09-26", course: "Hollows", fetchImpl: async (_url, options) => {
+    const players = JSON.parse(options.body).players;
+    requested.push(players);
+    return new Response(JSON.stringify({ ttResults: { teeTimes: players > 2 ? [] : [{
+      time: { formatted: "9:12", formattedTimeMeridian: "AM" }, playerRule: "Any",
+      teeTimeRates: [rate({ playerRule: "Any", rateName: "Senior" }), rate({ playerRule: "Any", teeTimeRateId: 456, rateName: "Prepaid" })],
+    }] } }));
+  } });
+  assert.deepEqual(requested, [1, 2, 3, 4]);
+  assert.equal(result.length, 1);
+  assert.deepEqual(result[0].availablePartySizes, [1, 2]);
+  assert.equal(result[0].availablePlayers, 2);
+  assert.equal(result[0].rateName, "Prepaid");
+});
 const rate = (overrides = {}) => ({
   holeCount: 18,
   teeTimeRateId: 123,
@@ -58,10 +93,11 @@ test("accepts GolfNow Any player rules returned by a two-player search", () => {
     course: "Birkdale Golf Club",
     date: "2026-09-25",
     distanceMiles: 17,
+    requestedPlayers: 2,
   });
 
   assert.equal(result.length, 1);
-  assert.equal(result[0].availablePlayers, 4);
+  assert.equal(result[0].availablePlayers, 2);
 });
 
 test("retains GolfNow one-player inventory for the optional one-player filter", () => {

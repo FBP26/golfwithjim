@@ -1,13 +1,18 @@
-import { filterTeeTimes, summarizeResults } from "./src/dashboard.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "./src/dashboard.js";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
 const refreshBridgeUrl = "https://golfwithjim-refresh.fbp-api-worker.workers.dev/refresh";
 
 const state = {
-  teeTimes: [], courses: [], sourceChecks: [], date: "", players: 2, earliest: "05:00", latest: "20:00",
+  teeTimes: [], courses: [], sourceChecks: [], date: "", players: 0, earliest: "05:00", latest: "20:00", hiddenCourses: new Set(),
   maximumDistance: 75, maximumPrice: Infinity, exactPrice: null, hotDealsOnly: false, course: "", sort: "price", checkedAt: "",
 };
+
+try {
+  const hidden = JSON.parse(localStorage.getItem("tee-times-hidden-courses") || "[]");
+  if (Array.isArray(hidden)) state.hiddenCourses = new Set(hidden.filter(name => typeof name === "string"));
+} catch {}
 
 const elements = Object.fromEntries([
   "date-options", "distance", "distance-output", "price", "price-output", "earliest", "earliest-output", "latest", "latest-output",
@@ -16,6 +21,7 @@ const elements = Object.fromEntries([
   "tab-list", "tab-map", "view-list-container", "view-map-container",
   "map-count", "leaflet-map", "map-date-options",
   "pull-refresh", "pull-refresh-label",
+  "course-selection", "course-selection-count", "show-courses", "hide-courses",
 ].map(id => [id, document.getElementById(id)]));
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
@@ -30,6 +36,26 @@ const timeValue = time => {
 };
 const sliderTime = minutes => `${String(Math.floor(minutes / 60)).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
 const timeLabel = minutes => new Intl.DateTimeFormat("en-US", { hour: "numeric", minute: "2-digit", timeZone: "UTC" }).format(new Date(Date.UTC(2020, 0, 1, 0, Number(minutes))));
+
+const timeOptions = Array.from({ length: 31 }, (_, index) => 300 + index * 30).map(minutes => `<option value="${minutes}">${timeLabel(minutes)}</option>`).join("");
+elements.earliest.innerHTML = elements.latest.innerHTML = timeOptions;
+elements.earliest.value = 300;
+elements.latest.value = 1200;
+elements.price.innerHTML = Array.from({ length: 26 }, (_, index) => 30 + index * 5).map(price => `<option value="${price}">${money(price)}</option>`).join("") + '<option value="160">Any</option>';
+elements.price.value = 160;
+if (matchMedia("(max-width: 850px)").matches) document.querySelector(".filters").open = false;
+
+function renderCourseSelection() {
+  const courses = dedupeByCourse(state.courses);
+  elements["course-selection"].innerHTML = courses.toSorted((left, right) => left.course.localeCompare(right.course)).map(course => `<label><input type="checkbox" data-course="${escapeHtml(course.course)}"${state.hiddenCourses.has(course.course) ? "" : " checked"}><span>${escapeHtml(shortCourseName(course.course))}</span></label>`).join("");
+  elements["course-selection-count"].textContent = `${courses.filter(course => !state.hiddenCourses.has(course.course)).length}/${courses.length}`;
+}
+
+function saveCourseSelection() {
+  try { localStorage.setItem("tee-times-hidden-courses", JSON.stringify([...state.hiddenCourses])); } catch {}
+  renderCourseSelection();
+  renderResults();
+}
 
 function updateTimeWindow(changed) {
   let earliest = Number(elements.earliest.value);
@@ -127,6 +153,7 @@ function trackedCoursesHtml(filtered) {
   const checks = courseCheckMap(state.sourceChecks);
   const courses = dedupeByCourse(state.courses)
     .filter(course => course.watchlist && !visible.has(course.course))
+    .filter(course => !state.hiddenCourses.has(course.course))
     .filter(course => !state.course || course.course.toLowerCase().includes(state.course))
     .filter(course => course.distanceMiles <= state.maximumDistance);
   if (!courses.length) return "";
@@ -160,16 +187,16 @@ function renderResults() {
       const first = ordered[0];
       const chronological = courseTimes.toSorted((left, right) => timeValue(left.time) - timeValue(right.time));
       const lowestPrice = Math.min(...courseTimes.map(teeTime => teeTime.allInPrice));
+      const highestPrice = Math.max(...courseTimes.map(teeTime => teeTime.allInPrice));
+      const starts = groupTeeTimes(ordered);
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
-      const dealCount = courseTimes.filter(teeTime => teeTime.hotDeal).length;
-      const multiSource = new Set(courseTimes.map(teeTime => teeTime.source)).size > 1;
-      const tiles = ordered.map(teeTime => `<div class="tee-time${teeTime.hotDeal ? " hot" : ""}"><strong>${escapeHtml(teeTime.time)}</strong>${multiSource ? `<small class="tee-time-source">${escapeHtml(sourceDisplayLabel(teeTime.source))}</small>` : ""}<span><b>${money(teeTime.allInPrice)}</b>${teeTime.hotDeal ? '<em class="deal-label">Hot Deal</em>' : `${teeTime.availablePlayers} spots`}</span></div>`).join("");
-      const inventorySummary = courseTimes.length === 1
-        ? escapeHtml(timeRange)
-        : `${escapeHtml(timeRange)} · ${courseTimes.length} tee times`;
-      return `<details class="course-row"><summary><span class="course-info"><span class="course-name">${escapeHtml(course)}</span><small>${first.distanceMiles} miles · ${escapeHtml(first.source)}</small></span><span class="course-summary"><strong>From ${money(lowestPrice)}</strong><small>${inventorySummary}${dealCount ? ` · ${dealCount} Hot Deal${dealCount === 1 ? "" : "s"}` : ""}</small></span></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a><div class="tee-list">${tiles}</div></div></details>`;
+      const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${money(teeTime.allInPrice)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
+      const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
+      const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
+      return `<details class="course-row"><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a><div class="tee-list">${tiles}</div></div></details>`;
     }).join("");
-    return `<details class="date-group" open><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${dateTimes.length} tee time${dateTimes.length === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
+    const count = groupTeeTimes(dateTimes).length;
+    return `<details class="date-group" open><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
   }).join("") + trackedCoursesHtml(filtered);
   updateMapView();
 }
@@ -205,7 +232,7 @@ function renderDirectory() {
     let flagged = false;
     if (course.collector) {
       if (check?.error) { detail = "Check failed"; flagged = true; }
-      else { detail = `${times.length} tee time${times.length === 1 ? "" : "s"}`; flagged = times.length <= 1; }
+      else { const count = groupTeeTimes(times).length; detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
     }
     const href = bestBookingTeeTime(times)?.url || course.url;
     return `<div class="directory-course${flagged ? " flagged" : ""}"><a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${escapeHtml(detail)}</small></div>`;
@@ -263,10 +290,10 @@ function popupHtml(group, teeTimesByCourse) {
   const rows = group.map(course => {
     const times = teeTimesByCourse.get(course.course) || [];
     const category = pinCategory(times);
-    const dealCount = times.filter(teeTime => teeTime.hotDeal).length;
+    const { starts, hotDeals: dealCount } = summarizeResults(times);
     const status = category === "hot"
-      ? `${dealCount} Hot Deal${dealCount === 1 ? "" : "s"} of ${times.length} tee time${times.length === 1 ? "" : "s"}`
-      : category === "available" ? `${times.length} tee time${times.length === 1 ? "" : "s"}`
+      ? `${dealCount} Hot Deal${dealCount === 1 ? "" : "s"} of ${starts} tee time${starts === 1 ? "" : "s"}`
+      : category === "available" ? `${starts} tee time${starts === 1 ? "" : "s"}`
       : "No qualifying tee times right now";
     const href = bestBookingTeeTime(times)?.url || course.url;
     return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p><div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(href)}" target="_blank" rel="noopener">Book a tee time &rarr;</a></div>`;
@@ -425,7 +452,7 @@ window.addEventListener("resize", () => { if (map && !elements["view-map-contain
 async function loadInventory({ liveRefresh = false } = {}) {
   elements.refresh.classList.add("refreshing");
   elements.refresh.disabled = true;
-  elements["refresh-label"].textContent = liveRefresh ? "Refreshing tee times - this can take 1-3 minutes" : "Loading tee times";
+  elements["refresh-label"].textContent = liveRefresh ? "Refreshing tee times" : "Loading tee times";
   elements.results.setAttribute("aria-busy", "true");
   elements["feed-status"].textContent = liveRefresh ? "Checking all live sources..." : "Loading live sources";
   try {
@@ -434,7 +461,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
       response = await fetch(refreshBridgeUrl, { method: "POST" });
       if (!response.ok) throw new Error(`Refresh request returned HTTP ${response.status}`);
       const previousCheckedAt = state.checkedAt;
-      const deadline = Date.now() + 6 * 60_000;
+      const deadline = Date.now() + 12 * 60_000;
       do {
         await new Promise(resolve => setTimeout(resolve, 10_000));
         response = await fetch(`${staticFeedUrl}?refresh=${Date.now()}`, { cache: "no-store" });
@@ -455,10 +482,11 @@ async function loadInventory({ liveRefresh = false } = {}) {
     state.teeTimes = payload.teeTimes;
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
+    renderCourseSelection();
     renderDates();
     renderDirectory();
     selectDate(state.date);
-    const checked = new Date(payload.checkedAt).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+    const checked = new Date(payload.checkedAt).toLocaleString([], { weekday: "short", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" });
     elements["feed-status"].textContent = `Last updated ${checked}`;
   } catch (error) {
     elements.results.innerHTML = `<div class="empty">Could not load tee times. ${escapeHtml(error.message)}</div>`;
@@ -486,6 +514,7 @@ function updatePullRefresh(distance, ready = false) {
 }
 
 document.addEventListener("touchstart", event => {
+  if (event.target.closest("input, select, button, a")) return;
   if (window.scrollY > 0 || pullRefreshRunning || event.touches.length !== 1) return;
   pullStartY = event.touches[0].clientY;
   pullDistance = 0;
@@ -523,6 +552,15 @@ elements["players-filter"].addEventListener("click", event => {
   elements["players-filter"].querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button));
   renderResults();
 });
+elements["course-selection"].addEventListener("change", event => {
+  const course = event.target.dataset.course;
+  if (!course) return;
+  if (event.target.checked) state.hiddenCourses.delete(course);
+  else state.hiddenCourses.add(course);
+  saveCourseSelection();
+});
+elements["show-courses"].addEventListener("click", () => { state.hiddenCourses.clear(); saveCourseSelection(); });
+elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses = new Set(state.courses.map(course => course.course)); saveCourseSelection(); });
 elements.distance.addEventListener("input", () => { state.maximumDistance = Number(elements.distance.value); elements["distance-output"].value = `${state.maximumDistance} miles`; renderResults(); });
 elements.price.addEventListener("input", () => { state.maximumPrice = Number(elements.price.value) === 160 ? Infinity : Number(elements.price.value); state.exactPrice = null; elements["price-output"].value = Number.isFinite(state.maximumPrice) ? money(state.maximumPrice) : "Any"; renderResults(); });
 elements.earliest.addEventListener("input", () => updateTimeWindow("earliest"));
@@ -545,13 +583,15 @@ elements["expand-results"].addEventListener("click", () => elements.results.quer
 elements["collapse-results"].addEventListener("click", () => elements.results.querySelectorAll("details").forEach(details => { details.open = false; }));
 elements.refresh.addEventListener("click", () => loadInventory({ liveRefresh: true }));
 elements["clear-filters"].addEventListener("click", () => {
-  state.players = 2; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 75;
+  state.players = 0; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 75;
   state.maximumPrice = Infinity; state.exactPrice = null; state.hotDealsOnly = false; state.course = ""; state.sort = "price";
   elements.earliest.value = 300; elements.latest.value = 1200; elements.distance.value = 75;
   elements.price.value = 160; elements["hot-deals"].checked = false; elements["course-search"].value = ""; elements.sort.value = "price";
   elements["earliest-output"].value = "5:00 AM"; elements["latest-output"].value = "8:00 PM";
   elements["distance-output"].value = "75 miles"; elements["price-output"].value = "Any";
-  elements["players-filter"].querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.players === "2"));
+  elements["players-filter"].querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.players === "0"));
+  state.hiddenCourses.clear();
+  saveCourseSelection();
   selectDate("");
 });
 

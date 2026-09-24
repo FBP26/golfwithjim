@@ -23,7 +23,7 @@ export async function collectPlay18Day({ url, date, course, distanceMiles, fetch
   const body = new URLSearchParams({
     "SearchForm.Date": displayDate,
     "SearchForm.TimeOfDay": "Any",
-    "SearchForm.Players": "2",
+    "SearchForm.Players": "1",
     "SearchForm.CourseId": "0",
   });
   const response = await fetchImpl(endpoint, {

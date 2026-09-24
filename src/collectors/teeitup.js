@@ -1,3 +1,5 @@
+import { isPublicRate } from "../analyze.js";
+
 const endpoint = "https://phx-api-be-east-1b.kenna.io/v2/tee-times";
 
 function ratePrice(rate) {
@@ -16,7 +18,7 @@ export function extractTeeItUpInventory(payload, defaults = {}) {
   const teetimes = payload?.[0]?.teetimes || [];
   const stableCourse = String(defaults.course).toLowerCase().replace(/[^a-z0-9]+/g, "-");
   return teetimes.flatMap(teetime => {
-    const eighteenHoleRates = (teetime.rates || []).filter(rate => rate.holes === 18);
+    const eighteenHoleRates = (teetime.rates || []).filter(rate => rate.holes === 18 && isPublicRate(rate.name));
     if (!eighteenHoleRates.length) return [];
     const best = eighteenHoleRates.toSorted((left, right) => ratePrice(left) - ratePrice(right))[0];
     const price = ratePrice(best);

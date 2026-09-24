@@ -1,6 +1,11 @@
 const RESTRICTED_RATE_PATTERN = /\b(junior|military|veteran|senior|resident)\b/i;
-const MEMBER_RATE_PATTERN = /\bmember\b/i;
 const PUBLIC_MEMBER_FOR_DAY_PATTERN = /\bmember for (?:a|the) day\b/i;
+
+export function isPublicRate(rateName) {
+  const name = String(rateName || "Standard");
+  return !RESTRICTED_RATE_PATTERN.test(name)
+    && (!/\b(member|members|guest of|member guest)\b/i.test(name) || PUBLIC_MEMBER_FOR_DAY_PATTERN.test(name));
+}
 
 export function todayIso(timeZone = "America/New_York") {
   const parts = Object.fromEntries(
@@ -44,6 +49,7 @@ export function normalizeTeeTime(raw) {
     date: String(raw.date),
     time: String(raw.time),
     availablePlayers: Number(raw.availablePlayers),
+    availablePartySizes: Array.isArray(raw.availablePartySizes) ? raw.availablePartySizes.map(Number) : null,
     dailyAvailableCount: raw.dailyAvailableCount == null ? null : Number(raw.dailyAvailableCount),
     holes: Number(raw.holes || 18),
     allInPrice: golfPassAllInPrice ?? standardAllInPrice,
@@ -52,6 +58,7 @@ export function normalizeTeeTime(raw) {
     golfPassEligible,
     feesWaived: Boolean(raw.feesWaived),
     priceIsExact: raw.priceIsExact !== false,
+    stale: raw.stale === true,
     hotDeal: Boolean(raw.hotDeal),
     rateName: String(raw.rateName || "Standard"),
     distanceMiles: Number(raw.distanceMiles),
@@ -69,13 +76,12 @@ export function isAllowedHoleCount(teeTime) {
 
 export function isEligible(teeTime, config) {
   return teeTime.availablePlayers >= config.minimumPlayers
+    && !teeTime.stale
     && teeTime.distanceMiles <= config.maximumDistanceMiles
     && teeTime.allInPrice > 0
     && teeTime.priceIsExact
-    && !RESTRICTED_RATE_PATTERN.test(teeTime.rateName)
-    && (!MEMBER_RATE_PATTERN.test(teeTime.rateName)
-      || PUBLIC_MEMBER_FOR_DAY_PATTERN.test(teeTime.rateName)
-      || teeTime.golfPassEligible);
+    && (isPublicRate(teeTime.rateName) || (teeTime.golfPassEligible && /\bgolfpass\b/i.test(teeTime.rateName)
+      && !RESTRICTED_RATE_PATTERN.test(teeTime.rateName)));
 }
 
 function minutes(time) {

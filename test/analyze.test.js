@@ -38,6 +38,7 @@ test("preserves a provider's observed daily availability count", () => {
 
 test("requires two players, stays within 50 miles, and rejects restricted rates", () => {
   assert.equal(isEligible(teeTime({}), config), true);
+  assert.equal(isEligible(teeTime({ stale: true }), config), false);
   assert.equal(isEligible(teeTime({ availablePlayers: 1 }), config), false);
   assert.equal(isEligible(teeTime({ distanceMiles: 51 }), config), false);
   assert.equal(isEligible(teeTime({ rateName: "Military special" }), config), false);

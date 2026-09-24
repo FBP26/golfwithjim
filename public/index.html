@@ -28,7 +28,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260923-theme">
+  <link rel="stylesheet" href="styles.css?v=20260924-mobile">
 </head>
 <body>
   <div id="pull-refresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-icon">&#8635;</span><span id="pull-refresh-label">Pull to refresh</span></div>
@@ -55,7 +55,9 @@
     </section>
 
     <div class="workspace">
-      <aside class="filters" aria-label="Tee time filters">
+      <details class="filters" open aria-label="Tee time filters">
+        <summary>Filters &amp; courses</summary>
+        <div class="filter-body">
         <div class="filter-heading">
           <button id="clear-filters" class="text-button">Reset filters</button>
         </div>
@@ -63,18 +65,17 @@
         <fieldset>
           <legend>Players</legend>
           <div class="segmented" id="players-filter">
-            <button data-players="1">1</button><button class="active" data-players="2">2</button>
+            <button class="active" data-players="0">All</button><button data-players="1">1</button><button data-players="2">2</button>
             <button data-players="3">3</button><button data-players="4">4</button>
           </div>
         </fieldset>
 
         <fieldset class="time-filter">
           <legend>Time of day</legend>
-          <div class="time-values"><output id="earliest-output">5:00 AM</output><span>to</span><output id="latest-output">8:00 PM</output></div>
-          <div class="dual-range">
-            <div class="range-track" aria-hidden="true"></div>
-            <input id="earliest" aria-label="Earliest tee time" type="range" min="300" max="1200" step="30" value="300">
-            <input id="latest" aria-label="Latest tee time" type="range" min="300" max="1200" step="30" value="1200">
+          <output id="earliest-output" hidden>5:00 AM</output><output id="latest-output" hidden>8:00 PM</output>
+          <div class="time-selects">
+            <label>From<select id="earliest" aria-label="Earliest tee time"></select></label>
+            <label>Until<select id="latest" aria-label="Latest tee time"></select></label>
           </div>
         </fieldset>
 
@@ -84,8 +85,8 @@
         </label>
 
         <label class="range-label">
-          <span>Max price <output id="price-output">Any</output></span>
-          <input id="price" type="range" min="30" max="160" step="5" value="160">
+          <span>Max price <output id="price-output" hidden>Any</output></span>
+          <select id="price" aria-label="Maximum price"></select>
         </label>
 
         <label class="toggle-row">
@@ -96,7 +97,12 @@
         <label class="search-label">Course name
           <span class="search-wrap"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="course-search" type="search" placeholder="Search courses"></span>
         </label>
-      </aside>
+        <details class="course-picker"><summary>Courses <span id="course-selection-count"></span></summary>
+          <div class="course-selection-actions"><button type="button" id="show-courses">Select all</button><button type="button" id="hide-courses">Deselect all</button></div>
+          <div id="course-selection"></div>
+        </details>
+        </div>
+      </details>
 
       <section class="results-panel" aria-live="polite">
         <div class="results-head">
@@ -147,6 +153,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
-  <script type="module" src="app.js?v=20260917-4"></script>
+  <script type="module" src="app.js?v=20260924-mobile"></script>
 </body>
 </html>

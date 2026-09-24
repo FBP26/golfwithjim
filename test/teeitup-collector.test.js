@@ -20,6 +20,9 @@ test("extracts the cheapest exact 18-hole rate for each tee time", () => {
         teetime: "2026-09-19T15:54:00.000Z",
         maxPlayers: 4,
         rates: [
+          rate({ _id: 8, name: "Senior", greenFeeCart: 1000 }),
+          rate({ _id: 9, name: "Military", greenFeeCart: 1500 }),
+          rate({ _id: 10, name: "Member", greenFeeCart: 2000 }),
           rate({ _id: 1, promotion: { greenFeeCart: 6900 } }),
           rate({ _id: 2, name: "9 Holes", holes: 9, greenFeeCart: 3700 }),
         ],

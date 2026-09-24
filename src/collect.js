@@ -142,7 +142,7 @@ export function mergeCollectedInventory(baseFeed, collected) {
     completeSources: collected.sources,
     sourceChecks: collected.sourceChecks,
     teeTimes: [
-      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)),
+      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)).map(teeTime => ({ ...teeTime, stale: true })),
       ...collected.teeTimes,
     ],
   };

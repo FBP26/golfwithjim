@@ -1,4 +1,5 @@
 import { adaptClubCaddieTeeTime } from "../adapters/clubcaddie.js";
+import { isPublicRate } from "../analyze.js";
 
 const endpoint = "https://apimanager-cc12.clubcaddie.com/webapi/TeeTimes";
 
@@ -31,7 +32,7 @@ async function fetchCourseId(apikey, slashDate, fetchImpl) {
 
 export function extractClubCaddieInventory(slots, defaults = {}) {
   return slots.flatMap(slot => {
-    const plans = (slot.PricingPlan || []).filter(plan => Number(plan.HoleRate_18) > 0);
+    const plans = (slot.PricingPlan || []).filter(plan => Number(plan.HoleRate_18) > 0 && isPublicRate(String(plan.TitleType || "Standard").replace(/\+/g, " ")));
     if (!plans.length) return [];
     const best = plans.toSorted((left, right) => Number(left.HoleRate_18) - Number(right.HoleRate_18))[0];
     return [adaptClubCaddieTeeTime({
@@ -49,7 +50,7 @@ export async function collectClubCaddieDay({ url, date, course, distanceMiles, f
   const slashDate = toSlashDate(date);
   const courseId = await fetchCourseId(apikey, slashDate, fetchImpl);
   const body = new URLSearchParams({
-    date: slashDate, player: "2", holes: "18", fromtime: "4", totime: "23",
+    date: slashDate, player: "1", holes: "18", fromtime: "4", totime: "23",
     minprice: "0", maxprice: "9999", ratetype: "any", HoleGroup: "front", CourseId: courseId, apikey,
   });
   const response = await fetchImpl(endpoint, {

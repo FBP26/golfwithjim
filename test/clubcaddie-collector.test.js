@@ -10,7 +10,11 @@ const slot = (overrides = {}) => ({
 });
 
 test("picks the cheapest 18-hole pricing plan and converts the start time", () => {
-  const result = extractClubCaddieInventory([slot()], { course: "Independence Championship Course", date: "2026-09-19", distanceMiles: 20, url: "https://example.com" });
+  const result = extractClubCaddieInventory([slot({ PricingPlan: [
+    { TitleType: "Junior+18+Holes", HoleRate_18: 20 },
+    { TitleType: "Member+18+Holes", HoleRate_18: 30 },
+    { TitleType: "Championship+Adult+18+Holes+2026", HoleRate_18: 145 },
+  ] })], { course: "Independence Championship Course", date: "2026-09-19", distanceMiles: 20, url: "https://example.com" });
   assert.equal(result.length, 1);
   assert.equal(result[0].time, "3:00 PM");
   assert.equal(result[0].allInPrice, 145);

@@ -11,7 +11,7 @@ const teeTime = (time, options = {}) => ({
   teeOffSections: [section(options.bookings, options.isHeld)],
 });
 
-test("extracts every Queenfield 18-hole start with at least two openings", () => {
+test("extracts every Queenfield 18-hole start including single openings", () => {
   const result = extractTeeSnapInventory({ teeTimes: {
     bookings: [
       { bookingId: 10, golfers: [101] },
@@ -23,6 +23,7 @@ test("extracts every Queenfield 18-hole start with at least two openings", () =>
       teeTime("09:00", { bookings: [20] }),
       teeTime("09:10", { isHeld: true }),
       teeTime("09:20", { prices: [price("NINE_HOLE", 27)] }),
+      teeTime("09:30", { bookings: [999] }),
     ],
   } }, {
     courseId: "1512",
@@ -34,6 +35,7 @@ test("extracts every Queenfield 18-hole start with at least two openings", () =>
   assert.deepEqual(result.map(item => ({ time: item.time, players: item.availablePlayers, price: item.allInPrice })), [
     { time: "8:40 AM", players: 3, price: 50 },
     { time: "8:50 AM", players: 4, price: 50 },
+    { time: "9:00 AM", players: 1, price: 50 },
   ]);
   assert.equal(result[0].holes, 18);
   assert.equal(result[0].rateName, "Public with cart");
@@ -62,7 +64,7 @@ test("collects every configured live source for every requested date", async () 
 
   assert.equal(result.teeTimes.length, 2);
   assert.deepEqual(result.teeTimes.map(item => item.date), ["2026-09-17", "2026-09-18"]);
-  assert.ok(requested.every(url => url.includes("players=2") && url.includes("holes=18") && url.includes("addons=on")));
+  assert.ok(requested.every(url => url.includes("players=1") && url.includes("holes=18") && url.includes("addons=on")));
 });
 
 test("honors a shorter per-source collection window", async () => {
@@ -111,4 +113,5 @@ test("preserves a previous source feed when that collector fails", () => {
   });
 
   assert.deepEqual(result.teeTimes.map(item => item.id), ["old-sycamore"]);
+  assert.equal(result.teeTimes[0].stale, true);
 });
