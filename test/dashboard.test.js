@@ -22,7 +22,10 @@ test("counts one start across providers while retaining offers and verified part
   const groupOnly = [{ ...offers[1], availablePartySizes: [2, 4] }];
   assert.equal(filterTeeTimes(groupOnly).length, 1);
   assert.equal(filterTeeTimes(groupOnly, { players: 1 }).length, 0);
-  assert.equal(shortCourseName("Independence Championship Course"), "Independence Championship Course");
+  assert.equal(shortCourseName("Mill Quarter Plantation Golf Club"), "Mill Quarter");
+  assert.equal(shortCourseName("Mill Quarter Plantation"), "Mill Quarter");
+  assert.equal(shortCourseName("Independence Championship Course"), "Independence");
+  assert.equal(shortCourseName("Independence Bear Course"), "Independence Bear Course");
 });
 
 test("filters tee times across the dashboard controls and orders them chronologically", () => {

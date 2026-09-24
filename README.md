@@ -4,7 +4,7 @@ The project also includes a personal tee-time website that puts the normalized i
 
 The mobile list uses compact two-line course summaries with shortened names, distance, a price range, and unique tee-start counts. Expand a course to compare sources and rate names under each start. `Filters & courses` contains tap-friendly time/price selectors and course checkboxes; hidden courses are remembered on that browser. The default player setting is `All`, including single spots and offers restricted to particular group sizes.
 
-The course picker includes only courses with an enabled inventory collector, selected by default unless previously hidden. Link-only courses remain accessible under `Tracked around Richmond` without appearing in the picker. Inventory courses stay selectable even when they temporarily have no available starts.
+The course picker includes only courses with an enabled inventory collector, selected by default unless previously hidden. Their directory links appear under `Tracked around Richmond`. Link-only courses and practice facilities appear separately under `Other Local Golf`, without appearing in the picker. Inventory courses stay selectable even when they temporarily have no available starts.
 
 TeeItUp's per-rate `allowedPlayers` restrictions are preserved alongside the remaining slot capacity. A four-player promotion only qualifies for four players; regular and prepaid alternatives remain available for smaller parties. Group-only rates do not qualify when the remaining capacity cannot accommodate their required party size.
 

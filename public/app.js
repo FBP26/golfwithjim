@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "./src/dashboard.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "./src/dashboard.js?v=20260924-directory";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -22,6 +22,7 @@ const elements = Object.fromEntries([
   "map-count", "leaflet-map", "map-date-options",
   "pull-refresh", "pull-refresh-label",
   "course-selection", "course-selection-count", "show-courses", "hide-courses",
+  "other-course-directory",
 ].map(id => [id, document.getElementById(id)]));
 
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
@@ -228,19 +229,26 @@ function renderDirectory() {
   const checks = courseCheckMap(state.sourceChecks);
   const sorted = dedupeByCourse(state.courses).toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course));
   const columns = window.matchMedia("(max-width: 850px)").matches ? 2 : 4;
-  elements["course-directory"].style.setProperty("--directory-rows", Math.ceil(sorted.length / columns) || 1);
-  elements["course-directory"].innerHTML = sorted.map(course => {
-    const times = counts.get(course.course) || [];
-    const check = checks.get(course.course);
-    let detail = course.source;
-    let flagged = false;
-    if (course.collector) {
-      if (check?.error) { detail = "Check failed"; flagged = true; }
-      else { const count = groupTeeTimes(times).length; detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
-    }
-    const href = bestBookingTeeTime(times)?.url || course.url;
-    return `<div class="directory-course${flagged ? " flagged" : ""}"><a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(course.course)}</a><small>${course.distanceMiles} miles · ${escapeHtml(detail)}</small></div>`;
-  }).join("");
+  const inventoryCourses = new Set(selectableCourses().map(course => course.course));
+  const directories = [
+    ["course-directory", sorted.filter(course => inventoryCourses.has(course.course))],
+    ["other-course-directory", sorted.filter(course => !inventoryCourses.has(course.course))],
+  ];
+  for (const [directoryId, courses] of directories) {
+    elements[directoryId].style.setProperty("--directory-rows", Math.ceil(courses.length / columns) || 1);
+    elements[directoryId].innerHTML = courses.map(course => {
+      const times = counts.get(course.course) || [];
+      const check = checks.get(course.course);
+      let detail = course.source;
+      let flagged = false;
+      if (course.collector) {
+        if (check?.error) { detail = "Check failed"; flagged = true; }
+        else { const count = groupTeeTimes(times).length; detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
+      }
+      const href = bestBookingTeeTime(times)?.url || course.url;
+      return `<div class="directory-course${flagged ? " flagged" : ""}"><a href="${escapeHtml(href)}" title="${escapeHtml(course.course)}" target="_blank" rel="noopener">${escapeHtml(shortCourseName(course.course))}</a><small>${course.distanceMiles} miles · ${escapeHtml(detail)}</small></div>`;
+    }).join("");
+  }
 }
 window.addEventListener("resize", () => { if (state.courses.length) renderDirectory(); });
 

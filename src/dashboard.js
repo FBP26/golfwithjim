@@ -46,5 +46,8 @@ export function groupTeeTimes(teeTimes) {
 }
 
 export function shortCourseName(name) {
-  return String(name).replace(/^(?:The\s+)?(?:Golf\s+)?Club at\s+(?:The\s+)?/i, "").replace(/^The\s+/i, "").replace(/\s+(?:Golf\s+(?:Club|Course)|Country Club)\b/gi, "").trim();
+  const shortened = String(name).replace(/^(?:The\s+)?(?:Golf\s+)?Club at\s+(?:The\s+)?/i, "").replace(/^The\s+/i, "").replace(/\s+(?:Golf\s+(?:Club|Course)|Country Club)\b/gi, "").trim();
+  if (shortened === "Mill Quarter Plantation") return "Mill Quarter";
+  if (shortened === "Independence Championship Course") return "Independence";
+  return shortened;
 }
