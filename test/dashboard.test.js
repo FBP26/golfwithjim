@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "../src/dashboard.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse } from "../src/dashboard.js";
+
+test("main-list placement can include booking links without enabling live inventory", () => {
+  assert.equal(isMainCourse({ collector: "golfnow" }), true);
+  assert.equal(isMainCourse({ collector: "golfnow", showInventory: false }), false);
+  assert.equal(isMainCourse({ course: "Hobbs Hole Golf Course", mainList: true }), true);
+  assert.equal(isMainCourse({ course: "Williamsburg National Golf Club", mainList: true, showInventory: false }), true);
+  assert.equal(isMainCourse({ course: "Belmont Golf Course", showInventory: false }), false);
+  assert.equal(isMainCourse({ course: "Other booking link" }), false);
+});
 
 const teeTimes = [
   { course: "Later", date: "2026-09-19", time: "1:00 PM", availablePlayers: 4, holes: 18, allInPrice: 55, distanceMiles: 20, hotDeal: true },

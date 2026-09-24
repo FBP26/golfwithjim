@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName } from "./src/dashboard.js?v=20260924-directory2";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse } from "./src/dashboard.js?v=20260924-main-list";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -47,7 +47,7 @@ elements.price.value = 160;
 if (matchMedia("(max-width: 850px)").matches) document.querySelector(".filters").open = false;
 
 function selectableCourses() {
-  return dedupeByCourse(state.courses.filter(course => course.collector && course.showInventory !== false));
+  return dedupeByCourse(state.courses.filter(isMainCourse));
 }
 
 function renderCourseSelection() {

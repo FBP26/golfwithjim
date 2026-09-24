@@ -195,6 +195,7 @@
       "source": "GolfNow Marketplace",
       "course": "Hobbs Hole Golf Course",
       "distanceMiles": 40,
+      "mainList": true,
       "url": "https://www.golfnow.com/tee-times/facility/2425-hobbs-hole-golf-course/search",
       "latitude": 37.8996732,
       "longitude": -76.8560352
@@ -253,6 +254,7 @@
       "source": "Club Prophet Systems",
       "course": "Williamsburg National Golf Club",
       "distanceMiles": 52,
+      "mainList": true,
       "showInventory": false,
       "url": "https://williamsburgnatgc.cps.golf/onlineresweb/index.html"
     },

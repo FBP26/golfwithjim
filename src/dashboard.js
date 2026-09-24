@@ -7,6 +7,10 @@ function timeMinutes(time) {
   return hour * 60 + Number(match[2]);
 }
 
+export function isMainCourse(course) {
+  return course.mainList === true || Boolean(course.collector && course.showInventory !== false);
+}
+
 export function filterTeeTimes(teeTimes, filters = {}) {
   const players = Number(filters.players ?? 0);
   const maximumDistance = Number(filters.maximumDistance ?? Number.POSITIVE_INFINITY);
