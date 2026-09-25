@@ -4,6 +4,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      course:
+        description: "Exact course name to refresh (blank refreshes all courses)"
+        required: false
+        type: string
   schedule:
     - cron: "5 10,11,22,23 * * *"
 
@@ -42,11 +47,12 @@ jobs:
       - name: Collect live tee times
         if: steps.timing.outputs.collect == 'true'
         env:
+          COLLECTION_COURSE: ${{ github.event.inputs.course || '' }}
           CHRONOGOLF_PROXY_TOKEN: ${{ github.token }}
           CHRONOGOLF_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/chronogolf
           TEEITUP_PROXY_TOKEN: ${{ github.token }}
           TEEITUP_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/teeitup
-        run: node src/collect.js --base=fixtures/live-current.json --output=fixtures/live-current.json
+        run: node src/collect.js --base=fixtures/live-current.json --output=fixtures/live-current.json --course="$COLLECTION_COURSE"
       - name: Save refreshed feed
         if: steps.timing.outputs.collect == 'true'
         shell: bash

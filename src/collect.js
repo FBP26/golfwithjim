@@ -133,16 +133,17 @@ export async function collectLiveInventory({ registry = sourceRegistry, dates, f
   };
 }
 
-export function mergeCollectedInventory(baseFeed, collected) {
+export function mergeCollectedInventory(baseFeed, collected, { partial = false } = {}) {
   const baseTeeTimes = Array.isArray(baseFeed) ? baseFeed : baseFeed.teeTimes || [];
   const replacedCourses = new Set(collected.sources);
+  const checkedCourses = new Set((collected.sourceChecks || []).map(check => check.course));
   return {
     checkedAt: collected.checkedAt,
     collection: "saved coverage with complete starts from configured live collectors",
-    completeSources: collected.sources,
-    sourceChecks: collected.sourceChecks,
+    completeSources: partial ? [...(baseFeed.completeSources || []).filter(course => !checkedCourses.has(course)), ...collected.sources] : collected.sources,
+    sourceChecks: partial ? [...(baseFeed.sourceChecks || []).filter(check => !checkedCourses.has(check.course)), ...(collected.sourceChecks || [])] : collected.sourceChecks,
     teeTimes: [
-      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)).map(teeTime => ({ ...teeTime, stale: true })),
+      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)).map(teeTime => partial && !checkedCourses.has(teeTime.course) ? teeTime : { ...teeTime, stale: true }),
       ...collected.teeTimes,
     ],
   };
@@ -153,9 +154,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const requestedDays = Number(argument("days") || config.detailedDays);
   const sourceDays = (sourceRegistry.interactiveOnly || []).map(source => Number(source.collectionDays || 0));
   const dates = datesFrom(argument("start") || today, Math.max(requestedDays, ...sourceDays));
-  let result = await collectLiveInventory({ dates });
+  const course = argument("course");
+  const registry = course ? { interactiveOnly: sourceRegistry.interactiveOnly.filter(source => source.course === course && source.collector && source.showInventory !== false) } : sourceRegistry;
+  if (course && !registry.interactiveOnly.length) throw new Error(`No live collector configured for ${course}`);
+  let result = await collectLiveInventory({ dates, registry });
   const base = argument("base");
-  if (base) result = mergeCollectedInventory(JSON.parse(await readFile(resolve(root, base), "utf8")), result);
+  if (base) result = mergeCollectedInventory(JSON.parse(await readFile(resolve(root, base), "utf8")), result, { partial: Boolean(course) });
   const output = argument("output");
   if (output) {
     const outputPath = resolve(root, output);

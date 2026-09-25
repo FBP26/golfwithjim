@@ -36,7 +36,7 @@ async function fetchWithRetry(fetchImpl, url, options, attempts = 3) {
 async function jsonRequest(url, options, fetchImpl) {
   const proxyToken = process.env.CHRONOGOLF_PROXY_TOKEN;
   if (fetchImpl === fetch && process.platform === "win32" && !proxyToken) return curlJson(url, options);
-  const response = await fetchWithRetry(fetchImpl, url, {
+  let response = await fetchWithRetry(fetchImpl, url, {
     ...options,
     headers: {
       Accept: "application/json",
@@ -45,6 +45,18 @@ async function jsonRequest(url, options, fetchImpl) {
     },
     signal: AbortSignal.timeout(20_000),
   }, 3);
+  if (response.status === 403 && process.env.CHRONOGOLF_PROXY_URL) {
+    const proxy = new URL(process.env.CHRONOGOLF_PROXY_URL);
+    const requested = new URL(url);
+    const target = requested.searchParams.get("target");
+    if (requested.origin === proxy.origin && requested.pathname === proxy.pathname && target && new URL(target).origin === "https://www.chronogolf.com") {
+      response = await fetchWithRetry(fetchImpl, new URL(target), {
+        ...options,
+        headers: { Accept: "application/json", ...options?.headers },
+        signal: AbortSignal.timeout(20_000),
+      }, 3);
+    }
+  }
   if (!response.ok) throw new Error(`Chronogolf feed returned HTTP ${response.status}.`);
   return { payload: await response.json(), headers: response.headers };
 }
@@ -108,12 +120,17 @@ export async function collectChronogolfDay({ courseUuid, affiliationTypeId, date
   const listed = (await listTeeTimes({ courseUuid, date, fetchImpl }))
     .filter(teeTime => Number(teeTime.max_player_size) >= 1 && teeTime.course?.bookable_holes?.includes(18));
   const quoted = [];
+  const quoteErrors = [];
   for (let index = 0; index < listed.length; index += 2) {
     quoted.push(...await Promise.all(listed.slice(index, index + 2).map(async teeTime => ({
       teeTime,
-      quote: await quoteTeeTime(teeTime, affiliationTypeId, fetchImpl).catch(() => null),
+      quote: await quoteTeeTime(teeTime, affiliationTypeId, fetchImpl).catch(error => {
+        quoteErrors.push(error);
+        return null;
+      }),
     }))));
   }
+  if (quoteErrors.length && !quoted.some(item => item.quote)) throw quoteErrors[0];
   return quoted.filter(item => item.quote).map(({ teeTime, quote }) => ({
     id: `chronogolf-${teeTime.id}`,
     source: "Chronogolf",

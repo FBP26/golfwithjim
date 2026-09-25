@@ -115,3 +115,35 @@ test("preserves a previous source feed when that collector fails", () => {
   assert.deepEqual(result.teeTimes.map(item => item.id), ["old-sycamore"]);
   assert.equal(result.teeTimes[0].stale, true);
 });
+
+test("targeted refresh preserves untouched inventory and source status", () => {
+  const untouched = { id: "other", course: "Other Course", stale: false };
+  const otherCheck = { course: "Other Course", checkedAt: "2026-09-25T10:00:00Z" };
+  const result = mergeCollectedInventory({
+    teeTimes: [untouched, { id: "old", course: "Sycamore Creek Golf Course" }],
+    completeSources: ["Other Course", "Sycamore Creek Golf Course"],
+    sourceChecks: [otherCheck, { course: "Sycamore Creek Golf Course", error: "HTTP 403" }],
+  }, {
+    checkedAt: "2026-09-25T11:00:00Z", sources: ["Sycamore Creek Golf Course"],
+    sourceChecks: [{ course: "Sycamore Creek Golf Course", teeTimeCount: 1 }],
+    teeTimes: [{ id: "new", course: "Sycamore Creek Golf Course" }],
+  }, { partial: true });
+  assert.deepEqual(result.teeTimes, [untouched, { id: "new", course: "Sycamore Creek Golf Course" }]);
+  assert.deepEqual(result.sourceChecks, [otherCheck, { course: "Sycamore Creek Golf Course", teeTimeCount: 1 }]);
+  assert.deepEqual(result.completeSources, ["Other Course", "Sycamore Creek Golf Course"]);
+});
+
+test("failed targeted refresh flags only that course as stale", () => {
+  const result = mergeCollectedInventory({
+    teeTimes: [{ course: "Other Course" }, { course: "Sycamore Creek Golf Course" }],
+    completeSources: ["Other Course", "Sycamore Creek Golf Course"],
+    sourceChecks: [{ course: "Other Course" }],
+  }, {
+    sources: [], teeTimes: [],
+    sourceChecks: [{ course: "Sycamore Creek Golf Course", error: "HTTP 403" }],
+  }, { partial: true });
+  assert.equal(result.teeTimes[0].stale, undefined);
+  assert.equal(result.teeTimes[1].stale, true);
+  assert.deepEqual(result.completeSources, ["Other Course"]);
+  assert.equal(result.sourceChecks.length, 2);
+});

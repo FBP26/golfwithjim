@@ -69,6 +69,49 @@ test("quotes single openings with one player and a per-player total", async () =
   assert.equal(result[0].allInPrice, 58);
 });
 
+test("falls back from a blocked proxy without forwarding authorization", async context => {
+  for (const [name, value] of Object.entries({ CHRONOGOLF_PROXY_URL: "https://proxy.example/chronogolf", CHRONOGOLF_PROXY_TOKEN: "test-token" })) {
+    const previous = process.env[name];
+    process.env[name] = value;
+    context.after(() => {
+      if (previous === undefined) delete process.env[name];
+      else process.env[name] = previous;
+    });
+  }
+  let directRequests = 0;
+  const fetchImpl = async (url, options = {}) => {
+    if (new URL(url).hostname === "proxy.example") {
+      assert.equal(options.headers.Authorization, "Bearer test-token");
+      return { ok: false, status: 403 };
+    }
+    directRequests += 1;
+    assert.equal(options.headers.Authorization, undefined);
+    if (String(url).includes("reservations/options")) {
+      assert.equal(options.method, "POST");
+      assert.equal(JSON.parse(options.body).nb_holes, "18");
+      return response([{ holes: 18, invoice: { total: 116 } }]);
+    }
+    return response({ teetimes: [{ id: 1, start_time: "10:00", max_player_size: 4, course: { bookable_holes: [18] } }] }, { total: "1" });
+  };
+  const result = await collectChronogolfDay({
+    courseUuid: "course", affiliationTypeId: "58874", date: "2026-09-25",
+    course: "Sycamore Creek Golf Course", distanceMiles: 17, url: "https://example.com", fetchImpl,
+  });
+  assert.equal(directRequests, 2);
+  assert.equal(result[0].allInPrice, 58);
+});
+
+test("reports failed quotes instead of successful empty inventory", async () => {
+  const fetchImpl = async url => {
+    if (String(url).includes("reservations/options")) throw new Error("Quote unavailable");
+    return response({ teetimes: [{ id: 1, start_time: "10:00", max_player_size: 4, course: { bookable_holes: [18] } }] }, { total: "1" });
+  };
+  await assert.rejects(collectChronogolfDay({
+    courseUuid: "course", affiliationTypeId: "58874", date: "2026-09-25",
+    course: "Sycamore Creek Golf Course", distanceMiles: 17, url: "https://example.com", fetchImpl,
+  }), /Quote unavailable/);
+});
+
 test("keeps successful Chronogolf quotes when another quote is blocked", async () => {
   const fetchImpl = async (url, options = {}) => {
     if (String(url).includes("reservations/options")) {
