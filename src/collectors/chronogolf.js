@@ -3,6 +3,7 @@ import { promisify } from "node:util";
 
 const directBaseUrl = "https://www.chronogolf.com/marketplace";
 const execFileAsync = promisify(execFile);
+let useDirectCurl = false;
 
 function requestUrl(path, searchParams = {}) {
   const target = new URL(path, `${directBaseUrl}/`);
@@ -15,10 +16,10 @@ function requestUrl(path, searchParams = {}) {
 }
 
 async function curlJson(url, options = {}) {
-  const args = ["--silent", "--show-error", "--fail", "--retry", "5", "--retry-all-errors", "--retry-delay", "2", "--header", "Accept: application/json"];
+  const args = ["--silent", "--show-error", "--fail", "--connect-timeout", "10", "--max-time", "20", "--retry", "2", "--retry-delay", "2", "--header", "Accept: application/json"];
   if (options.method === "POST") args.push("--request", "POST", "--header", "Content-Type: application/json", "--data", options.body);
   args.push(String(url));
-  const { stdout } = await execFileAsync("curl.exe", args, { maxBuffer: 10 * 1024 * 1024 });
+  const { stdout } = await execFileAsync(process.platform === "win32" ? "curl.exe" : "curl", args, { maxBuffer: 10 * 1024 * 1024 });
   return { payload: JSON.parse(stdout), headers: new Headers() };
 }
 
@@ -35,7 +36,8 @@ async function fetchWithRetry(fetchImpl, url, options, attempts = 3) {
 
 async function jsonRequest(url, options, fetchImpl) {
   const proxyToken = process.env.CHRONOGOLF_PROXY_TOKEN;
-  if (fetchImpl === fetch && process.platform === "win32" && !proxyToken) return curlJson(url, options);
+  const directUrl = new URL(url).searchParams.get("target") || url;
+  if (fetchImpl === fetch && (useDirectCurl || (process.platform === "win32" && !proxyToken))) return curlJson(directUrl, options);
   let response = await fetchWithRetry(fetchImpl, url, {
     ...options,
     headers: {
@@ -56,6 +58,11 @@ async function jsonRequest(url, options, fetchImpl) {
         signal: AbortSignal.timeout(20_000),
       }, 3);
     }
+  }
+  if (response.status === 403 && fetchImpl === fetch) {
+    const result = await curlJson(directUrl, options);
+    useDirectCurl = true;
+    return result;
   }
   if (!response.ok) throw new Error(`Chronogolf feed returned HTTP ${response.status}.`);
   return { payload: await response.json(), headers: response.headers };
