@@ -1,3 +1,5 @@
+import { isInventoryUsable } from "./dashboard.js";
+
 const RESTRICTED_RATE_PATTERN = /\b(junior|military|veteran|senior|resident)\b/i;
 const PUBLIC_MEMBER_FOR_DAY_PATTERN = /\bmember for (?:a|the) day\b/i;
 
@@ -59,6 +61,8 @@ export function normalizeTeeTime(raw) {
     feesWaived: Boolean(raw.feesWaived),
     priceIsExact: raw.priceIsExact !== false,
     stale: raw.stale === true,
+    verifiedAt: raw.verifiedAt || null,
+    cacheExpiresAt: raw.cacheExpiresAt || null,
     hotDeal: Boolean(raw.hotDeal),
     rateName: String(raw.rateName || "Standard"),
     distanceMiles: Number(raw.distanceMiles),
@@ -76,7 +80,7 @@ export function isAllowedHoleCount(teeTime) {
 
 export function isEligible(teeTime, config) {
   return teeTime.availablePlayers >= config.minimumPlayers
-    && !teeTime.stale
+    && isInventoryUsable(teeTime, { allowCached: config.allowCachedInventory === true })
     && teeTime.distanceMiles <= config.maximumDistanceMiles
     && teeTime.allInPrice > 0
     && teeTime.priceIsExact

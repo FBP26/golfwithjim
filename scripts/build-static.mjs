@@ -13,7 +13,7 @@ const inventoryCourses = new Set(sourceRegistry.interactiveOnly
 const teeTimes = teeTimeArray(payload)
   .map(normalizeTeeTime)
   .filter(teeTime => inventoryCourses.has(teeTime.course)
-    && isEligible(teeTime, { ...config, minimumPlayers: config.collectionMinimumPlayers })
+    && isEligible(teeTime, { ...config, minimumPlayers: config.collectionMinimumPlayers, allowCachedInventory: true })
     && teeTime.holes === config.preferredHoles
     && isUpcoming(teeTime));
 

@@ -35,7 +35,10 @@ async function refreshInventory() {
   if (process.env.GOLF_FEED_URL) throw new Error("Live refresh is unavailable for a configured external feed.");
   if (!refreshPromise) {
     refreshPromise = (async () => {
-      const baseFeed = JSON.parse(await readFile(baseFeedSource, "utf8"));
+      const baseFeed = JSON.parse(await readFile(feedSource, "utf8").catch(error => {
+        if (error.code !== "ENOENT") throw error;
+        return readFile(baseFeedSource, "utf8");
+      }));
       const collected = await collectLiveInventory({ dates: collectionDates() });
       const merged = mergeCollectedInventory(baseFeed, collected);
       await writeFile(feedSource, `${JSON.stringify(merged, null, 2)}\n`);
@@ -58,7 +61,7 @@ async function inventory() {
   const teeTimes = teeTimeArray(payload)
     .map(normalizeTeeTime)
     .filter(teeTime => inventoryCourses.has(teeTime.course)
-      && isEligible(teeTime, { ...config, minimumPlayers: config.collectionMinimumPlayers })
+      && isEligible(teeTime, { ...config, minimumPlayers: config.collectionMinimumPlayers, allowCachedInventory: true })
       && teeTime.holes === config.preferredHoles
       && isUpcoming(teeTime));
   return {

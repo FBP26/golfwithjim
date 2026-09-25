@@ -128,7 +128,7 @@ test("targeted refresh preserves untouched inventory and source status", () => {
     sourceChecks: [{ course: "Sycamore Creek Golf Course", teeTimeCount: 1 }],
     teeTimes: [{ id: "new", course: "Sycamore Creek Golf Course" }],
   }, { partial: true });
-  assert.deepEqual(result.teeTimes, [untouched, { id: "new", course: "Sycamore Creek Golf Course" }]);
+  assert.deepEqual(result.teeTimes, [untouched, { id: "new", course: "Sycamore Creek Golf Course", verifiedAt: "2026-09-25T11:00:00Z", cacheExpiresAt: "2026-09-26T11:00:00.000Z" }]);
   assert.deepEqual(result.sourceChecks, [otherCheck, { course: "Sycamore Creek Golf Course", teeTimeCount: 1 }]);
   assert.deepEqual(result.completeSources, ["Other Course", "Sycamore Creek Golf Course"]);
 });
@@ -146,4 +146,15 @@ test("failed targeted refresh flags only that course as stale", () => {
   assert.equal(result.teeTimes[1].stale, true);
   assert.deepEqual(result.completeSources, ["Other Course"]);
   assert.equal(result.sourceChecks.length, 2);
+});
+
+test("failed Sycamore checks retain the original cache expiry without extending it", () => {
+  const course = "Sycamore Creek Golf Course";
+  const base = { teeTimes: [{ course }], sourceChecks: [{ course, checkedAt: "2026-09-25T10:00:00Z" }] };
+  const failure = { checkedAt: "2026-09-25T12:00:00Z", sources: [], teeTimes: [], sourceChecks: [{ course, error: "403" }] };
+  const first = mergeCollectedInventory(base, failure);
+  const second = mergeCollectedInventory(first, { ...failure, checkedAt: "2026-09-26T09:00:00Z" });
+  assert.equal(second.teeTimes[0].verifiedAt, "2026-09-25T10:00:00Z");
+  assert.equal(second.teeTimes[0].cacheExpiresAt, "2026-09-26T10:00:00.000Z");
+  assert.equal(second.sourceChecks[0].lastSuccessfulAt, "2026-09-25T10:00:00Z");
 });

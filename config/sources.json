@@ -77,6 +77,7 @@
     {
       "source": "Chronogolf",
       "course": "Sycamore Creek Golf Course",
+      "cacheMaxAgeHours": 24,
       "distanceMiles": 17,
       "watchlist": true,
       "collector": "chronogolf",

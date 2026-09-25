@@ -137,14 +137,32 @@ export function mergeCollectedInventory(baseFeed, collected, { partial = false }
   const baseTeeTimes = Array.isArray(baseFeed) ? baseFeed : baseFeed.teeTimes || [];
   const replacedCourses = new Set(collected.sources);
   const checkedCourses = new Set((collected.sourceChecks || []).map(check => check.course));
+  const previousChecks = new Map((baseFeed.sourceChecks || []).map(check => [check.course, check]));
+  const cacheHours = new Map(sourceRegistry.interactiveOnly.filter(source => source.cacheMaxAgeHours).map(source => [source.course, Math.min(24, source.cacheMaxAgeHours)]));
+  const stamp = (teeTime, verifiedAt) => ({
+    ...teeTime,
+    ...(verifiedAt ? { verifiedAt } : {}),
+    ...(cacheHours.has(teeTime.course) && Number.isFinite(Date.parse(verifiedAt))
+      ? { cacheExpiresAt: new Date(Date.parse(verifiedAt) + cacheHours.get(teeTime.course) * 60 * 60_000).toISOString() } : {}),
+  });
+  const checks = (collected.sourceChecks || []).map(check => {
+    const previous = previousChecks.get(check.course);
+    const lastSuccessfulAt = check.error ? previous?.lastSuccessfulAt || (!previous?.error ? previous?.checkedAt : undefined) : check.checkedAt;
+    return { ...check, ...(lastSuccessfulAt ? { lastSuccessfulAt } : {}) };
+  });
   return {
     checkedAt: collected.checkedAt,
     collection: "saved coverage with complete starts from configured live collectors",
     completeSources: partial ? [...(baseFeed.completeSources || []).filter(course => !checkedCourses.has(course)), ...collected.sources] : collected.sources,
-    sourceChecks: partial ? [...(baseFeed.sourceChecks || []).filter(check => !checkedCourses.has(check.course)), ...(collected.sourceChecks || [])] : collected.sourceChecks,
+    sourceChecks: partial ? [...(baseFeed.sourceChecks || []).filter(check => !checkedCourses.has(check.course)), ...checks] : checks,
     teeTimes: [
-      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)).map(teeTime => partial && !checkedCourses.has(teeTime.course) ? teeTime : { ...teeTime, stale: true }),
-      ...collected.teeTimes,
+      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)).map(teeTime => {
+        if (partial && !checkedCourses.has(teeTime.course)) return teeTime;
+        const previous = previousChecks.get(teeTime.course);
+        const verifiedAt = teeTime.verifiedAt || previous?.lastSuccessfulAt || (!previous?.error ? previous?.checkedAt : undefined);
+        return stamp({ ...teeTime, stale: true }, verifiedAt);
+      }),
+      ...collected.teeTimes.map(teeTime => stamp(teeTime, collected.checkedAt)),
     ],
   };
 }

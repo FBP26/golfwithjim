@@ -1,7 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { config, sourceRegistry } from "../src/config.js";
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER } from "../src/dashboard.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable } from "../src/dashboard.js";
+
+test("cached inventory expires strictly and never becomes eligible for alerts by default", () => {
+  const teeTime = { stale: true, verifiedAt: "2026-09-25T10:00:00Z", cacheExpiresAt: "2026-09-26T10:00:00Z" };
+  const now = Date.parse("2026-09-25T12:00:00Z");
+  assert.equal(isInventoryUsable(teeTime, { now }), false);
+  assert.equal(isInventoryUsable(teeTime, { allowCached: true, now }), true);
+  assert.equal(isInventoryUsable(teeTime, { allowCached: true, now: Date.parse(teeTime.cacheExpiresAt) }), false);
+  assert.equal(isInventoryUsable({ ...teeTime, stale: false }, { now: Date.parse(teeTime.cacheExpiresAt) }), false);
+  assert.equal(isInventoryUsable({ ...teeTime, cacheExpiresAt: "2026-09-27T10:00:00Z" }, { allowCached: true, now }), false);
+  assert.equal(isInventoryUsable({ ...teeTime, verifiedAt: null }, { allowCached: true, now }), false);
+  assert.equal(isInventoryUsable(teeTime, { allowCached: true, now: Date.parse("2026-09-24T12:00:00Z") }), false);
+});
 
 test("uses Richmond-centered straight-line miles consistently", () => {
   assert.equal(haversineMiles(...RICHMOND_CENTER, ...RICHMOND_CENTER), 0);

@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER } from "./src/dashboard.js?v=20260924-100mi";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable } from "./src/dashboard.js?v=20260925-laptop";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -133,6 +133,13 @@ function metricsHtml(summary) {
   ].join("");
 }
 
+function verificationStatus(times) {
+  const saved = times.filter(teeTime => teeTime.cacheExpiresAt && teeTime.verifiedAt);
+  if (!saved.length) return "";
+  const checked = new Date(Math.min(...saved.map(teeTime => Date.parse(teeTime.verifiedAt)))).toLocaleString([], { month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" });
+  return `${saved.some(teeTime => teeTime.stale) ? "Cached · " : ""}Last checked ${checked}`;
+}
+
 function sortResults(teeTimes) {
   return teeTimes.toSorted((left, right) => timeValue(left.time) - timeValue(right.time) || left.allInPrice - right.allInPrice);
 }
@@ -196,9 +203,9 @@ function renderResults() {
       const starts = groupTeeTimes(ordered);
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
       const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${money(teeTime.allInPrice)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
-      const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
+      const inventorySummary = `${courseTimes.some(teeTime => teeTime.stale) ? "Cached" : escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
-      return `<details class="course-row"><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a><div class="tee-list">${tiles}</div></div></details>`;
+      return `<details class="course-row"><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
     }).join("");
     const count = groupTeeTimes(dateTimes).length;
     return `<details class="date-group" open><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
@@ -242,7 +249,7 @@ function renderDirectory() {
       let detail = [course.access, course.holes ? `${course.holes} holes` : "", course.source].filter(Boolean).join(" · ");
       let flagged = false;
       if (course.collector) {
-        if (check?.error) { detail = "Check failed"; flagged = true; }
+        if (check?.error) { detail = times.some(teeTime => teeTime.stale) ? verificationStatus(times) : "Check failed"; flagged = true; }
         else if (!check) { detail = "Not checked yet"; flagged = true; }
         else { const count = groupTeeTimes(times).length; detail = `${count} tee time${count === 1 ? "" : "s"}`; flagged = count <= 1; }
       }
@@ -300,7 +307,7 @@ function popupHtml(group, teeTimesByCourse) {
       : category === "available" ? `${starts} tee time${starts === 1 ? "" : "s"}`
       : "No qualifying tee times right now";
     const href = bestBookingTeeTime(times)?.url || course.url;
-    return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p><div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(href)}" target="_blank" rel="noopener">Book a tee time &rarr;</a></div>`;
+    return `<div class="map-popup-course"><h4>${escapeHtml(course.course)}</h4><p class="map-popup-meta">${course.distanceMiles} miles · ${escapeHtml(course.source)}</p>${verificationStatus(times) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(times))}</p>` : ""}<div class="map-popup-status${category === "hot" ? " hot" : ""}"><strong>${escapeHtml(status)}</strong></div>${popupTimesTableHtml(times)}<a class="map-popup-link" href="${escapeHtml(href)}" target="_blank" rel="noopener">Book a tee time &rarr;</a></div>`;
   }).join("");
   return `<div class="map-popup">${rows}</div>`;
 }
@@ -482,7 +489,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     const payload = await response.json();
     if (liveRefresh && isGitHubPages && payload.checkedAt === state.checkedAt) throw new Error("Refresh is still running. Try again shortly.");
     state.checkedAt = payload.checkedAt;
-    state.teeTimes = payload.teeTimes;
+    state.teeTimes = payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
     renderCourseSelection();
@@ -598,4 +605,15 @@ elements["clear-filters"].addEventListener("click", () => {
   selectDate("");
 });
 
+function expireCachedInventory() {
+  const current = state.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
+  if (current.length === state.teeTimes.length) return;
+  state.teeTimes = current;
+  renderDirectory();
+  renderDates();
+  renderResults();
+}
+
+setInterval(expireCachedInventory, 60_000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) expireCachedInventory(); });
 loadInventory();

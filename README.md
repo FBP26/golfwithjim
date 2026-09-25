@@ -22,11 +22,23 @@ $env:GOLF_FEED_URL = "fixtures/live-current.json"
 npm.cmd start
 ```
 
-The command collects configured public sources, including Queenfield TeeSnap, Hunting Hawk Play18, GolfNow, TeeItUp, ForeUp, Club Caddie, and exact Chronogolf reservation-option quotes. GolfNow rows use the displayed per-player total including its transaction fee. Separate searches verify bookable party sizes from one through four; `Any` is never assumed to mean four available spots. These searches share a paced queue and honor bounded provider cooldowns, so a full refresh can take several minutes. Birkdale is checked for 21 days; other collectors use the normal seven-day window. Failed-source saved rows are retained with `stale: true` but excluded from available results.
+The command collects configured public sources, including Queenfield TeeSnap, Hunting Hawk Play18, GolfNow, TeeItUp, ForeUp, Club Caddie, and exact Chronogolf reservation-option quotes. GolfNow rows use the displayed per-player total including its transaction fee. Separate searches verify bookable party sizes from one through four; `Any` is never assumed to mean four available spots. These searches share a paced queue and honor bounded provider cooldowns, so a full refresh can take several minutes. Birkdale is checked for 21 days; other collectors use the normal seven-day window. Failed-source saved rows are retained with `stale: true` but excluded from available results, except explicitly configured, unexpired Sycamore cache entries described below. Cached rows remain excluded from email alerts.
 
 The generated feed records `checkedAt` plus a `sourceChecks` entry for every collector with its requested range, latest available date, row count, and any error. A full 14-source run measured about nine seconds on September 16, 2026. For a twice-daily refresh, schedule collection around 6:05 AM and 6:05 PM Eastern. This captures rolling morning releases and evening cancellations without excessive polling. Provider data does not expose when a tee time was first posted; determining release patterns requires comparing saved snapshots over several weeks.
 
 On this Windows workstation, the `Richmond Golf Tee Times - Morning` and `Richmond Golf Tee Times - Evening` scheduled tasks run `scripts/refresh-live.ps1` at those times. Opening the website reads the saved feed immediately. Its Refresh button optionally runs the same live collection and displays a loading state while it completes.
+
+## Sycamore laptop publishing
+
+Chronogolf currently rejects the cloud runner and proxy with HTTP 403, while the existing collector works from this Windows laptop. Install the user-approved laptop publisher with `scripts/install-sycamore-task.ps1`. It installs `GolfWithJim - Sycamore Laptop Publisher` for the current signed-in user, every two hours from 6:15 AM through 8:15 PM in Windows local time, plus at sign-in. Missed runs catch up when Windows can run the task. It requires AC power and networking, does not wake the laptop, and cannot run while signed out, asleep, hibernating, or shut down. A locked desktop or switched-off screen is fine if the machine stays awake. Failures retry up to three times at 15-minute intervals; overlapping runs are ignored and execution is limited to 20 minutes. Existing golf tasks and power settings are unchanged.
+
+The standalone runner is copied to `%LOCALAPPDATA%/GolfWithJim/publish-sycamore.mjs`; that folder also holds `sycamore-status.json` and `sycamore.log`. It uses existing Git credentials without interactive prompts, collects only Sycamore, and publishes from disposable checkouts. Collection failures never publish. Successful results are merged with the latest repository feed; newer Sycamore checks and unrelated course data are preserved. Non-forced pushes retry against fresh checkouts if a cloud update races the publisher. Rerun the installer after changing the runner. To remove the task: `Unregister-ScheduledTask -TaskName 'GolfWithJim - Sycamore Laptop Publisher' -Confirm:$false`.
+
+Sycamore's `cacheMaxAgeHours: 24` preserves `verifiedAt`, `cacheExpiresAt`, and `lastSuccessfulAt` through cloud failures. Cached results show their original last-checked time in the list and map, are not held reservations, and disappear after 24 hours without successful verification. Failed retries never extend their expiry. Expiry is enforced at build/serve time and in the browser, including when returning to an open tab. The course's direct booking link remains available after expiry.
+
+The public Refresh button still runs the cloud workflow. It does not contact or wake the laptop; there is no remote request queue or inbound laptop service. The phone sees the latest published laptop data until the next successful scheduled update. A full power-off/sleep-and-wake test is not part of installation verification.
+
+## Email reports
 
 Builds two email reports from a permitted JSON tee-time feed:
 

@@ -1,5 +1,13 @@
 export const RICHMOND_CENTER = [37.5407, -77.436];
 
+export function isInventoryUsable(teeTime, { allowCached = false, now = Date.now() } = {}) {
+  if (!teeTime.stale && !teeTime.cacheExpiresAt) return true;
+  const verified = Date.parse(teeTime.verifiedAt);
+  const expires = Date.parse(teeTime.cacheExpiresAt);
+  return (!teeTime.stale || allowCached) && Number.isFinite(verified) && Number.isFinite(expires)
+    && verified <= now && now < expires && expires > verified && expires - verified <= 24 * 60 * 60_000;
+}
+
 export function haversineMiles(latitudeFrom, longitudeFrom, latitudeTo, longitudeTo) {
   const toRadians = degrees => degrees * Math.PI / 180;
   const latitudeDelta = toRadians(latitudeTo - latitudeFrom);
@@ -30,6 +38,7 @@ export function filterTeeTimes(teeTimes, filters = {}) {
   const latest = filters.latest ? timeMinutes(filters.latest) : 24 * 60;
 
   return teeTimes.filter(teeTime => teeTime.holes === 18
+    && isInventoryUsable(teeTime, { allowCached: true })
     && teeTime.availablePlayers > 0
     && (!players || (teeTime.availablePartySizes?.length ? teeTime.availablePartySizes.includes(players) : teeTime.availablePlayers >= players))
     && !filters.hiddenCourses?.has(teeTime.course)
