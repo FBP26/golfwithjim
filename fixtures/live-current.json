@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-25T11:09:15.289Z",
+  "checkedAt": "2026-09-25T11:11:49.654Z",
   "collection": "saved coverage with complete starts from configured live collectors",
   "completeSources": [
     "Spring Creek Golf Club",
@@ -796,10 +796,10 @@
     },
     {
       "course": "Sycamore Creek Golf Course",
-      "checkedAt": "2026-09-25T11:09:15.289Z",
+      "checkedAt": "2026-09-25T11:11:49.654Z",
       "requestedFrom": "2026-09-25",
       "requestedThrough": "2026-10-01",
-      "error": "Chronogolf feed returned HTTP 403."
+      "error": "Command failed: curl --silent --show-error --fail --connect-timeout 10 --max-time 20 --retry 2 --retry-delay 2 --header Accept: application/json https://www.chronogolf.com/marketplace/v2/teetimes?start_date=2026-09-25&course_ids=0dae1010-7f89-43af-993b-bc31d65edd4d&holes=18&page=1\ncurl: (22) The requested URL returned error: 403\n"
     }
   ],
   "teeTimes": [
