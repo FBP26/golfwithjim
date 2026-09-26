@@ -51,3 +51,12 @@ CREATE TABLE IF NOT EXISTS push_matches (
   sent_at INTEGER NOT NULL,
   PRIMARY KEY (device_id, match_key)
 );
+CREATE TABLE IF NOT EXISTS signup_notifications (
+  id TEXT PRIMARY KEY,
+  device_kind TEXT NOT NULL,
+  created_at INTEGER NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  claim_until INTEGER NOT NULL DEFAULT 0,
+  sent_at INTEGER,
+  last_error TEXT
+);

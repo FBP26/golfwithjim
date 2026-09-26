@@ -134,3 +134,52 @@ try {
   assert.equal(messages.length, mailCount);
   console.log("PASS: Apple-compatible encrypted push, device registration/test/removal, deduplication, failure retry, pause, expired subscription cleanup, and ZERO email delivery in push-only mode. All push delivery was mocked.");
 } finally { await pushRuntime.dispose(); }
+
+const signupRuntime = createRuntime({ EMAIL_DELIVERY_ENABLED: "false", SIGNUP_EMAIL_TO: "owner-notices@example.test", VAPID_PUBLIC_KEY: vapid.getPublicKey().toString("base64url"), VAPID_PRIVATE_KEY: vapid.getPrivateKey().toString("base64url") });
+try {
+  const database = await signupRuntime.getD1Database("DB");
+  const schema = await readFile(new URL("schema.sql", import.meta.url), "utf8");
+  for (const statement of schema.split(";").map(value => value.trim()).filter(Boolean)) await database.prepare(statement).run();
+  await database.prepare("INSERT INTO subscribers (id, email, rules, created_at) VALUES (?, ?, ?, ?)").bind("signup-owner", "public@example.test", JSON.stringify(defaultAlerts), Date.now()).run();
+  const deviceKey = createECDH("prime256v1");
+  deviceKey.generateKeys();
+  const subscription = { endpoint: "https://web.push.apple.com/new-signup", keys: { p256dh: deviceKey.getPublicKey().toString("base64url"), auth: randomBytes(16).toString("base64url") } };
+  const oldSubscription = { ...subscription, endpoint: "https://web.push.apple.com/existing-before-release" };
+  await database.prepare("INSERT INTO push_devices (id, subscriber_id, endpoint, subscription, created_at) VALUES (?, ?, ?, ?, ?)").bind("existing-device", "signup-owner", oldSubscription.endpoint, JSON.stringify(oldSubscription), Date.now()).run();
+  const action = (path, value = subscription) => signupRuntime.dispatchFetch(`https://alerts.test/push/${path}`, { method: "POST", headers: { "Content-Type": "application/json", "User-Agent": "iPhone", Origin: "https://fbp26.github.io" }, body: JSON.stringify({ subscription: value, email: "ignored@example.test" }) });
+  const check = async () => (await signupRuntime.dispatchFetch("https://alerts.test/admin/check", { method: "POST", headers: { Authorization: "Bearer test-admin" } })).json();
+  const mailCount = messages.length;
+  assert.equal((await (await action("subscribe", oldSubscription)).json()).newDevice, false);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM signup_notifications").first()).total, 0);
+  const delivery = Promise.withResolvers();
+  onDelivery = delivery.resolve;
+  const registrations = await Promise.all([action("subscribe"), action("subscribe")]);
+  const results = await Promise.all(registrations.map(response => response.json()));
+  assert.equal(results.filter(result => result.newDevice).length, 1);
+  await delivery.promise;
+  assert.equal(messages.length, mailCount + 1);
+  assert.equal(messages.at(-1).to, "owner-notices@example.test");
+  assert.match(messages.at(-1).subject, /notification signup/);
+  assert.match(messages.at(-1).body, /iPhone/);
+  assert.doesNotMatch(messages.at(-1).body, /new-signup|ignored@example.test/);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM signup_notifications").first()).total, 1);
+  assert.equal((await action("unsubscribe")).status, 200);
+  assert.equal((await (await action("subscribe")).json()).newDevice, false);
+  await database.prepare("INSERT INTO signup_notifications (id, device_kind, created_at) VALUES (?, ?, ?)").bind("retry-test", "Browser device", Date.now()).run();
+  acceptEmail = false;
+  await check();
+  const failed = await database.prepare("SELECT * FROM signup_notifications WHERE id='retry-test'").first();
+  assert.equal(failed.sent_at, null);
+  assert.equal(failed.attempts, 1);
+  assert.match(failed.last_error, /not accepted/);
+  acceptEmail = true;
+  await database.prepare("UPDATE signup_notifications SET claim_until=0 WHERE id='retry-test'").run();
+  await check();
+  assert.ok((await database.prepare("SELECT sent_at FROM signup_notifications WHERE id='retry-test'").first()).sent_at);
+  const deliveredCount = messages.length;
+  await check();
+  assert.equal(messages.length, deliveredCount);
+  assert.equal(messages.length, mailCount + 2);
+  assert.ok(messages.slice(mailCount).every(message => message.to === "owner-notices@example.test" && message.subject === "New Golf With Jim notification signup"));
+  console.log("PASS: future-only owner signup emails, atomic concurrent-registration deduplication, refresh/re-enable suppression, durable failure retry, fixed recipient and no tee-time email delivery. All mail was mocked.");
+} finally { await signupRuntime.dispose(); }

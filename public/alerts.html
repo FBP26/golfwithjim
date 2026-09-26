@@ -11,15 +11,19 @@
   <meta name="theme-color" content="#15372c">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="apple-touch-icon" href="golf-icon.png">
-  <link rel="stylesheet" href="alerts.css?v=20260926-push">
+  <script src="color-theme.js?v=20260926-alerts"></script>
+  <link rel="stylesheet" href="alerts.css?v=20260926-theme">
 </head>
 <body>
   <header>
+    <div class="header-tools">
     <nav class="header-nav-tabs" aria-label="Views">
       <a class="nav-tab" href="./">List</a>
       <a class="nav-tab" href="./?view=map">Map</a>
       <a class="nav-tab active" href="alerts.html" aria-current="page">Alerts</a>
     </nav>
+    <label class="theme-switch"><input id="theme-toggle" type="checkbox" role="switch">Dark mode</label>
+    </div>
     <div class="alert-heading"><h1>My Alerts</h1></div>
     <span>Push notifications</span>
   </header>

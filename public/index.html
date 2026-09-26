@@ -8,20 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Tee Times">
   <title>Richmond Tee Times</title>
-  <script>
-    (() => {
-      const key = "tee-times-color-theme";
-      try { document.documentElement.dataset.theme = localStorage.getItem(key) === "dark" ? "dark" : "light"; } catch {}
-      document.addEventListener("DOMContentLoaded", () => {
-        const toggle = document.getElementById("theme-toggle");
-        toggle.checked = document.documentElement.dataset.theme === "dark";
-        toggle.addEventListener("change", () => {
-          document.documentElement.dataset.theme = toggle.checked ? "dark" : "light";
-          try { localStorage.setItem(key, document.documentElement.dataset.theme); } catch {}
-        });
-      });
-    })();
-  </script>
+  <script src="color-theme.js?v=20260926-alerts"></script>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="golf-icon.svg">
   <link rel="apple-touch-icon" href="golf-icon.png">

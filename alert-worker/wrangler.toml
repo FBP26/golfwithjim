@@ -8,6 +8,7 @@ crons = ["*/15 * * * *"]
 [vars]
 PUBLIC_EDITOR_EMAIL = "fbpool07@gmail.com"
 EMAIL_DELIVERY_ENABLED = "false"
+SIGNUP_EMAIL_TO = "fbpool07@gmail.com"
 EMAIL_RELAY_URL = "https://script.google.com/macros/s/AKfycbxZUgJm6LstCEomhmrlJYa_nH7tsmxC_4UZwYdroIZbs-PeI6KdPqUZtsF9fZvr_YuNWQ/exec"
 
 [[d1_databases]]

@@ -1,5 +1,6 @@
 import { defaultAlerts, validateAlerts, matchesAlert, alertSummary, alertCourseGroups } from "../src/personal-alerts.js";
 import { pushConfigured, pushRequest, checkPushAlerts } from "./push.js";
+import { signupEmailConfigured, flushSignupEmails } from "./signup-notifications.js";
 
 const siteOrigin = "https://fbp26.github.io";
 const feedUrl = "https://fbp26.github.io/golfwithjim/api/tee-times.json";
@@ -114,6 +115,7 @@ async function enqueue(env, subscriber, matches, checkedAt, welcome = false) {
 }
 
 export async function checkAlerts(env) {
+  await flushSignupEmails(env);
   const emailEnabled = env.EMAIL_DELIVERY_ENABLED !== "false" && env.EMAIL_RELAY_SECRET && env.EMAIL_RELAY_URL;
   if (!emailEnabled && !pushConfigured(env)) return { configured: false, sent: 0 };
   const owner = crypto.randomUUID();
@@ -153,11 +155,15 @@ export default {
   async fetch(request, env, context) {
     const url = new URL(request.url);
     if (request.method === "OPTIONS") return json(null, 204);
-    if (url.pathname === "/health") return json({ ok: true, emailConfigured: Boolean(env.EMAIL_RELAY_URL && env.EMAIL_RELAY_SECRET), emailEnabled: env.EMAIL_DELIVERY_ENABLED !== "false", pushConfigured: pushConfigured(env) });
+    if (url.pathname === "/health") return json({ ok: true, emailConfigured: Boolean(env.EMAIL_RELAY_URL && env.EMAIL_RELAY_SECRET), emailEnabled: env.EMAIL_DELIVERY_ENABLED !== "false", pushConfigured: pushConfigured(env), signupEmailConfigured: signupEmailConfigured(env) });
     const origin = request.headers.get("Origin");
     if (origin && origin !== siteOrigin) return json({ error: "Origin not allowed." }, 403);
     if (url.pathname.startsWith("/push/")) {
-      try { const result = await pushRequest(request, env, url.pathname); return result ? json(result) : json({ error: "Not found." }, 404); }
+      try {
+        const result = await pushRequest(request, env, url.pathname);
+        if (result?.newDevice) context.waitUntil(flushSignupEmails(env));
+        return result ? json(result) : json({ error: "Not found." }, 404);
+      }
       catch (error) { return json({ error: error.message || "Notification request failed." }, 400); }
     }
     if (url.pathname === "/request-link" && request.method === "POST") {

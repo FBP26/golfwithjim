@@ -1,4 +1,5 @@
 import { buildPushPayload } from "@block65/webcrypto-web-push";
+import { signupStatement } from "./signup-notifications.js";
 
 export function validateSubscription(value) {
   if (!value || typeof value.endpoint !== "string" || value.endpoint.length > 2048) throw new Error("Invalid push subscription.");
@@ -43,8 +44,12 @@ export async function pushRequest(request, env, path) {
   if (path === "/push/subscribe") {
     const count = await env.DB.prepare("SELECT COUNT(*) AS total FROM push_devices WHERE subscriber_id = ?").bind(subscriber.id).first();
     if (!device && count.total >= 10) throw new Error("Ten devices are already enabled. Disable notifications on an old device first.");
-    await env.DB.prepare("INSERT INTO push_devices (id, subscriber_id, endpoint, subscription, created_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(endpoint) DO UPDATE SET subscription=excluded.subscription").bind(crypto.randomUUID(), subscriber.id, subscription.endpoint, JSON.stringify(subscription), Date.now()).run();
-    return { ok: true };
+    const deviceId = crypto.randomUUID();
+    const statements = [env.DB.prepare("INSERT INTO push_devices (id, subscriber_id, endpoint, subscription, created_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(endpoint) DO UPDATE SET subscription=excluded.subscription").bind(deviceId, subscriber.id, subscription.endpoint, JSON.stringify(subscription), Date.now())];
+    const signup = await signupStatement(env, subscription.endpoint, deviceId, request.headers.get("User-Agent") || "");
+    if (signup) statements.push(signup);
+    const results = await env.DB.batch(statements);
+    return { ok: true, newDevice: Boolean(signup && results[1].meta.changes) };
   }
   if (!device) throw new Error("Enable notifications on this device first.");
   const response = await sendPush(env, subscription, { title: "Golf With Jim", body: "Push notifications are ready. Your saved tee-time alerts will appear here.", tag: "golf-test", url: "alerts.html" });
