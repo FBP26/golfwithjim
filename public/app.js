@@ -402,7 +402,8 @@ function updateMapView() {
     groups.get(key).push(course);
   });
 
-  const bounds = L.latLng(RICHMOND_CENTER).toBounds(state.maximumDistance * 2 * 1609.34);
+  const selectedLocations = mappable.filter(course => !state.hiddenCourses.has(course.course))
+    .map(course => [course.latitude, course.longitude]);
   let visibleCount = 0;
   groups.forEach((group, key) => {
     const primary = group[0];
@@ -418,7 +419,7 @@ function updateMapView() {
   });
 
   elements["map-count"].textContent = `${visibleCount} location${visibleCount === 1 ? "" : "s"}`;
-  map.fitBounds(bounds, { padding: [24, 24], maxZoom: 11, animate: false });
+  if (selectedLocations.length) map.fitBounds(selectedLocations, { padding: [30, 48], maxZoom: 11, animate: false });
 }
 
 function locateUser(button) {

@@ -1,0 +1,14 @@
+name = "golfwithjim-alerts"
+main = "worker.js"
+compatibility_date = "2026-09-26"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[vars]
+EMAIL_RELAY_URL = "https://script.google.com/macros/s/AKfycbxZUgJm6LstCEomhmrlJYa_nH7tsmxC_4UZwYdroIZbs-PeI6KdPqUZtsF9fZvr_YuNWQ/exec"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "golfwithjim-alerts"
+database_id = "4508cd79-1107-4145-a7c3-0ee7464906ed"

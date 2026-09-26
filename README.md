@@ -40,6 +40,30 @@ The public Refresh button still runs the cloud workflow. It does not contact or 
 
 ## Email reports
 
+### Personal alerts
+
+The separate `alert-worker/` service stores private subscriber preferences in Cloudflare D1. The initial rules are Magnolia Green on Saturdays through 10:00 AM inclusive, at any price, and Spring Creek on any day for at most $119.99 per golfer. Both use Eastern time, exact public 18-hole rates, and any verified available party size. Stale, inexact, restricted, past-start, and incompatible-party offers are excluded.
+
+Every email includes all saved rules and a private link to `alerts.html`. The editor supports course, weekdays, start/end time, minimum/maximum price, one through four golfers or any available size, optional date bounds, Hot Deals only, per-rule enabled, pause all, and adding/removing rules. Saves use version checks to prevent another tab's newer settings being overwritten. An email already handed to the relay cannot be recalled by pausing.
+
+Management links expire after 90 days. Their tokens are SHA-256 hashed in the access-token table, passed to the page in a URL fragment, removed from the address bar, and sent to the API only as a Bearer header. Reopen the email link after reloading the editor. The page can request a replacement link for an existing subscriber, with a generic response and limits of three requests per email/day and ten per requesting IP/day. Pending email messages temporarily contain their management links in the private delivery table; successful/canceled batches erase message content. No subscriber email, token, or preferences enter the public static feed.
+
+The Worker checks the published feed every 15 minutes, not each course's live booking system. Existing GitHub collection is scheduled at 10:05, 11:05, 22:05, and 23:05 UTC, subject to runner delays; manual Refresh also updates it. A 15-minute alert check does not imply 15-minute inventory freshness. Feed and successful source observations older than 30 hours are rejected. Unchanged rule/course/date/time/price/party matches are suppressed after confirmed relay acceptance; up to 100 new matches are batched per check. Failed sends retry, while expired/no-longer-matching pending offers are canceled. The relay has no exactly-once guarantee: an ambiguous network timeout after acceptance can cause a repeated email.
+
+Deployment and verification, from the project root:
+
+```powershell
+npm.cmd --prefix alert-worker ci
+node alert-worker/verify.mjs
+node alert-worker/node_modules/wrangler/bin/wrangler.js d1 execute golfwithjim-alerts --remote --config alert-worker/wrangler.toml --file alert-worker/schema.sql
+npm.cmd --prefix alert-worker run deploy
+node alert-worker/activate.mjs YOUR_EMAIL
+```
+
+Activation prompts securely for the existing email relay secret, creates a separate random admin secret without printing it, enrolls the address, sends the welcome/settings email, and checks current published matches. Enter the relay secret directly in the terminal, never in chat, source, or GitHub Pages. It must match the email relay's Apps Script property `FBP_NOTIFICATION_RELAY_SECRET`. Existing enrollment/preferences are preserved. Worker deployment and Pages publication are separate operations. `GET /health` reports configuration only, not successful delivery; private delivery records and the relay response establish acceptance, not inbox arrival.
+
+### Legacy reports
+
 Builds two email reports from a permitted JSON tee-time feed:
 
 - `daily`: seven compact daily tables with every qualifying exact-price 18-hole start. Course rows show the usual start cadence, group repeating times into ranges, and separate regular rates from Hot Deals; only course names link to booking.
@@ -49,7 +73,7 @@ Defaults include availability for one through four golfers within 100 miles of R
 
 ## Coverage and location
 
-The default radius and outer map ring are 100 miles around Richmond (37.5407, -77.436). The map initially frames the selected radius. Coordinate-backed distances are straight-line miles, rounded up to a tenth, not driving distances; existing unmapped local links retain their estimates. The shared distance calculation is used by the registry and the existing locate-me control.
+The default radius and outer map ring are 100 miles around Richmond (37.5407, -77.436). The map initially fits all selected courses with known coordinates, including selected courses with no current inventory, with padding and a maximum initial zoom of 11. Pins still represent qualifying availability only. Clicking a pin preserves the map's zoom and center; manual navigation remains available. Coordinate-backed distances are straight-line miles, rounded up to a tenth, not driving distances; existing unmapped local links retain their estimates. The shared distance calculation is used by the registry and the existing locate-me control.
 
 The September 24 expansion cross-checked GolfNow regional course results, VSGA listings, and Census street-address geocoding. `fixtures/course-discovery-100mi.json` records added courses, unresolved addresses, and out-of-radius exclusions. Course listings are not a guarantee of current tee times or an exhaustive census of every facility. Public/resort booking links may appear on the main list without live collection; short, private, and military facilities remain separate. Map availability pins continue to represent qualifying inventory, not every directory link. New sources are labelled as not checked until an actual collection result exists.
 
@@ -85,7 +109,7 @@ The source registry also records investigated exclusions. Private-only rates, st
 
 Elson Redmond Memorial Driving Range appears in `Other courses` as a link-only First Tee facility. Coverage reviews also search current GolfNow marketplace results for newly listed public courses; a stale or broken direct-booking URL is not sufficient reason to exclude a course that has live marketplace inventory. Marketplace discovery restored Birkdale and Meadowbrook and added the currently visible full-size courses, including the three Ford's Colony courses. The 75-mile review also added Williamsburg National's public online tee sheet and Kiln Creek as a phone-booked public course.
 
-Spring Creek Golf Club also appears in `Other courses` through its GolfNow listing. It has been fully private since May 2024, so the report links the club without presenting public tee-time inventory. Lake Monticello and the reopened Meadows Farms are registered through their current GolfNow facility IDs.
+Spring Creek Golf Club is a private club, but its publicly bookable GolfNow member-for-a-day offers qualify when an exact public rate and available party size are verified. Club-member-only rates remain excluded. Lake Monticello and the reopened Meadows Farms are registered through their current GolfNow facility IDs.
 
 Accepted payloads are an array or an object containing `teeTimes`, `times`, `items`, or `data`:
 
