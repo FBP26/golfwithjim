@@ -25,14 +25,22 @@ async function request(action, subscription) {
   return result;
 }
 
+function waitForWorker(promise) {
+  let timer;
+  return Promise.race([promise, new Promise((resolve, reject) => {
+    timer = setTimeout(() => reject(new Error("Notification setup did not finish. Close and reopen the Home Screen app, then try again.")), 15000);
+  })]).finally(() => clearTimeout(timer));
+}
+
 async function initialize() {
   const ios = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
   if (ios && !standalone) { message("On iPhone: Share > Add to Home Screen, then open the app to enable notifications. Requires iOS 16.4 or newer."); return; }
   if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) { message("Push notifications are unavailable in this browser."); return; }
+  if (Notification.permission === "denied") { message("Notifications are blocked. Allow them in this app's notification settings, then reopen Alerts."); return; }
   try {
-    await navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" });
-    registration = await navigator.serviceWorker.ready;
+    await waitForWorker(navigator.serviceWorker.register("./sw.js", { scope: "./", updateViaCache: "none" }));
+    registration = await waitForWorker(navigator.serviceWorker.ready);
     const response = await fetch(api + "config", { cache: "no-store", signal: AbortSignal.timeout(15000) });
     const config = await response.json();
     if (!response.ok || !config.configured) throw new Error("Notification service is not ready. Reload to try again.");
