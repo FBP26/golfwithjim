@@ -1,5 +1,25 @@
 export const RICHMOND_CENTER = [37.5407, -77.436];
 
+export const LOCAL_COURSES = new Set([
+  "Birkdale Golf Club", "Brickshire Golf Club",
+  "Colonial Heritage Golf Club", "Dogwood Trace Golf Course", "Gold Course at The Golden Horseshoe",
+  "Green Course at The Golden Horseshoe", "Hanover Golf Club", "The Golf Club at The Highlands",
+  "The Hollows Golf Club", "Hunting Hawk Golf Club", "Independence Championship Course",
+  "Lake Chesdin Golf Club", "Magnolia Green Golf Club", "Mattaponi Springs Golf Club",
+  "Meadowbrook Country Club", "Mill Quarter Plantation Golf Club", "Pendleton Golf Club",
+  "Providence Golf Club", "Queenfield Golf Club", "Royal New Kent Golf Club", "Spring Creek Golf Club",
+  "Sycamore Creek Golf Course", "The Club at Viniterra",
+]);
+
+export function isSelectableCourse(course) {
+  return LOCAL_COURSES.has(course.course) || Boolean(course.collector && course.showInventory !== false);
+}
+
+export function coursesInGroup(courses, group = "local") {
+  return [...new Set(courses.filter(isSelectableCourse).map(course => course.course))]
+    .filter(name => group === "all" || (group === "local" ? LOCAL_COURSES.has(name) : !LOCAL_COURSES.has(name)));
+}
+
 export function isInventoryUsable(teeTime, { allowCached = false, now = Date.now() } = {}) {
   if (!teeTime.stale && !teeTime.cacheExpiresAt) return true;
   const verified = Date.parse(teeTime.verifiedAt);

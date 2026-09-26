@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable } from "./src/dashboard.js?v=20260925-laptop";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable, isSelectableCourse, coursesInGroup } from "./src/dashboard.js?v=20260925-local";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -9,15 +9,12 @@ const state = {
   maximumDistance: 100, maximumPrice: Infinity, exactPrice: null, hotDealsOnly: false, course: "", sort: "price", checkedAt: "",
 };
 
-try {
-  const hidden = JSON.parse(localStorage.getItem("tee-times-hidden-courses") || "[]");
-  if (Array.isArray(hidden)) state.hiddenCourses = new Set(hidden.filter(name => typeof name === "string"));
-} catch {}
+let courseGroup = "local";
 
 const elements = Object.fromEntries([
-  "date-options", "distance", "distance-output", "price", "price-output", "earliest", "earliest-output", "latest", "latest-output",
-  "hot-deals", "course-search", "sort", "results", "metrics", "feed-status",
-  "refresh", "refresh-label", "clear-filters", "players-filter", "course-directory", "expand-results", "collapse-results",
+  "date-options", "distance", "distance-output", "earliest", "earliest-output", "latest", "latest-output",
+  "sort", "results", "metrics", "feed-status", "course-groups",
+  "refresh", "refresh-label", "players-filter", "course-directory", "expand-results", "collapse-results",
   "tab-list", "tab-map", "view-list-container", "view-map-container",
   "map-count", "leaflet-map", "map-date-options",
   "pull-refresh", "pull-refresh-label",
@@ -28,7 +25,8 @@ const elements = Object.fromEntries([
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;",
 })[character]);
-const money = value => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: value % 1 ? 2 : 0 }).format(value);
+const money = value => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(value);
+const exactMoney = value => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", minimumFractionDigits: value % 1 ? 2 : 0 }).format(value);
 const dateLabel = date => new Intl.DateTimeFormat("en-US", { weekday: "long", month: "short", day: "numeric", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 const shortDate = date => new Intl.DateTimeFormat("en-US", { weekday: "short", month: "numeric", day: "numeric", timeZone: "UTC" }).format(new Date(`${date}T12:00:00Z`));
 const timeValue = time => {
@@ -42,22 +40,30 @@ const timeOptions = Array.from({ length: 31 }, (_, index) => 300 + index * 30).m
 elements.earliest.innerHTML = elements.latest.innerHTML = timeOptions;
 elements.earliest.value = 300;
 elements.latest.value = 1200;
-elements.price.innerHTML = Array.from({ length: 26 }, (_, index) => 30 + index * 5).map(price => `<option value="${price}">${money(price)}</option>`).join("") + '<option value="160">Any</option>';
-elements.price.value = 160;
-if (matchMedia("(max-width: 850px)").matches) document.querySelector(".filters").open = false;
 
 function selectableCourses() {
-  return dedupeByCourse(state.courses.filter(isMainCourse));
+  return dedupeByCourse(state.courses.filter(isSelectableCourse));
+}
+
+function applyCourseGroup(group) {
+  courseGroup = group;
+  const selected = new Set(coursesInGroup(state.courses, group));
+  state.hiddenCourses = new Set(state.courses.filter(course => !selected.has(course.course)).map(course => course.course));
+  renderCourseSelection();
 }
 
 function renderCourseSelection() {
   const courses = selectableCourses();
   elements["course-selection"].innerHTML = courses.toSorted((left, right) => left.course.localeCompare(right.course)).map(course => `<label><input type="checkbox" data-course="${escapeHtml(course.course)}"${state.hiddenCourses.has(course.course) ? "" : " checked"}><span>${escapeHtml(shortCourseName(course.course))}</span></label>`).join("");
-  elements["course-selection-count"].textContent = `${courses.filter(course => !state.hiddenCourses.has(course.course)).length}/${courses.length}`;
+  elements["course-selection-count"].textContent = `${courses.filter(course => !state.hiddenCourses.has(course.course)).length} selected`;
+  elements["course-groups"].querySelectorAll("button").forEach(button => {
+    button.classList.toggle("active", button.dataset.group === courseGroup);
+    button.setAttribute("aria-pressed", String(button.dataset.group === courseGroup));
+  });
 }
 
 function saveCourseSelection() {
-  try { localStorage.setItem("tee-times-hidden-courses", JSON.stringify([...state.hiddenCourses])); } catch {}
+  courseGroup = "custom";
   renderCourseSelection();
   renderResults();
 }
@@ -192,7 +198,7 @@ function renderResults() {
   }
 
   const byDate = Map.groupBy(filtered, teeTime => teeTime.date);
-  elements.results.innerHTML = [...byDate].map(([date, dateTimes]) => {
+  elements.results.innerHTML = [...byDate].map(([date, dateTimes], dateIndex) => {
     const byCourse = Map.groupBy(dateTimes, teeTime => teeTime.course);
     const courseRows = sortCourseGroups(byCourse).map(([course, courseTimes]) => {
       const ordered = sortResults(courseTimes);
@@ -202,13 +208,13 @@ function renderResults() {
       const highestPrice = Math.max(...courseTimes.map(teeTime => teeTime.allInPrice));
       const starts = groupTeeTimes(ordered);
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
-      const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${money(teeTime.allInPrice)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
-      const inventorySummary = `${courseTimes.some(teeTime => teeTime.stale) ? "Cached" : escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
+      const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${exactMoney(teeTime.allInPrice)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
+      const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
       return `<details class="course-row"><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
     }).join("");
     const count = groupTeeTimes(dateTimes).length;
-    return `<details class="date-group" open><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
+    return `<details class="date-group"${dateIndex === 0 ? " open" : ""}><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
   }).join("") + trackedCoursesHtml(filtered);
   updateMapView();
 }
@@ -236,7 +242,7 @@ function renderDirectory() {
   const checks = courseCheckMap(state.sourceChecks);
   const sorted = dedupeByCourse(state.courses).toSorted((left, right) => left.distanceMiles - right.distanceMiles || left.course.localeCompare(right.course));
   const columns = window.matchMedia("(max-width: 850px)").matches ? 2 : 4;
-  const inventoryCourses = new Set(selectableCourses().map(course => course.course));
+  const inventoryCourses = new Set(state.courses.filter(isMainCourse).map(course => course.course));
   const directories = [
     ["course-directory", sorted.filter(course => inventoryCourses.has(course.course))],
     ["other-course-directory", sorted.filter(course => !inventoryCourses.has(course.course))],
@@ -293,7 +299,7 @@ function popupTimesTableHtml(times) {
   const showDate = !state.date;
   const showSource = new Set(times.map(teeTime => teeTime.source)).size > 1;
   const ordered = times.toSorted((left, right) => (showDate ? left.date.localeCompare(right.date) : 0) || timeValue(left.time) - timeValue(right.time) || left.allInPrice - right.allInPrice);
-  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${money(teeTime.allInPrice)}</td>${showSource ? `<td>${escapeHtml(sourceDisplayLabel(teeTime.source))}</td>` : ""}<td>${teeTime.availablePlayers}</td></tr>`).join("");
+  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${exactMoney(teeTime.allInPrice)}</td>${showSource ? `<td>${escapeHtml(sourceDisplayLabel(teeTime.source))}</td>` : ""}<td>${teeTime.availablePlayers}</td></tr>`).join("");
   return `<div class="map-popup-times-wrap"><table class="map-popup-times${showDate ? " has-date" : ""}"><thead><tr>${showDate ? "<th>Date</th>" : ""}<th>Time</th><th>Price</th>${showSource ? "<th>Source</th>" : ""}<th>Spots</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
@@ -370,6 +376,19 @@ function initMap() {
   });
 
   markerLayer = L.layerGroup().addTo(map);
+  map.on("popupopen", event => {
+    const popup = event.popup;
+    map.invalidateSize({ pan: false });
+    const popupWidth = Math.max(100, Math.min(300, map.getSize().x - 155));
+    popup.options.minWidth = popupWidth;
+    popup.options.maxWidth = popupWidth;
+    popup.update();
+    const popupRect = popup.getElement().getBoundingClientRect();
+    const mapRect = map.getContainer().getBoundingClientRect();
+    const offset = L.point(popupRect.left + popupRect.width / 2 - mapRect.left - mapRect.width / 2,
+      popupRect.top + popupRect.height / 2 - mapRect.top - mapRect.height / 2);
+    map.panBy(offset, { animate: false });
+  });
   requestAnimationFrame(() => map.invalidateSize());
 }
 
@@ -404,13 +423,13 @@ function updateMapView() {
     const visibleCourses = group.filter(course => pinCategory(teeTimesByCourse.get(course.course) || []) !== "link");
     const icon = pinIcon(bestCategory, visibleCourses.length > 1 ? String(visibleCourses.length) : "&#9971;");
     const marker = L.marker([primary.latitude, primary.longitude], { icon }).addTo(markerLayer);
-    marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { maxWidth: 300, maxHeight: 320, autoPanPaddingTopLeft: [20, 70], autoPanPaddingBottomRight: [20, 20] });
-    marker.on("click", () => flyToMapKey(key, visibleCourses));
+    const popupWidth = Math.max(100, Math.min(300, map.getSize().x - 155));
+    marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { minWidth: popupWidth, maxWidth: popupWidth, maxHeight: Math.min(320, map.getSize().y - 60), autoPan: false });
     visibleCount += 1;
   });
 
   elements["map-count"].textContent = `${visibleCount} location${visibleCount === 1 ? "" : "s"}`;
-  map.flyToBounds(bounds, { padding: [24, 24], maxZoom: 11, duration: .6 });
+  map.fitBounds(bounds, { padding: [24, 24], maxZoom: 11, animate: false });
 }
 
 function locateUser(button) {
@@ -492,7 +511,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     state.teeTimes = payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
-    renderCourseSelection();
+    resetFilters();
     renderDates();
     renderDirectory();
     selectDate(state.date);
@@ -569,41 +588,62 @@ elements["course-selection"].addEventListener("change", event => {
   else state.hiddenCourses.add(course);
   saveCourseSelection();
 });
-elements["show-courses"].addEventListener("click", () => { state.hiddenCourses.clear(); saveCourseSelection(); });
+elements["course-groups"].addEventListener("click", event => {
+  const button = event.target.closest("[data-group]");
+  if (!button) return;
+  applyCourseGroup(button.dataset.group);
+  renderResults();
+});
+elements["show-courses"].addEventListener("click", () => { applyCourseGroup("all"); renderResults(); });
 elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses = new Set(selectableCourses().map(course => course.course)); saveCourseSelection(); });
-elements.distance.addEventListener("input", () => { state.maximumDistance = Number(elements.distance.value); elements["distance-output"].value = `${state.maximumDistance} miles`; renderResults(); });
-elements.price.addEventListener("input", () => { state.maximumPrice = Number(elements.price.value) === 160 ? Infinity : Number(elements.price.value); state.exactPrice = null; elements["price-output"].value = Number.isFinite(state.maximumPrice) ? money(state.maximumPrice) : "Any"; renderResults(); });
+let distanceFrame = null;
+elements.distance.addEventListener("input", () => {
+  state.maximumDistance = Number(elements.distance.value);
+  elements["distance-output"].value = `${state.maximumDistance} miles`;
+  if (distanceFrame === null) distanceFrame = requestAnimationFrame(() => { distanceFrame = null; renderResults(); });
+});
+function moveDistancePointer(event) {
+  const bounds = elements.distance.getBoundingClientRect();
+  const fraction = Math.max(0, Math.min(1, (event.clientX - bounds.left - 18) / Math.max(1, bounds.width - 36)));
+  elements.distance.value = 5 + Math.round(fraction * 19) * 5;
+  elements.distance.dispatchEvent(new Event("input", { bubbles: true }));
+}
+elements.distance.addEventListener("pointerdown", event => {
+  if (event.button !== 0) return;
+  event.preventDefault();
+  elements.distance.focus({ preventScroll: true });
+  elements.distance.setPointerCapture(event.pointerId);
+  moveDistancePointer(event);
+});
+elements.distance.addEventListener("pointermove", event => { if (elements.distance.hasPointerCapture(event.pointerId)) moveDistancePointer(event); });
+elements.distance.addEventListener("pointerup", event => { if (elements.distance.hasPointerCapture(event.pointerId)) elements.distance.releasePointerCapture(event.pointerId); });
 elements.earliest.addEventListener("input", () => updateTimeWindow("earliest"));
 elements.latest.addEventListener("input", () => updateTimeWindow("latest"));
-elements["hot-deals"].addEventListener("change", () => { state.hotDealsOnly = elements["hot-deals"].checked; renderResults(); });
 elements.metrics.addEventListener("click", event => {
   const button = event.target.closest("[data-metric-filter]");
   if (!button) return;
   if (button.dataset.metricFilter === "hot") {
     state.hotDealsOnly = !state.hotDealsOnly;
-    elements["hot-deals"].checked = state.hotDealsOnly;
   } else {
     state.exactPrice = state.exactPrice == null ? Number(button.dataset.price) : null;
   }
   renderResults();
 });
-elements["course-search"].addEventListener("input", () => { state.course = elements["course-search"].value.trim().toLowerCase(); renderResults(); });
 elements.sort.addEventListener("change", () => { state.sort = elements.sort.value; renderResults(); });
 elements["expand-results"].addEventListener("click", () => elements.results.querySelectorAll("details").forEach(details => { details.open = true; }));
 elements["collapse-results"].addEventListener("click", () => elements.results.querySelectorAll("details").forEach(details => { details.open = false; }));
-elements.refresh.addEventListener("click", () => loadInventory({ liveRefresh: true }));
-elements["clear-filters"].addEventListener("click", () => {
+function resetFilters() {
   state.players = 0; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 100;
   state.maximumPrice = Infinity; state.exactPrice = null; state.hotDealsOnly = false; state.course = ""; state.sort = "price";
   elements.earliest.value = 300; elements.latest.value = 1200; elements.distance.value = 100;
-  elements.price.value = 160; elements["hot-deals"].checked = false; elements["course-search"].value = ""; elements.sort.value = "price";
+  elements.sort.value = "price";
   elements["earliest-output"].value = "5:00 AM"; elements["latest-output"].value = "8:00 PM";
-  elements["distance-output"].value = "100 miles"; elements["price-output"].value = "Any";
+  elements["distance-output"].value = "100 miles";
   elements["players-filter"].querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.players === "0"));
-  state.hiddenCourses.clear();
-  saveCourseSelection();
+  applyCourseGroup("local");
   selectDate("");
-});
+}
+elements.refresh.addEventListener("click", () => { resetFilters(); loadInventory({ liveRefresh: true }); });
 
 function expireCachedInventory() {
   const current = state.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
