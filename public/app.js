@@ -322,17 +322,13 @@ function ringLabelLatLng(miles) {
   return [RICHMOND_CENTER[0] + miles / 69, RICHMOND_CENTER[1]];
 }
 
-// Leaflet popups open centered above their anchor by default; override the layout math so they
-// open to the right of the marker (vertically centered on it) and never get placed above it.
 L.Popup.prototype._updatePosition = function () {
   if (!this._map) return;
-  const point = this._map.latLngToLayerPoint(this._latlng);
-  const offset = L.point(this.options.offset || [0, 0]);
-  const anchor = this._getAnchor();
-  if (this._zoomAnimated) L.DomUtil.setPosition(this._container, point.add(anchor));
+  const point = this._map.containerPointToLayerPoint(this._map.getSize().divideBy(2));
+  L.DomUtil.setPosition(this._container, point);
   const height = this._container.offsetHeight || 0;
-  this._containerBottom = -Math.round(height / 2) - offset.y;
-  this._containerLeft = 14 + offset.x;
+  this._containerBottom = -Math.round(height / 2);
+  this._containerLeft = -Math.round(this._container.offsetWidth / 2);
   this._container.style.bottom = `${this._containerBottom}px`;
   this._container.style.left = `${this._containerLeft}px`;
 };
@@ -376,25 +372,18 @@ function initMap() {
   });
 
   markerLayer = L.layerGroup().addTo(map);
+  let activePopup = null;
   map.on("popupopen", event => {
     const popup = event.popup;
-    map.invalidateSize({ pan: false });
+    activePopup = popup;
     const popupWidth = Math.max(100, Math.min(300, map.getSize().x - 155));
     popup.options.minWidth = popupWidth;
     popup.options.maxWidth = popupWidth;
     popup.update();
-    const popupRect = popup.getElement().getBoundingClientRect();
-    const mapRect = map.getContainer().getBoundingClientRect();
-    const offset = L.point(popupRect.left + popupRect.width / 2 - mapRect.left - mapRect.width / 2,
-      popupRect.top + popupRect.height / 2 - mapRect.top - mapRect.height / 2);
-    map.panBy(offset, { animate: false });
   });
+  map.on("popupclose", event => { if (activePopup === event.popup) activePopup = null; });
+  map.on("move resize", () => { if (activePopup) activePopup._updatePosition(); });
   requestAnimationFrame(() => map.invalidateSize());
-}
-
-function flyToMapKey(key, group) {
-  if (!map || !group) return;
-  map.flyTo([group[0].latitude, group[0].longitude], Math.max(map.getZoom(), 11), { duration: .6 });
 }
 
 function updateMapView() {
@@ -422,7 +411,7 @@ function updateMapView() {
     if (bestCategory === "link") return;
     const visibleCourses = group.filter(course => pinCategory(teeTimesByCourse.get(course.course) || []) !== "link");
     const icon = pinIcon(bestCategory, visibleCourses.length > 1 ? String(visibleCourses.length) : "&#9971;");
-    const marker = L.marker([primary.latitude, primary.longitude], { icon }).addTo(markerLayer);
+    const marker = L.marker([primary.latitude, primary.longitude], { icon, autoPanOnFocus: false }).addTo(markerLayer);
     const popupWidth = Math.max(100, Math.min(300, map.getSize().x - 155));
     marker.bindPopup(popupHtml(visibleCourses, teeTimesByCourse), { minWidth: popupWidth, maxWidth: popupWidth, maxHeight: Math.min(320, map.getSize().y - 60), autoPan: false });
     visibleCount += 1;
