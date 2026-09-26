@@ -29,17 +29,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
-  <link rel="stylesheet" href="styles.css?v=20260925-fixed-map">
+  <link rel="stylesheet" href="styles.css?v=20260926-alert-nav">
 </head>
 <body>
   <div id="pull-refresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-icon">&#8635;</span><span id="pull-refresh-label">Pull to refresh</span></div>
   <header class="site-header">
     <label class="theme-switch"><input id="theme-toggle" type="checkbox" role="switch">Dark mode</label>
     <div class="header-actions">
-      <div class="header-nav-tabs" role="tablist">
-        <button id="tab-list" class="nav-tab active" role="tab" aria-selected="true">List view</button>
-        <button id="tab-map" class="nav-tab" role="tab" aria-selected="false">Map view</button>
-      </div>
+      <nav class="header-nav-tabs" aria-label="Views">
+        <a id="tab-list" href="./" class="nav-tab active" aria-current="page">List</a>
+        <a id="tab-map" href="?view=map" class="nav-tab">Map</a>
+        <a id="tab-alerts" href="alerts.html" class="nav-tab">Alerts</a>
+      </nav>
       <button id="refresh" class="refresh-action" title="Refresh tee times">
         <span id="refresh-label">Click to refresh tee times</span>
         <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8.1 8.1 0 0 0-15.5-2M4 4v5h5M4 13a8.1 8.1 0 0 0 15.5 2m.5 5v-5h-5"/></svg>
@@ -140,6 +141,6 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
-  <script type="module" src="app.js?v=20260926-stonehouse"></script>
+  <script type="module" src="app.js?v=20260926-alert-nav"></script>
 </body>
 </html>

@@ -3,6 +3,11 @@
 body { margin: 0; color: var(--ink); background: linear-gradient(120deg, #f0f5f1, #f9fafb); font: 15px/1.45 "Trebuchet MS", sans-serif; }
 header { padding: 20px max(16px, calc((100vw - 1000px) / 2)); border-bottom: 3px solid #c7e04a; background: #15372c; color: white; }
 header a { color: #c7e04a; font-weight: bold; }
+.header-nav-tabs { display: flex; gap: 4px; }
+.nav-tab { display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #cad7d0; text-decoration: none; }
+.nav-tab.active { background: #c7e04a; color: #15372c; }
+.alert-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
+#sign-out { color: white; background: transparent; border-color: #789789; }
 h1 { font-size: 26px; margin: 4px 0; letter-spacing: 0; }
 header span { overflow-wrap: anywhere; }
 main { max-width: 1032px; margin: 0 auto; padding: 16px; }

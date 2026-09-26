@@ -452,9 +452,13 @@ function locateUser(button) {
 function setActiveTab(view) {
   const showMap = view === "map";
   elements["tab-list"].classList.toggle("active", !showMap);
-  elements["tab-list"].setAttribute("aria-selected", String(!showMap));
   elements["tab-map"].classList.toggle("active", showMap);
-  elements["tab-map"].setAttribute("aria-selected", String(showMap));
+  elements[showMap ? "tab-map" : "tab-list"].setAttribute("aria-current", "page");
+  elements[showMap ? "tab-list" : "tab-map"].removeAttribute("aria-current");
+  const url = new URL(location.href);
+  if (showMap) url.searchParams.set("view", "map");
+  else url.searchParams.delete("view");
+  history.replaceState(null, "", url);
   elements["view-list-container"].classList.toggle("map-view-hidden", showMap);
   elements["view-map-container"].classList.toggle("map-view-hidden", !showMap);
   if (showMap) {
@@ -463,8 +467,8 @@ function setActiveTab(view) {
     requestAnimationFrame(() => map.invalidateSize());
   }
 }
-elements["tab-list"].addEventListener("click", () => setActiveTab("list"));
-elements["tab-map"].addEventListener("click", () => setActiveTab("map"));
+elements["tab-list"].addEventListener("click", event => { event.preventDefault(); setActiveTab("list"); });
+elements["tab-map"].addEventListener("click", event => { event.preventDefault(); setActiveTab("map"); });
 window.addEventListener("resize", () => { if (map && !elements["view-map-container"].classList.contains("map-view-hidden")) map.invalidateSize(); });
 // -------------------------------------------------------------------------
 
@@ -656,4 +660,4 @@ function expireCachedInventory() {
 
 setInterval(expireCachedInventory, 60_000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) expireCachedInventory(); });
-loadInventory();
+loadInventory().then(() => { if (new URLSearchParams(location.search).get("view") === "map") setActiveTab("map"); });

@@ -138,7 +138,10 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .date-heading > span { margin-right: auto; }
 .course-row { border-bottom: 1px solid var(--line); }
 .course-row > summary { display: grid; grid-template-columns: 9px minmax(190px, .72fr) minmax(190px, 1.8fr); align-items: center; gap: 10px; min-height: 67px; }
-.course-row > summary:hover { background: #eef1e966; }
+.course-row > summary { -webkit-tap-highlight-color: transparent; }
+@media (hover: hover) and (pointer: fine) {
+  .course-row > summary:hover { background: #eef1e966; }
+}
 .course-row > summary:focus-visible { outline: 2px solid var(--green-2); outline-offset: -2px; }
 .course-info { min-width: 0; padding: 11px 8px 11px 0; }
 .course-name { color: var(--green); font: 600 16px "Newsreader", serif; }
@@ -249,6 +252,7 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .nav-tab { background: transparent; border: 0; color: #cad7d0; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; transition: .15s; }
 .nav-tab:hover { color: white; background: #1e4a3b; }
 .nav-tab.active { background: var(--lime); color: var(--green); }
+.nav-tab { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; }
 
 .map-view-hidden { display: none !important; }
 .map-layout { display: flex; flex-direction: column; gap: 10px; height: calc(100vh - 160px); min-height: 550px; margin-top: 10px; }

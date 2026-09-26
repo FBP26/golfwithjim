@@ -7,10 +7,18 @@
   <meta name="robots" content="noindex,nofollow">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://golfwithjim-alerts.fbp-api-worker.workers.dev; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Golf With Jim | My Alerts</title>
-  <link rel="stylesheet" href="alerts.css?v=1">
+  <link rel="stylesheet" href="alerts.css?v=20260926-nav">
 </head>
 <body>
-  <header><a href="./">Golf With Jim</a><h1>My Alerts</h1><span id="email"></span></header>
+  <header>
+    <nav class="header-nav-tabs" aria-label="Views">
+      <a class="nav-tab" href="./">List</a>
+      <a class="nav-tab" href="./?view=map">Map</a>
+      <a class="nav-tab active" href="alerts.html" aria-current="page">Alerts</a>
+    </nav>
+    <div class="alert-heading"><h1>My Alerts</h1><button id="sign-out" type="button" hidden>Sign out</button></div>
+    <span id="email"></span>
+  </header>
   <main>
     <p id="status" role="status">Loading your alerts...</p>
     <form id="request-link" hidden><label>Email<input id="link-email" type="email" autocomplete="email" required></label><button type="submit">Email me a new link</button></form>
@@ -20,6 +28,6 @@
       <div class="actions"><button id="add" type="button">Add alert</button><button id="save" type="submit">Save changes</button></div>
     </form>
   </main>
-  <script type="module" src="alerts.js?v=1"></script>
+  <script type="module" src="alerts.js?v=20260926-nav"></script>
 </body>
 </html>

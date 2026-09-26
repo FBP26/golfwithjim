@@ -1,17 +1,36 @@
 const endpoint = "https://golfwithjim-alerts.fbp-api-worker.workers.dev/preferences";
-const token = new URLSearchParams(location.hash.slice(1)).get("token") || "";
+const accessKey = "golfwithjim-alert-access";
+let token = new URLSearchParams(location.hash.slice(1)).get("token") || "";
+if (!token) { try { token = sessionStorage.getItem(accessKey) || ""; } catch {} }
 history.replaceState(null, "", location.pathname);
 const status = document.getElementById("status");
 const form = document.getElementById("preferences");
 const container = document.getElementById("rules");
 const save = document.getElementById("save");
 const requestLink = document.getElementById("request-link");
+const signOut = document.getElementById("sign-out");
 let version = 0;
 let courses = [];
 let dirty = false;
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 
 function message(text, error = false) { status.textContent = text; status.classList.toggle("error", error); }
+
+function clearAccess() {
+  try { sessionStorage.removeItem(accessKey); } catch {}
+  token = "";
+  dirty = false;
+  form.hidden = true;
+  signOut.hidden = true;
+  requestLink.hidden = false;
+  container.replaceChildren();
+  document.getElementById("email").textContent = "";
+}
+signOut.addEventListener("click", () => {
+  if (dirty && !confirm("Discard unsaved changes and sign out?")) return;
+  clearAccess();
+  message("Signed out");
+});
 
 function addRule(rule) {
   const section = document.createElement("section");
@@ -51,6 +70,7 @@ form.addEventListener("submit", async event => {
   try {
     const response = await fetch(endpoint, { method: "PUT", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ rules: readRules(), paused: document.getElementById("paused").checked, version }) });
     const data = await response.json();
+    if (response.status === 401) clearAccess();
     if (!response.ok) throw new Error(data.error || "Unable to save changes.");
     version = data.version;
     dirty = false;
@@ -73,17 +93,20 @@ requestLink.addEventListener("submit", async event => {
 });
 
 async function load() {
-  if (!/^[a-f0-9]{64}$/.test(token)) { message("Open the private management link in your latest alert email.", true); requestLink.hidden = false; return; }
+  if (!/^[a-f0-9]{64}$/.test(token)) { clearAccess(); message("Sign in to manage your alerts."); return; }
   try {
     const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
     const data = await response.json();
+    if (response.status === 401) clearAccess();
     if (!response.ok) throw new Error(data.error || "Unable to load alerts.");
+    try { sessionStorage.setItem(accessKey, token); } catch {}
     version = data.version;
     courses = data.courses;
     document.getElementById("email").textContent = data.email;
     document.getElementById("paused").checked = data.paused;
     data.rules.forEach(addRule);
     form.hidden = false;
+    signOut.hidden = false;
     message("All changes apply after saving.");
   } catch (error) { message(error.message, true); requestLink.hidden = false; }
 }
