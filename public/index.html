@@ -28,7 +28,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,650&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260925-local">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="styles.css?v=20260925-compact">
 </head>
 <body>
   <div id="pull-refresh" class="pull-refresh" aria-hidden="true"><span class="pull-refresh-icon">&#8635;</span><span id="pull-refresh-label">Pull to refresh</span></div>
@@ -65,8 +66,7 @@
           </div>
         </fieldset>
 
-        <fieldset class="time-filter">
-          <legend>Time of day</legend>
+        <fieldset class="time-filter" aria-label="Time of day">
           <output id="earliest-output" hidden>5:00 AM</output><output id="latest-output" hidden>8:00 PM</output>
           <div class="time-selects">
             <label>From<select id="earliest" aria-label="Earliest tee time"></select></label>
@@ -74,13 +74,7 @@
           </div>
         </fieldset>
 
-        <label class="range-label">
-          <span>Richmond radius <output id="distance-output">100 miles</output></span>
-          <input id="distance" type="range" min="5" max="100" step="5" value="100">
-        </label>
-
-        <fieldset>
-          <legend>Courses</legend>
+        <fieldset aria-label="Course group">
           <div class="segmented course-groups" id="course-groups">
             <button type="button" data-group="local" class="active" aria-pressed="true">Local</button>
             <button type="button" data-group="regional" aria-pressed="false">Regional</button>
@@ -99,9 +93,9 @@
           <div class="result-actions">
             <label class="sort-control">Sort
               <select id="sort">
-                <option value="price" selected>Lowest course price</option>
-                <option value="time">Earliest course time</option>
-                <option value="distance">Nearest course</option>
+                <option value="price" selected>Lowest price</option>
+                <option value="time">Earliest time</option>
+                <option value="distance">Nearest</option>
                 <option value="course">Course name</option>
               </select>
             </label>
@@ -143,10 +137,9 @@
     </section>
   </main>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <template id="metric-template"><div class="metric"><span></span><strong></strong></div></template>
-  <script type="module" src="app.js?v=20260925-local"></script>
+  <script type="module" src="app.js?v=20260925-compact"></script>
 </body>
 </html>

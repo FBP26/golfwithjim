@@ -12,7 +12,7 @@ const state = {
 let courseGroup = "local";
 
 const elements = Object.fromEntries([
-  "date-options", "distance", "distance-output", "earliest", "earliest-output", "latest", "latest-output",
+  "date-options", "earliest", "earliest-output", "latest", "latest-output",
   "sort", "results", "metrics", "feed-status", "course-groups",
   "refresh", "refresh-label", "players-filter", "course-directory", "expand-results", "collapse-results",
   "tab-list", "tab-map", "view-list-container", "view-map-container",
@@ -528,11 +528,12 @@ async function loadInventory({ liveRefresh = false } = {}) {
   }
 }
 
+let pullStartX = 0;
 let pullStartY = 0;
 let pullDistance = 0;
 let pulling = false;
 let pullRefreshRunning = false;
-const pullThreshold = 72;
+const pullThreshold = 56;
 
 function updatePullRefresh(distance, ready = false) {
   const visibleDistance = Math.min(distance, pullThreshold + 18);
@@ -543,32 +544,63 @@ function updatePullRefresh(distance, ready = false) {
 }
 
 document.addEventListener("touchstart", event => {
-  if (event.target.closest("input, select, button, a")) return;
-  if (window.scrollY > 0 || pullRefreshRunning || event.touches.length !== 1) return;
+  pulling = false;
+  if (event.target.closest("input, select, #course-selection, #leaflet-map")) return;
+  if (window.scrollY > 2 || elements.refresh.disabled || pullRefreshRunning || event.touches.length !== 1) return;
+  pullStartX = event.touches[0].clientX;
   pullStartY = event.touches[0].clientY;
   pullDistance = 0;
   pulling = true;
 }, { passive: true });
 
 document.addEventListener("touchmove", event => {
-  if (!pulling || window.scrollY > 0 || event.touches.length !== 1) return;
-  pullDistance = Math.max(0, (event.touches[0].clientY - pullStartY) * .55);
-  if (pullDistance > 0) event.preventDefault();
+  if (!pulling) return;
+  const vertical = event.touches.length === 1 ? event.touches[0].clientY - pullStartY : 0;
+  const horizontal = event.touches.length === 1 ? Math.abs(event.touches[0].clientX - pullStartX) : 0;
+  if (window.scrollY > 2 || event.touches.length !== 1 || vertical < -8 || horizontal > Math.max(12, vertical)) {
+    pulling = false;
+    pullDistance = 0;
+    updatePullRefresh(0);
+    return;
+  }
+  pullDistance = Math.max(0, vertical * .65);
+  if (pullDistance > 5 && event.cancelable) event.preventDefault();
   updatePullRefresh(pullDistance, pullDistance >= pullThreshold);
 }, { passive: false });
 
-document.addEventListener("touchend", () => {
+document.addEventListener("touchend", event => {
   if (!pulling) return;
   const shouldRefresh = pullDistance >= pullThreshold;
   pulling = false;
   pullDistance = 0;
   updatePullRefresh(0);
   if (shouldRefresh && !pullRefreshRunning) {
-    pullRefreshRunning = true;
-    elements["pull-refresh"].classList.add("refreshing");
-    window.location.reload();
+    if (event.cancelable) event.preventDefault();
+    refreshInventory();
   }
+}, { passive: false });
+
+document.addEventListener("touchcancel", () => {
+  pulling = false;
+  pullDistance = 0;
+  if (!pullRefreshRunning) updatePullRefresh(0);
 }, { passive: true });
+
+async function refreshInventory() {
+  if (elements.refresh.disabled || pullRefreshRunning) return;
+  pullRefreshRunning = true;
+  resetFilters();
+  updatePullRefresh(42);
+  elements["pull-refresh"].classList.add("refreshing");
+  elements["pull-refresh-label"].textContent = "Refreshing tee times";
+  try {
+    await loadInventory({ liveRefresh: true });
+  } finally {
+    pullRefreshRunning = false;
+    elements["pull-refresh"].classList.remove("refreshing");
+    updatePullRefresh(0);
+  }
+}
 
 document.querySelectorAll(".date-strip").forEach(strip => strip.addEventListener("click", event => {
   const button = event.target.closest("[data-date]");
@@ -596,27 +628,6 @@ elements["course-groups"].addEventListener("click", event => {
 });
 elements["show-courses"].addEventListener("click", () => { applyCourseGroup("all"); renderResults(); });
 elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses = new Set(selectableCourses().map(course => course.course)); saveCourseSelection(); });
-let distanceFrame = null;
-elements.distance.addEventListener("input", () => {
-  state.maximumDistance = Number(elements.distance.value);
-  elements["distance-output"].value = `${state.maximumDistance} miles`;
-  if (distanceFrame === null) distanceFrame = requestAnimationFrame(() => { distanceFrame = null; renderResults(); });
-});
-function moveDistancePointer(event) {
-  const bounds = elements.distance.getBoundingClientRect();
-  const fraction = Math.max(0, Math.min(1, (event.clientX - bounds.left - 18) / Math.max(1, bounds.width - 36)));
-  elements.distance.value = 5 + Math.round(fraction * 19) * 5;
-  elements.distance.dispatchEvent(new Event("input", { bubbles: true }));
-}
-elements.distance.addEventListener("pointerdown", event => {
-  if (event.button !== 0) return;
-  event.preventDefault();
-  elements.distance.focus({ preventScroll: true });
-  elements.distance.setPointerCapture(event.pointerId);
-  moveDistancePointer(event);
-});
-elements.distance.addEventListener("pointermove", event => { if (elements.distance.hasPointerCapture(event.pointerId)) moveDistancePointer(event); });
-elements.distance.addEventListener("pointerup", event => { if (elements.distance.hasPointerCapture(event.pointerId)) elements.distance.releasePointerCapture(event.pointerId); });
 elements.earliest.addEventListener("input", () => updateTimeWindow("earliest"));
 elements.latest.addEventListener("input", () => updateTimeWindow("latest"));
 elements.metrics.addEventListener("click", event => {
@@ -635,15 +646,14 @@ elements["collapse-results"].addEventListener("click", () => elements.results.qu
 function resetFilters() {
   state.players = 0; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 100;
   state.maximumPrice = Infinity; state.exactPrice = null; state.hotDealsOnly = false; state.course = ""; state.sort = "price";
-  elements.earliest.value = 300; elements.latest.value = 1200; elements.distance.value = 100;
+  elements.earliest.value = 300; elements.latest.value = 1200;
   elements.sort.value = "price";
   elements["earliest-output"].value = "5:00 AM"; elements["latest-output"].value = "8:00 PM";
-  elements["distance-output"].value = "100 miles";
   elements["players-filter"].querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.players === "0"));
   applyCourseGroup("local");
   selectDate("");
 }
-elements.refresh.addEventListener("click", () => { resetFilters(); loadInventory({ liveRefresh: true }); });
+elements.refresh.addEventListener("click", refreshInventory);
 
 function expireCachedInventory() {
   const current = state.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
