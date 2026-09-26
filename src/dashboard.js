@@ -8,7 +8,7 @@ export const LOCAL_COURSES = new Set([
   "Lake Chesdin Golf Club", "Magnolia Green Golf Club", "Mattaponi Springs Golf Club",
   "Meadowbrook Country Club", "Mill Quarter Plantation Golf Club", "Pendleton Golf Club",
   "Providence Golf Club", "Queenfield Golf Club", "Royal New Kent Golf Club", "Spring Creek Golf Club",
-  "Sycamore Creek Golf Course", "The Club at Viniterra",
+  "Stonehouse Golf Club", "Sycamore Creek Golf Course", "The Club at Viniterra",
 ]);
 
 export function isSelectableCourse(course) {

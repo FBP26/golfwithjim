@@ -6,8 +6,10 @@ const email = process.argv[2];
 if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new Error("Usage: node alert-worker/activate.mjs EMAIL");
 const directory = fileURLToPath(new URL(".", import.meta.url));
 const wrangler = fileURLToPath(new URL("node_modules/wrangler/bin/wrangler.js", import.meta.url));
-const relay = spawnSync(process.execPath, [wrangler, "secret", "put", "EMAIL_RELAY_SECRET"], { cwd: directory, stdio: "inherit" });
-if (relay.status !== 0) throw new Error("Email secret setup did not finish. No enrollment attempted.");
+if (!process.argv.includes("--resume")) {
+  const relay = spawnSync(process.execPath, [wrangler, "secret", "put", "EMAIL_RELAY_SECRET"], { cwd: directory, stdio: "inherit" });
+  if (relay.status !== 0) throw new Error("Email secret setup did not finish. No enrollment attempted.");
+}
 const adminSecret = randomBytes(32).toString("hex");
 const admin = spawnSync(process.execPath, [wrangler, "secret", "put", "ADMIN_SECRET"], { cwd: directory, input: adminSecret, encoding: "utf8", stdio: ["pipe", "pipe", "pipe"] });
 if (admin.status !== 0) throw new Error("Admin secret setup failed. No enrollment attempted.");

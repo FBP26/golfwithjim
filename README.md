@@ -8,6 +8,8 @@ The course picker includes enabled inventory courses and explicitly designated `
 
 TeeItUp's per-rate `allowedPlayers` restrictions are preserved alongside the remaining slot capacity. A four-player promotion only qualifies for four players; regular and prepaid alternatives remain available for smaller parties. Group-only rates do not qualify when the remaining capacity cannot accommodate their required party size.
 
+Stonehouse Golf Club is included in the 24-course Local group with its ForeUp schedule 10756, seven-day collection, and OpenStreetMap golf-course coordinates cross-checked against ForeUp's latitude. Its bookable tee times are separate from the existing GolfMoose voucher.
+
 ```powershell
 npm.cmd start
 ```
@@ -61,6 +63,8 @@ node alert-worker/activate.mjs YOUR_EMAIL
 ```
 
 Activation prompts securely for the existing email relay secret, creates a separate random admin secret without printing it, enrolls the address, sends the welcome/settings email, and checks current published matches. Enter the relay secret directly in the terminal, never in chat, source, or GitHub Pages. It must match the email relay's Apps Script property `FBP_NOTIFICATION_RELAY_SECRET`. Existing enrollment/preferences are preserved. Worker deployment and Pages publication are separate operations. `GET /health` reports configuration only, not successful delivery; private delivery records and the relay response establish acceptance, not inbox arrival.
+
+If activation stops after the email secret was successfully stored, resume with `node alert-worker/activate.mjs YOUR_EMAIL --resume`; this preserves the saved email secret and does not prompt for it again.
 
 ### Legacy reports
 

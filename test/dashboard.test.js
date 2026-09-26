@@ -2,13 +2,15 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { LOCAL_COURSES, coursesInGroup, isSelectableCourse } from "../src/dashboard.js";
 
-test("Local defaults match all 23 requested courses and groups partition selectable inventory", () => {
+test("Local defaults include Stonehouse and all 24 requested courses partition selectable inventory", () => {
   const courses = sourceRegistry.interactiveOnly;
   const local = coursesInGroup(courses);
   const regional = coursesInGroup(courses, "regional");
   const all = coursesInGroup(courses, "all");
-  assert.equal(LOCAL_COURSES.size, 23);
-  assert.equal(local.length, 23);
+  assert.equal(LOCAL_COURSES.size, 24);
+  assert.equal(local.length, 24);
+  assert.ok(local.includes("Stonehouse Golf Club"));
+  assert.equal(courses.find(course => course.course === "Stonehouse Golf Club").collector, "foreup");
   assert.deepEqual(new Set(local), LOCAL_COURSES);
   assert.ok(regional.every(name => !LOCAL_COURSES.has(name)));
   assert.equal(all.length, local.length + regional.length);
