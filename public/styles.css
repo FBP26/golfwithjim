@@ -13,6 +13,13 @@
 }
 
 :root[data-theme="dark"] { color-scheme: dark; --ink: #edf2ee; --muted: #adbbb2; --paper: #151d18; --panel: #202b24; --green: #78cfa6; --green-2: #91d3b1; --lime: #c7e04a; --gold: #dfbd69; --line: #3c4a40; --deal: #ff9d8b; }
+.notification-results { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.notification-results[hidden] { display: none; }
+.notification-results h1 { font-size: 20px; margin: 0; letter-spacing: 0; }
+.notification-results p { font-size: 13px; color: var(--muted); margin: 6px 0 0; overflow-wrap: anywhere; }
+.notification-results a { color: var(--green); font-weight: 600; }
+.notification-view .workspace { grid-template-columns: minmax(0, 1fr); }
+.notification-view :is(.filters, .date-strip, .coverage-section, #refresh) { display: none; }
 html .theme-switch { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; font-size: 12px; text-transform: none; letter-spacing: 0; color: white; cursor: pointer; }
 html .theme-switch input { width: 34px; height: 20px; margin: 0; appearance: none; border: 1px solid #c1d4c8; border-radius: 12px; background: #345d46; cursor: pointer; }
 html .theme-switch input::before { content: ""; display: block; width: 14px; height: 14px; margin: 2px; border-radius: 50%; background: white; transition: transform .15s; }

@@ -83,18 +83,26 @@ test("service worker displays push notifications and restricts click destination
   };
   runInNewContext(readFileSync(new URL("../public/sw.js", import.meta.url), "utf8"), { self, URL });
   const waitUntil = promise => { pending = promise; };
-  handlers.push({ data: { json: () => ({ title: "Matching tee time", body: "Highlands $60", url: "alerts.html" }) }, waitUntil });
+  const notificationUrl = "./?notification=11111111-1111-4111-8111-111111111111";
+  handlers.push({ data: { json: () => ({ title: "Matching tee time", body: "Highlands $60", url: notificationUrl }) }, waitUntil });
   await pending;
   assert.equal(displayed[0].title, "Matching tee time");
   assert.equal(displayed[0].icon, `${scope}golf-icon.png`);
   handlers.push({ data: { json: () => { throw new Error("Invalid JSON"); } }, waitUntil });
   await pending;
   assert.equal(displayed[1].title, "Golf With Jim");
-  for (const url of ["alerts.html", "https://evil.test/"]) {
+  for (const url of [notificationUrl, "https://evil.test/"]) {
     handlers.notificationclick({ notification: { close() {}, data: { url } }, waitUntil });
     await pending;
   }
-  assert.deepEqual(opened, [`${scope}alerts.html`, scope]);
+  assert.deepEqual(opened, [`${scope}?notification=11111111-1111-4111-8111-111111111111`, scope]);
+  const navigated = [];
+  let focused = false;
+  self.clients.matchAll = async () => [{ url: `${scope}alerts.html`, navigate: async url => { navigated.push(url); }, focus: async () => { focused = true; } }];
+  handlers.notificationclick({ notification: { close() {}, data: displayed[0].data }, waitUntil });
+  await pending;
+  assert.deepEqual(navigated, [opened[0]]);
+  assert.equal(focused, true);
   assert.equal(handlers.fetch, undefined);
 });
 

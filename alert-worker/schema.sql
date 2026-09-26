@@ -60,3 +60,9 @@ CREATE TABLE IF NOT EXISTS signup_notifications (
   sent_at INTEGER,
   last_error TEXT
 );
+CREATE TABLE IF NOT EXISTS push_results (
+  id TEXT PRIMARY KEY,
+  created_at INTEGER NOT NULL,
+  expires_at INTEGER NOT NULL,
+  payload TEXT NOT NULL
+);

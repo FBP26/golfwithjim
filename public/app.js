@@ -3,6 +3,9 @@ import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMai
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
 const refreshBridgeUrl = "https://golfwithjim-refresh.fbp-api-worker.workers.dev/refresh";
+const notificationId = new URLSearchParams(location.search).get("notification");
+document.body.classList.toggle("notification-view", Boolean(notificationId));
+document.getElementById("notification-results").hidden = !notificationId;
 
 const state = {
   teeTimes: [], courses: [], sourceChecks: [], date: "", players: 0, earliest: "05:00", latest: "20:00", hiddenCourses: new Set(),
@@ -187,12 +190,13 @@ function trackedCoursesHtml(filtered) {
 }
 
 function renderResults() {
-  let filtered = filterTeeTimes(state.teeTimes, state);
-  if (state.course) filtered = filtered.filter(teeTime => teeTime.course.toLowerCase().includes(state.course));
-  if (state.exactPrice != null) filtered = filtered.filter(teeTime => Math.abs(teeTime.allInPrice - state.exactPrice) < 0.001);
+  let filtered = notificationId ? state.teeTimes : filterTeeTimes(state.teeTimes, state);
+  if (!notificationId && state.course) filtered = filtered.filter(teeTime => teeTime.course.toLowerCase().includes(state.course));
+  if (!notificationId && state.exactPrice != null) filtered = filtered.filter(teeTime => Math.abs(teeTime.allInPrice - state.exactPrice) < 0.001);
   elements.metrics.innerHTML = metricsHtml(summarizeResults(filtered));
+  if (notificationId) elements.metrics.querySelectorAll("button").forEach(button => { button.disabled = true; });
   if (!filtered.length) {
-    elements.results.innerHTML = `<div class="empty">No tee times match these filters.</div>${trackedCoursesHtml(filtered)}`;
+    elements.results.innerHTML = `<div class="empty">${notificationId ? "No tee times were saved with this notification." : "No tee times match these filters."}</div>${notificationId ? "" : trackedCoursesHtml(filtered)}`;
     updateMapView();
     return;
   }
@@ -211,11 +215,11 @@ function renderResults() {
       const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${exactMoney(teeTime.allInPrice)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
       const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
-      return `<details class="course-row"><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
+      return `<details class="course-row"${notificationId ? " open" : ""}><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
     }).join("");
     const count = groupTeeTimes(dateTimes).length;
-    return `<details class="date-group"${dateIndex === 0 ? " open" : ""}><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
-  }).join("") + trackedCoursesHtml(filtered);
+    return `<details class="date-group"${notificationId || dateIndex === 0 ? " open" : ""}><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
+  }).join("") + (notificationId ? "" : trackedCoursesHtml(filtered));
   updateMapView();
 }
 
@@ -389,7 +393,7 @@ function initMap() {
 function updateMapView() {
   if (!map) return;
   markerLayer.clearLayers();
-  const filtered = filterTeeTimes(state.teeTimes, state);
+  const filtered = notificationId ? state.teeTimes : filterTeeTimes(state.teeTimes, state);
   const teeTimesByCourse = Map.groupBy(filtered, teeTime => teeTime.course);
   const searchTerm = state.course;
   const mappable = dedupeByCourse(state.courses).filter(course => course.latitude != null
@@ -480,7 +484,9 @@ async function loadInventory({ liveRefresh = false } = {}) {
   elements["feed-status"].textContent = liveRefresh ? "Checking all live sources..." : "Loading live sources";
   try {
     let response;
-    if (liveRefresh && isGitHubPages) {
+    if (notificationId) {
+      response = await fetch(`https://golfwithjim-alerts.fbp-api-worker.workers.dev/push/results/${encodeURIComponent(notificationId)}`, { cache: "no-store", signal: AbortSignal.timeout(20000) });
+    } else if (liveRefresh && isGitHubPages) {
       response = await fetch(refreshBridgeUrl, { method: "POST" });
       if (!response.ok) throw new Error(`Refresh request returned HTTP ${response.status}`);
       const previousCheckedAt = state.checkedAt;
@@ -498,11 +504,15 @@ async function loadInventory({ liveRefresh = false } = {}) {
         : liveRefresh ? "/api/tee-times/refresh" : `/api/tee-times?refresh=${Date.now()}`;
       response = await fetch(endpoint, { method: liveRefresh ? "POST" : "GET", cache: "no-store" });
     }
-    if (!response.ok) throw new Error(`Inventory returned HTTP ${response.status}`);
+    if (!response.ok) {
+      const failure = await response.json().catch(() => ({}));
+      throw new Error(failure.error || `Inventory returned HTTP ${response.status}`);
+    }
     const payload = await response.json();
+    if (notificationId && payload.notificationId !== notificationId) throw new Error("Saved notification results are unavailable.");
     if (liveRefresh && isGitHubPages && payload.checkedAt === state.checkedAt) throw new Error("Refresh is still running. Try again shortly.");
     state.checkedAt = payload.checkedAt;
-    state.teeTimes = payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
+    state.teeTimes = notificationId ? payload.teeTimes : payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
     resetFilters();
@@ -510,13 +520,15 @@ async function loadInventory({ liveRefresh = false } = {}) {
     renderDirectory();
     selectDate(state.date);
     const checked = new Date(payload.checkedAt).toLocaleString([], { weekday: "short", month: "numeric", day: "numeric", hour: "numeric", minute: "2-digit" });
-    elements["feed-status"].textContent = `Last updated ${checked}`;
+    elements["feed-status"].textContent = notificationId ? `Notification snapshot · Feed checked ${checked}` : `Last updated ${checked}`;
+    if (notificationId) document.getElementById("notification-summary").textContent = `Found ${new Date(payload.createdAt).toLocaleString()}. Saved matches; availability and prices may have changed.`;
   } catch (error) {
     elements.results.innerHTML = `<div class="empty">Could not load tee times. ${escapeHtml(error.message)}</div>`;
     elements["feed-status"].textContent = "Inventory unavailable";
+    if (notificationId) document.getElementById("notification-summary").textContent = "Saved matches unavailable. Open All tee times for current availability.";
   } finally {
     elements.refresh.classList.remove("refreshing");
-    elements.refresh.disabled = false;
+    elements.refresh.disabled = Boolean(notificationId);
     elements["refresh-label"].textContent = "Click to refresh tee times";
     elements.results.removeAttribute("aria-busy");
   }
@@ -625,6 +637,7 @@ elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses =
 elements.earliest.addEventListener("input", () => updateTimeWindow("earliest"));
 elements.latest.addEventListener("input", () => updateTimeWindow("latest"));
 elements.metrics.addEventListener("click", event => {
+  if (notificationId) return;
   const button = event.target.closest("[data-metric-filter]");
   if (!button) return;
   if (button.dataset.metricFilter === "hot") {
@@ -650,6 +663,7 @@ function resetFilters() {
 elements.refresh.addEventListener("click", refreshInventory);
 
 function expireCachedInventory() {
+  if (notificationId) return;
   const current = state.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
   if (current.length === state.teeTimes.length) return;
   state.teeTimes = current;

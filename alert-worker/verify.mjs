@@ -112,10 +112,18 @@ try {
   assert.equal(testPush.status, 200, await testPush.text());
   assert.equal(pushes.length, 1);
   assert.equal((await check()).pushSent, 1);
+  const snapshot = await database.prepare("SELECT id FROM push_results LIMIT 1").first();
+  const savedMatches = await (await pushRuntime.dispatchFetch(`https://alerts.test/push/results/${snapshot.id}`)).json();
+  assert.equal(savedMatches.notificationId, snapshot.id);
+  assert.equal(savedMatches.teeTimes.length, 1);
+  assert.equal(savedMatches.teeTimes[0].allInPrice, 118);
+  assert.equal(savedMatches.teeTimes[0].course, "Spring Creek Golf Club");
   assert.equal((await check()).pushSent, 0);
   feed.teeTimes[0].allInPrice = 117;
+  assert.equal((await (await pushRuntime.dispatchFetch(`https://alerts.test/push/results/${snapshot.id}`)).json()).teeTimes[0].allInPrice, 118);
   pushStatus = 503;
   assert.equal((await check()).pushFailed, 1);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM push_results").first()).total, 1);
   pushStatus = 201;
   assert.equal((await check()).pushSent, 1);
   await database.prepare("UPDATE subscribers SET paused=1").run();
@@ -132,6 +140,8 @@ try {
   assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM push_devices").first()).total, 0);
   assert.equal((await pushRuntime.dispatchFetch("https://alerts.test/request-link", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: "public@example.test" }) })).status, 409);
   assert.equal(messages.length, mailCount);
+  await database.prepare("UPDATE push_results SET expires_at=0").run();
+  assert.equal((await pushRuntime.dispatchFetch(`https://alerts.test/push/results/${snapshot.id}`)).status, 400);
   console.log("PASS: Apple-compatible encrypted push, device registration/test/removal, deduplication, failure retry, pause, expired subscription cleanup, and ZERO email delivery in push-only mode. All push delivery was mocked.");
 } finally { await pushRuntime.dispose(); }
 

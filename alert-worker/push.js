@@ -23,6 +23,11 @@ export async function sendPush(env, subscription, notification) {
 }
 
 export async function pushRequest(request, env, path) {
+  if (/^\/push\/results\/[a-f0-9-]{36}$/.test(path) && request.method === "GET") {
+    const result = await env.DB.prepare("SELECT payload FROM push_results WHERE id = ? AND expires_at > ?").bind(path.split("/").at(-1), Date.now()).first();
+    if (!result) throw new Error("These notification results have expired or are unavailable. Open All tee times for current availability.");
+    return JSON.parse(result.payload);
+  }
   if (path === "/push/config" && request.method === "GET") return { publicKey: env.VAPID_PUBLIC_KEY || "", configured: pushConfigured(env) };
   if (!["/push/subscribe", "/push/unsubscribe", "/push/test"].includes(path) || request.method !== "POST") return null;
   if (!pushConfigured(env)) throw new Error("Push notifications are not configured yet.");
@@ -52,7 +57,7 @@ export async function pushRequest(request, env, path) {
     return { ok: true, newDevice: Boolean(signup && results[1].meta.changes) };
   }
   if (!device) throw new Error("Enable notifications on this device first.");
-  const response = await sendPush(env, subscription, { title: "Golf With Jim", body: "Push notifications are ready. Your saved tee-time alerts will appear here.", tag: "golf-test", url: "alerts.html" });
+  const response = await sendPush(env, subscription, { title: "Golf With Jim", body: "Push notifications are ready. Your saved tee-time alerts will appear here.", tag: "golf-test", url: "./" });
   if (response.status === 404 || response.status === 410) await env.DB.prepare("DELETE FROM push_devices WHERE id = ?").bind(device.id).run();
   if (!response.ok) throw new Error("The push service did not accept the test. Enable notifications again and retry.");
   return { ok: true, accepted: true };
@@ -69,9 +74,18 @@ export async function checkPushAlerts(env, feed, selectMatches) {
       const matches = selectMatches(feed, JSON.parse(device.rules), seen).slice(0, 100);
       if (!matches.length) continue;
       const body = matches.slice(0, 3).map(({ teeTime }) => `${teeTime.course}: ${teeTime.date} ${teeTime.time}, $${teeTime.allInPrice.toFixed(2)}`).join("\n");
-      const response = await sendPush(env, JSON.parse(device.subscription), { title: `Golf With Jim: ${matches.length} matching tee time${matches.length === 1 ? "" : "s"}`, body, tag: `golf-${Date.now()}`, url: "./" });
-      if (response.status === 404 || response.status === 410) { await env.DB.prepare("DELETE FROM push_devices WHERE id = ?").bind(device.id).run(); continue; }
-      if (!response.ok) { failed++; continue; }
+      const resultId = crypto.randomUUID();
+      const createdAt = Date.now();
+      const matchedCourses = new Set(matches.map(match => match.teeTime.course));
+      const payload = { notificationId: resultId, createdAt, checkedAt: feed.checkedAt, teeTimes: matches.map(match => match.teeTime), courses: feed.courses.filter(course => matchedCourses.has(course.course)), sourceChecks: feed.sourceChecks.filter(source => matchedCourses.has(source.course)) };
+      await env.DB.prepare("INSERT INTO push_results (id, created_at, expires_at, payload) VALUES (?, ?, ?, ?)").bind(resultId, createdAt, createdAt + 30 * 86400000, JSON.stringify(payload)).run();
+      const response = await sendPush(env, JSON.parse(device.subscription), { title: `Golf With Jim: ${matches.length} matching tee time${matches.length === 1 ? "" : "s"}`, body, tag: `golf-${resultId}`, url: `./?notification=${resultId}` });
+      if (!response.ok) {
+        await env.DB.prepare("DELETE FROM push_results WHERE id = ?").bind(resultId).run();
+        if (response.status === 404 || response.status === 410) await env.DB.prepare("DELETE FROM push_devices WHERE id = ?").bind(device.id).run();
+        else failed++;
+        continue;
+      }
       for (let offset = 0; offset < matches.length; offset += 25) {
         const chunk = matches.slice(offset, offset + 25);
         await env.DB.prepare(`INSERT OR IGNORE INTO push_matches (device_id, match_key, sent_at) VALUES ${chunk.map(() => "(?, ?, ?)").join(", ")}`).bind(...chunk.flatMap(match => [device.id, match.key, Date.now()])).run();
@@ -80,5 +94,6 @@ export async function checkPushAlerts(env, feed, selectMatches) {
     } catch { failed++; }
   }
   await env.DB.prepare("DELETE FROM push_matches WHERE sent_at < ?").bind(Date.now() - 90 * 86400000).run();
+  await env.DB.prepare("DELETE FROM push_results WHERE expires_at < ?").bind(Date.now()).run();
   return { sent, failed };
 }

@@ -62,6 +62,8 @@ On iOS 16.4 or newer, open the site in Safari, use Share > Add to Home Screen, o
 
 The Worker checks the published feed every 15 minutes, not each course's live booking system. Existing GitHub collection is scheduled at 10:05, 11:05, 22:05, and 23:05 UTC, subject to runner delays; manual Refresh also updates it. A 15-minute alert check does not imply 15-minute inventory freshness. Feed and successful source observations older than 30 hours are rejected. Up to 100 newly matching starts are grouped per device/check; a notification summarizes the first three. Failed push sends retry on a later check if offers still qualify. Acceptance is not an exactly-once guarantee: an ambiguous network failure can cause a repeated notification.
 
+New tee-time notifications open the List page at `?notification=<random-id>`. The Worker saves the exact matched offers in `push_results` before sending, and `GET /push/results/<id>` returns that snapshot for 30 days. The URL contains no subscription keys or device identifiers. The snapshot view expands all matched rows and bypasses normal course, distance, time, and player filters; it never substitutes a newer feed or adds unrelated course links. Prices and availability are labeled as historical, not guaranteed current. All tee times returns to normal browsing. Expired or missing snapshots show an explicit message. Test notifications have no matches and open the normal List page. Notifications sent before this change retain their original destination.
+
 Deployment and verification, from the project root:
 
 ```powershell
