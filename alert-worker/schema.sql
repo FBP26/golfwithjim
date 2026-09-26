@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS subscribers (
   rules TEXT NOT NULL,
   paused INTEGER NOT NULL DEFAULT 0,
   version INTEGER NOT NULL DEFAULT 1,
+  updated_at INTEGER,
   created_at INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS access_tokens (
@@ -36,4 +37,17 @@ CREATE TABLE IF NOT EXISTS link_requests (
   bucket TEXT PRIMARY KEY,
   requests INTEGER NOT NULL DEFAULT 1,
   created_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS push_devices (
+  id TEXT PRIMARY KEY,
+  subscriber_id TEXT NOT NULL REFERENCES subscribers(id),
+  endpoint TEXT NOT NULL UNIQUE,
+  subscription TEXT NOT NULL,
+  created_at INTEGER NOT NULL
+);
+CREATE TABLE IF NOT EXISTS push_matches (
+  device_id TEXT NOT NULL REFERENCES push_devices(id) ON DELETE CASCADE,
+  match_key TEXT NOT NULL,
+  sent_at INTEGER NOT NULL,
+  PRIMARY KEY (device_id, match_key)
 );

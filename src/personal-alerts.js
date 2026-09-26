@@ -1,4 +1,11 @@
 import { isPublicRate, parseTimeMinutes } from "./analyze.js";
+import { LOCAL_COURSES } from "./dashboard.js";
+
+export const alertCourseGroups = [
+  { value: "group:all", label: "All courses" },
+  { value: "group:local", label: "Local courses" },
+  { value: "group:regional", label: "Regional courses" },
+];
 
 const easternFormatter = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 
@@ -13,7 +20,7 @@ export function validateAlerts(rules, courseNames) {
   return rules.map(rule => {
     if (!rule || typeof rule !== "object" || !/^[a-zA-Z0-9-]{1,64}$/.test(rule.id) || ids.has(rule.id)) throw new Error("Invalid alert identifier.");
     ids.add(rule.id);
-    if (!courseNames.includes(rule.course)) throw new Error("Choose a supported course.");
+    if (!courseNames.includes(rule.course) && !alertCourseGroups.some(group => group.value === rule.course)) throw new Error("Choose a supported course or course group.");
     if (!Array.isArray(rule.days) || !rule.days.length || rule.days.some(day => !Number.isInteger(day) || day < 0 || day > 6)) throw new Error("Choose at least one day.");
     if (![rule.from, rule.until].every(value => typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value)) || rule.from > rule.until) throw new Error("Enter an ordered time range.");
     if (!Number.isFinite(rule.minPrice) || rule.minPrice < 0 || rule.minPrice > 2000 || (rule.maxPrice !== null && (!Number.isFinite(rule.maxPrice) || rule.maxPrice < rule.minPrice || rule.maxPrice > 2000))) throw new Error("Enter a price range from $0 to $2,000, or leave the maximum blank.");
@@ -28,7 +35,10 @@ export function validateAlerts(rules, courseNames) {
 }
 
 export function matchesAlert(teeTime, rule, now = new Date()) {
-  if (!rule.enabled || teeTime.course !== rule.course || teeTime.stale || teeTime.priceIsExact !== true || teeTime.holes !== 18 || !isPublicRate(teeTime.rateName)) return false;
+  const courseMatches = teeTime.course === rule.course || rule.course === "group:all"
+    || (rule.course === "group:local" && LOCAL_COURSES.has(teeTime.course))
+    || (rule.course === "group:regional" && !LOCAL_COURSES.has(teeTime.course));
+  if (!rule.enabled || !courseMatches || teeTime.stale || teeTime.priceIsExact !== true || teeTime.holes !== 18 || !isPublicRate(teeTime.rateName)) return false;
   if (!Number.isFinite(teeTime.allInPrice) || teeTime.allInPrice <= 0 || teeTime.allInPrice < rule.minPrice || (rule.maxPrice !== null && teeTime.allInPrice > rule.maxPrice)) return false;
   if (rule.hotDealsOnly && !teeTime.hotDeal) return false;
   const minutes = parseTimeMinutes(teeTime.time);
@@ -47,5 +57,6 @@ export function matchesAlert(teeTime, rule, now = new Date()) {
 export function alertSummary(rule) {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const price = rule.maxPrice === null ? (rule.minPrice ? `$${rule.minPrice.toFixed(2)}+` : "Any price") : `$${rule.minPrice.toFixed(2)}-$${rule.maxPrice.toFixed(2)}`;
-  return `${rule.enabled ? "Active" : "Paused"}: ${rule.course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${rule.hotDealsOnly ? "; Hot Deals only" : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
+  const course = alertCourseGroups.find(group => group.value === rule.course)?.label || rule.course;
+  return `${rule.enabled ? "Active" : "Paused"}: ${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${rule.hotDealsOnly ? "; Hot Deals only" : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
 }

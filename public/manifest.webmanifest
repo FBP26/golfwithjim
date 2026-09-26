@@ -1,13 +1,21 @@
 {
-  "name": "Richmond Tee Times",
-  "short_name": "Tee Times",
+  "id": "./",
+  "name": "Golf With Jim",
+  "short_name": "Golf With Jim",
   "description": "Live Richmond-area golf tee times and deals.",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#f4f1e8",
   "theme_color": "#15372c",
   "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "golf-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "golf-icon.svg",
       "sizes": "any",

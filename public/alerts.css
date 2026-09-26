@@ -7,7 +7,6 @@ header a { color: #c7e04a; font-weight: bold; }
 .nav-tab { display: inline-flex; align-items: center; min-height: 36px; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; color: #cad7d0; text-decoration: none; }
 .nav-tab.active { background: #c7e04a; color: #15372c; }
 .alert-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; }
-#sign-out { color: white; background: transparent; border-color: #789789; }
 h1 { font-size: 26px; margin: 4px 0; letter-spacing: 0; }
 header span { overflow-wrap: anywhere; }
 main { max-width: 1032px; margin: 0 auto; padding: 16px; }
@@ -20,6 +19,13 @@ input[type=checkbox] { width: 20px; height: 20px; accent-color: var(--green); fl
 label { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-size: 13px; color: var(--muted); }
 .toolbar, .actions, .rule-head { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
 .toolbar { padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.notifications { padding: 0 0 16px; margin-bottom: 16px; border-bottom: 1px solid var(--line); }
+.notifications h2 { font-size: 17px; margin: 0; }
+.notification-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+#notification-status { overflow-wrap: anywhere; }
+#notification-status.error { color: #a12823; }
+.actions { position: sticky; bottom: 0; z-index: 2; padding: 12px 0 max(12px, env(safe-area-inset-bottom)); background: #f0f5f1; border-top: 1px solid var(--line); }
+.actions #status { flex-basis: 100%; margin: 0; overflow-wrap: anywhere; font-weight: bold; }
 .toolbar label, .rule-head label, .toggle { flex-direction: row; align-items: center; min-height: 44px; }
 .toolbar span { color: var(--muted); font-size: 12px; }
 .rule { margin: 14px 0; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: white; }
@@ -35,6 +41,4 @@ legend { font-size: 13px; color: var(--muted); }
 #status.error { color: #a12823; }
 :focus-visible { outline: 2px solid #b27418; outline-offset: 3px; }
 [hidden] { display: none !important; }
-#request-link { display: flex; align-items: end; flex-wrap: wrap; gap: 12px; }
-#request-link label { flex: 1; max-width: 360px; min-width: 220px; }
 @media (max-width: 560px) { .rule-grid, .rule-footer { grid-template-columns: repeat(2, minmax(0, 1fr)); } .rule { padding: 10px; } .rule-footer .toggle { grid-column: 1 / -1; } .days { gap: 0; } }

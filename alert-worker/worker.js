@@ -1,4 +1,5 @@
-import { defaultAlerts, validateAlerts, matchesAlert, alertSummary } from "../src/personal-alerts.js";
+import { defaultAlerts, validateAlerts, matchesAlert, alertSummary, alertCourseGroups } from "../src/personal-alerts.js";
+import { pushConfigured, pushRequest, checkPushAlerts } from "./push.js";
 
 const siteOrigin = "https://fbp26.github.io";
 const feedUrl = "https://fbp26.github.io/golfwithjim/api/tee-times.json";
@@ -43,7 +44,9 @@ export function selectMatches(feed, rules, seen, now = new Date()) {
   const checked = Date.parse(feed.checkedAt);
   if (!Number.isFinite(checked) || now.getTime() - checked > maximumAge || checked > now.getTime() + 300000) return [];
   const matches = new Map();
+  const supportedCourses = new Set(courseNames({ courses: feed.courses || [] }));
   for (const rule of rules) for (const teeTime of feed.teeTimes) {
+    if (alertCourseGroups.some(group => group.value === rule.course) && !supportedCourses.has(teeTime.course)) continue;
     if (!matchesAlert(teeTime, rule, now)) continue;
     const checks = feed.sourceChecks.filter(source => source.course === teeTime.course && (!source.source || source.source === teeTime.source));
     if (!checks.some(check => !check.error && Number.isFinite(Date.parse(check.checkedAt)) && now.getTime() - Date.parse(check.checkedAt) <= maximumAge && Date.parse(check.checkedAt) <= now.getTime() + 300000)) continue;
@@ -56,19 +59,22 @@ export function selectMatches(feed, rules, seen, now = new Date()) {
 
 export function formatPersonalEmail(rules, matches, manageLink, checkedAt, welcome = false, paused = false) {
   const subject = welcome ? "Your Golf With Jim alerts are ready" : `Golf With Jim: ${matches.length} matching tee time${matches.length === 1 ? "" : "s"}`;
+  const button = (url, label) => `<a href="${escapeHtml(url)}" style="display:inline-block;background:#245944;color:#ffffff;padding:12px 18px;border:1px solid #245944;border-radius:4px;text-decoration:none;font-weight:bold;text-align:center">${label}</a>`;
   const summaries = rules.map(alertSummary);
+  const accessNote = manageLink.includes("#token=") ? "Your private management link expires in 90 days. Do not forward it." : "Manage your alerts on Golf With Jim.";
   const rows = matches.slice(0, 100).map(({ teeTime }) => {
     const url = /^https:\/\//i.test(teeTime.url) ? teeTime.url : "https://fbp26.github.io/golfwithjim/";
-    return `<tr><td>${escapeHtml(teeTime.course)}</td><td>${escapeHtml(teeTime.date)} ${escapeHtml(teeTime.time)}</td><td>$${teeTime.allInPrice.toFixed(2)}</td><td>${escapeHtml(teeTime.availablePartySizes?.join(", ") || `Up to ${teeTime.availablePlayers}`)}</td><td><a href="${escapeHtml(url)}">Book</a></td></tr>`;
+    return `<tr><td>${escapeHtml(teeTime.course)}</td><td>${escapeHtml(teeTime.date)} ${escapeHtml(teeTime.time)}</td><td>$${teeTime.allInPrice.toFixed(2)}</td><td>${escapeHtml(teeTime.availablePartySizes?.join(", ") || `Up to ${teeTime.availablePlayers}`)}</td><td>${button(url, "Book tee time")}</td></tr>`;
   }).join("");
   const intro = welcome ? "Your saved rules are listed below. Matching tee times are emailed when detected in a newly checked feed." : "These newly matching offers were found in the published inventory.";
   const timing = "All times are Eastern; prices are per golfer for 18 holes. The alert service checks the published feed every 15 minutes; course collection follows the site's existing refresh schedule. Availability is not held and may change before booking.";
-  const body = `${intro}\n\n${matches.map(({ teeTime }) => `${teeTime.course}: ${teeTime.date} ${teeTime.time}, $${teeTime.allInPrice.toFixed(2)}, ${teeTime.url}`).join("\n")}\n\nYour alerts${paused ? " (all paused)" : ""}:\n${summaries.join("\n")}\n\nManage, pause, or remove alerts: ${manageLink}\n\n${timing}\nFeed checked: ${checkedAt}\nYour private management link expires in 90 days. Do not forward it.`;
-  const htmlBody = `<div style="font:15px/1.5 Arial,sans-serif;color:#17241e;max-width:900px"><h2>${escapeHtml(subject)}</h2><p>${intro}</p>${rows ? `<table cellpadding="8" style="border-collapse:collapse;width:100%" border="1"><thead><tr><th>Course</th><th>Eastern start</th><th>Price</th><th>Golfers</th><th>Booking</th></tr></thead><tbody>${rows}</tbody></table>` : ""}${matches.length > 100 ? `<p>${matches.length - 100} additional matching offers. Open the site for full availability.</p>` : ""}<h3>Your alerts${paused ? " (all paused)" : ""}</h3><ul>${summaries.map(summary => `<li>${escapeHtml(summary)}</li>`).join("") || "<li>No saved alerts</li>"}</ul><p><a href="${escapeHtml(manageLink)}">Manage, pause, or remove alerts</a></p><p>${timing}</p><p style="font-size:12px">Feed checked: ${escapeHtml(checkedAt)}. Your private management link expires in 90 days. Do not forward it.</p></div>`;
+  const body = `${intro}\n\n${matches.map(({ teeTime }) => `${teeTime.course}: ${teeTime.date} ${teeTime.time}, $${teeTime.allInPrice.toFixed(2)}, ${teeTime.url}`).join("\n")}\n\nYour alerts${paused ? " (all paused)" : ""}:\n${summaries.join("\n")}\n\nManage, pause, or remove alerts: ${manageLink}\n\n${timing}\nFeed checked: ${checkedAt}\n${accessNote}`;
+  const htmlBody = `<div style="font:15px/1.5 Arial,sans-serif;color:#17241e;max-width:900px"><h2>${escapeHtml(subject)}</h2><p>${intro}</p>${rows ? `<table cellpadding="8" style="border-collapse:collapse;width:100%" border="1"><thead><tr><th>Course</th><th>Eastern start</th><th>Price</th><th>Golfers</th><th>Booking</th></tr></thead><tbody>${rows}</tbody></table>` : ""}${matches.length > 100 ? `<p>${matches.length - 100} additional matching offers. Open the site for full availability.</p>` : ""}<h3>Your alerts${paused ? " (all paused)" : ""}</h3><ul>${summaries.map(summary => `<li>${escapeHtml(summary)}</li>`).join("") || "<li>No saved alerts</li>"}</ul><p>${button(manageLink, "Manage alerts")}</p><p>${timing}</p><p style="font-size:12px">Feed checked: ${escapeHtml(checkedAt)}. ${accessNote}</p></div>`;
   return { subject, body, htmlBody };
 }
 
 async function send(env, email, message) {
+  if (env.EMAIL_DELIVERY_ENABLED === "false") throw new Error("Email delivery is disabled.");
   if (!env.EMAIL_RELAY_URL || !env.EMAIL_RELAY_SECRET) throw new Error("Email delivery is not configured.");
   const response = await fetch(env.EMAIL_RELAY_URL, { method: "POST", headers: { "Content-Type": "text/plain;charset=UTF-8" },
     body: JSON.stringify({ action: "send-notification-email", secret: env.EMAIL_RELAY_SECRET, to: email, ...message }), signal: AbortSignal.timeout(25000) });
@@ -101,21 +107,22 @@ async function deliverBatch(env, subscriber, batch) {
 }
 
 async function enqueue(env, subscriber, matches, checkedAt, welcome = false) {
-  const manageLink = await issueToken(env, subscriber.id);
+  const manageLink = subscriber.email === env.PUBLIC_EDITOR_EMAIL ? managementUrl : await issueToken(env, subscriber.id);
   const batch = { id: crypto.randomUUID(), message: JSON.stringify(formatPersonalEmail(JSON.parse(subscriber.rules), matches, manageLink, checkedAt, welcome, Boolean(subscriber.paused))), match_keys: JSON.stringify(matches.map(match => match.key)) };
   await env.DB.prepare("INSERT INTO delivery_batches (id, subscriber_id, message, match_keys, created_at) VALUES (?, ?, ?, ?, ?)").bind(batch.id, subscriber.id, batch.message, batch.match_keys, Date.now()).run();
   return deliverBatch(env, subscriber, batch);
 }
 
 export async function checkAlerts(env) {
-  if (!env.EMAIL_RELAY_SECRET || !env.EMAIL_RELAY_URL) return { configured: false, sent: 0 };
+  const emailEnabled = env.EMAIL_DELIVERY_ENABLED !== "false" && env.EMAIL_RELAY_SECRET && env.EMAIL_RELAY_URL;
+  if (!emailEnabled && !pushConfigured(env)) return { configured: false, sent: 0 };
   const owner = crypto.randomUUID();
   const lock = await env.DB.prepare("INSERT INTO job_lock (id, owner, expires_at) VALUES (1, ?, ?) ON CONFLICT(id) DO UPDATE SET owner=excluded.owner, expires_at=excluded.expires_at WHERE job_lock.expires_at < ?").bind(owner, Date.now() + 600000, Date.now()).run();
   if (!lock.meta.changes) return { busy: true, sent: 0 };
   let sent = 0;
   try {
     const feed = await getFeed();
-    const subscribers = (await env.DB.prepare("SELECT * FROM subscribers WHERE paused = 0").all()).results;
+    const subscribers = emailEnabled ? (await env.DB.prepare("SELECT * FROM subscribers WHERE paused = 0").all()).results : [];
     for (const subscriber of subscribers) {
       const pending = await env.DB.prepare("SELECT * FROM delivery_batches WHERE subscriber_id = ? AND sent_at IS NULL ORDER BY created_at LIMIT 1").bind(subscriber.id).first();
       if (pending) {
@@ -134,7 +141,8 @@ export async function checkAlerts(env) {
     await env.DB.prepare("DELETE FROM access_tokens WHERE expires_at < ?").bind(Date.now()).run();
     await env.DB.prepare("DELETE FROM link_requests WHERE created_at < ?").bind(Date.now() - 2 * 86400000).run();
     await env.DB.prepare("DELETE FROM sent_matches WHERE sent_at < ?").bind(Date.now() - 90 * 86400000).run();
-    return { configured: true, sent };
+    const push = await checkPushAlerts(env, feed, selectMatches);
+    return { configured: true, sent, pushSent: push.sent, pushFailed: push.failed };
   } finally {
     await env.DB.prepare("DELETE FROM job_lock WHERE id = 1 AND owner = ?").bind(owner).run();
   }
@@ -145,10 +153,15 @@ export default {
   async fetch(request, env, context) {
     const url = new URL(request.url);
     if (request.method === "OPTIONS") return json(null, 204);
-    if (url.pathname === "/health") return json({ ok: true, emailConfigured: Boolean(env.EMAIL_RELAY_URL && env.EMAIL_RELAY_SECRET) });
+    if (url.pathname === "/health") return json({ ok: true, emailConfigured: Boolean(env.EMAIL_RELAY_URL && env.EMAIL_RELAY_SECRET), emailEnabled: env.EMAIL_DELIVERY_ENABLED !== "false", pushConfigured: pushConfigured(env) });
     const origin = request.headers.get("Origin");
     if (origin && origin !== siteOrigin) return json({ error: "Origin not allowed." }, 403);
+    if (url.pathname.startsWith("/push/")) {
+      try { const result = await pushRequest(request, env, url.pathname); return result ? json(result) : json({ error: "Not found." }, 404); }
+      catch (error) { return json({ error: error.message || "Notification request failed." }, 400); }
+    }
     if (url.pathname === "/request-link" && request.method === "POST") {
+      if (env.EMAIL_DELIVERY_ENABLED === "false") return json({ error: "Email delivery is disabled. Open Alerts on the website." }, 409);
       if (!request.headers.get("Content-Type")?.startsWith("application/json")) return json({ error: "JSON required." }, 415);
       const body = await request.text();
       if (body.length > 512) return json({ error: "Request too large." }, 413);
@@ -173,7 +186,7 @@ export default {
       try {
         if (request.method === "POST" && url.pathname === "/admin/check") return json(await checkAlerts(env));
         if (request.method === "POST" && url.pathname === "/admin/enroll") {
-          if (!env.EMAIL_RELAY_SECRET || !env.EMAIL_RELAY_URL) return json({ error: "Configure email before enrollment." }, 503);
+          if (env.EMAIL_DELIVERY_ENABLED === "false" || !env.EMAIL_RELAY_SECRET || !env.EMAIL_RELAY_URL) return json({ error: "Email enrollment is disabled." }, 503);
           const { email } = await request.json();
           if (typeof email !== "string" || email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "Invalid email." }, 400);
           const existing = await env.DB.prepare("SELECT * FROM subscribers WHERE email = ?").bind(email.toLowerCase()).first();
@@ -187,23 +200,27 @@ export default {
       return json({ error: "Not found." }, 404);
     }
     if (url.pathname !== "/preferences" || !["GET", "PUT"].includes(request.method)) return json({ error: "Not found." }, 404);
-    if (!/^[a-f0-9]{64}$/.test(bearer)) return json({ error: "Open the private link in your latest alert email." }, 401);
-    const subscriber = await env.DB.prepare("SELECT subscribers.* FROM subscribers JOIN access_tokens ON subscribers.id=access_tokens.subscriber_id WHERE access_tokens.digest = ? AND access_tokens.expires_at > ?").bind(await tokenDigest(bearer), Date.now()).first();
+    const publicEditor = !bearer && Boolean(env.PUBLIC_EDITOR_EMAIL);
+    if (!publicEditor && !/^[a-f0-9]{64}$/.test(bearer)) return json({ error: "Open the private link in your latest alert email." }, 401);
+    const subscriber = publicEditor
+      ? await env.DB.prepare("SELECT * FROM subscribers WHERE email = ?").bind(env.PUBLIC_EDITOR_EMAIL).first()
+      : await env.DB.prepare("SELECT subscribers.* FROM subscribers JOIN access_tokens ON subscribers.id=access_tokens.subscriber_id WHERE access_tokens.digest = ? AND access_tokens.expires_at > ?").bind(await tokenDigest(bearer), Date.now()).first();
     if (!subscriber) return json({ error: "This link is invalid or expired. Use a newer alert email." }, 401);
     try {
       const feed = await getFeed();
       const courses = courseNames(feed);
-      if (request.method === "GET") return json({ email: subscriber.email, rules: JSON.parse(subscriber.rules), paused: Boolean(subscriber.paused), version: subscriber.version, courses });
+      if (request.method === "GET") return json({ email: subscriber.email, rules: JSON.parse(subscriber.rules), paused: Boolean(subscriber.paused), version: subscriber.version, savedAt: subscriber.updated_at, courses, courseGroups: alertCourseGroups });
       if (!request.headers.get("Content-Type")?.startsWith("application/json")) return json({ error: "JSON required." }, 415);
       const body = await request.text();
       if (body.length > 24000) return json({ error: "Request too large." }, 413);
       const payload = JSON.parse(body);
       if (typeof payload.paused !== "boolean" || !Number.isInteger(payload.version)) return json({ error: "Invalid preferences." }, 400);
       const rules = validateAlerts(payload.rules, courses);
-      const result = await env.DB.prepare("UPDATE subscribers SET rules=?, paused=?, version=version+1 WHERE id=? AND version=?").bind(JSON.stringify(rules), Number(payload.paused), subscriber.id, payload.version).run();
-      if (!result.meta.changes) return json({ error: "Preferences changed in another tab. Reopen your email's management link before saving." }, 409);
+      const savedAt = Date.now();
+      const result = await env.DB.prepare("UPDATE subscribers SET rules=?, paused=?, updated_at=?, version=version+1 WHERE id=? AND version=?").bind(JSON.stringify(rules), Number(payload.paused), savedAt, subscriber.id, payload.version).run();
+      if (!result.meta.changes) return json({ error: "Not saved: alerts changed in another tab. Reload this page before editing again." }, 409);
       await env.DB.prepare("DELETE FROM delivery_batches WHERE subscriber_id = ? AND sent_at IS NULL").bind(subscriber.id).run();
-      return json({ ok: true, version: payload.version + 1 });
+      return json({ ok: true, version: payload.version + 1, savedAt });
     } catch (error) { return json({ error: error.message || "Unable to load preferences." }, 400); }
   },
 };

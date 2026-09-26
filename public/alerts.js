@@ -1,43 +1,31 @@
+import { shortCourseName } from "./src/dashboard.js?v=20260926-stonehouse";
+
 const endpoint = "https://golfwithjim-alerts.fbp-api-worker.workers.dev/preferences";
-const accessKey = "golfwithjim-alert-access";
-let token = new URLSearchParams(location.hash.slice(1)).get("token") || "";
-if (!token) { try { token = sessionStorage.getItem(accessKey) || ""; } catch {} }
+try { sessionStorage.removeItem("golfwithjim-alert-access"); } catch {}
 history.replaceState(null, "", location.pathname);
 const status = document.getElementById("status");
 const form = document.getElementById("preferences");
 const container = document.getElementById("rules");
 const save = document.getElementById("save");
-const requestLink = document.getElementById("request-link");
-const signOut = document.getElementById("sign-out");
 let version = 0;
 let courses = [];
+let courseGroups = [];
 let dirty = false;
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 
-function message(text, error = false) { status.textContent = text; status.classList.toggle("error", error); }
-
-function clearAccess() {
-  try { sessionStorage.removeItem(accessKey); } catch {}
-  token = "";
-  dirty = false;
-  form.hidden = true;
-  signOut.hidden = true;
-  requestLink.hidden = false;
-  container.replaceChildren();
-  document.getElementById("email").textContent = "";
+function message(text, error = false) {
+  status.textContent = text;
+  status.classList.toggle("error", error);
+  if (!save.disabled) save.textContent = dirty ? "Save changes" : "Saved";
 }
-signOut.addEventListener("click", () => {
-  if (dirty && !confirm("Discard unsaved changes and sign out?")) return;
-  clearAccess();
-  message("Signed out");
-});
+const savedTime = value => new Date(value).toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit", second: "2-digit" });
 
 function addRule(rule) {
   const section = document.createElement("section");
   section.className = "rule";
   section.dataset.id = rule.id;
   section.innerHTML = `<div class="rule-head"><label><input data-field="enabled" type="checkbox"${rule.enabled ? " checked" : ""}>Enabled</label><button type="button" data-remove>Remove</button></div>
-    <div class="rule-grid"><label class="course">Course<select data-field="course">${courses.map(course => `<option${course === rule.course ? " selected" : ""}>${escapeHtml(course)}</option>`).join("")}</select></label>
+    <div class="rule-grid"><label class="course">Course<select data-field="course"><optgroup label="Course groups">${courseGroups.map(group => `<option value="${escapeHtml(group.value)}"${group.value === rule.course ? " selected" : ""}>${escapeHtml(group.label)}</option>`).join("")}</optgroup><optgroup label="Individual courses">${courses.map(course => `<option value="${escapeHtml(course)}"${course === rule.course ? " selected" : ""}>${escapeHtml(shortCourseName(course))}</option>`).join("")}</optgroup></select></label>
     <label>From<input data-field="from" type="time" value="${rule.from}" required></label><label>Until<input data-field="until" type="time" value="${rule.until}" required></label>
     <label>Minimum price ($)<input data-field="minPrice" type="number" min="0" max="2000" step="0.01" value="${rule.minPrice}" required></label><label>Maximum price ($)<input data-field="maxPrice" type="number" min="0" max="2000" step="0.01" value="${rule.maxPrice ?? ""}" placeholder="Any"></label>
     <label>Golfers<select data-field="players">${[0, 1, 2, 3, 4].map(players => `<option value="${players}"${players === rule.players ? " selected" : ""}>${players || "Any available"}</option>`).join("")}</select></label></div>
@@ -56,6 +44,7 @@ function readRules() {
 }
 
 form.addEventListener("input", () => { dirty = true; message("Unsaved changes"); });
+form.addEventListener("invalid", () => { dirty = true; message("Not saved: check the highlighted fields.", true); }, true);
 container.addEventListener("click", event => { const button = event.target.closest("[data-remove]"); if (button) { button.closest(".rule").remove(); dirty = true; message("Unsaved changes"); } });
 document.getElementById("add").addEventListener("click", () => {
   if (container.children.length >= 20) { message("You can save up to 20 alerts.", true); return; }
@@ -65,49 +54,38 @@ document.getElementById("add").addEventListener("click", () => {
 });
 form.addEventListener("submit", async event => {
   event.preventDefault();
-  save.disabled = true;
+  const payload = { rules: readRules(), paused: document.getElementById("paused").checked, version };
+  const controls = [...form.querySelectorAll("input, select, button")];
+  controls.forEach(control => { control.disabled = true; });
+  save.textContent = "Saving...";
+  form.setAttribute("aria-busy", "true");
   message("Saving...");
   try {
-    const response = await fetch(endpoint, { method: "PUT", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify({ rules: readRules(), paused: document.getElementById("paused").checked, version }) });
+    const response = await fetch(endpoint, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), signal: AbortSignal.timeout(30000) });
     const data = await response.json();
-    if (response.status === 401) clearAccess();
     if (!response.ok) throw new Error(data.error || "Unable to save changes.");
+    if (data.ok !== true || !Number.isInteger(data.version) || !Number.isFinite(data.savedAt)) throw new Error("Save was not confirmed. Reload to check your saved alerts before retrying.");
     version = data.version;
     dirty = false;
-    message("Saved");
-  } catch (error) { message(error.message, true); }
-  finally { save.disabled = false; }
+    message(`Saved ${payload.rules.length} alert${payload.rules.length === 1 ? "" : "s"} at ${savedTime(data.savedAt)}.`);
+  } catch (error) { dirty = true; message(error.name === "TimeoutError" || error.name === "TypeError" ? "Save not confirmed: connection interrupted. Reload to check your saved alerts before retrying." : `Not saved: ${error.message}`, true); }
+  finally { controls.forEach(control => { control.disabled = false; }); form.removeAttribute("aria-busy"); save.textContent = dirty ? "Retry save" : "Saved"; }
 });
 window.addEventListener("beforeunload", event => { if (dirty) { event.preventDefault(); event.returnValue = ""; } });
-requestLink.addEventListener("submit", async event => {
-  event.preventDefault();
-  const button = requestLink.querySelector("button");
-  button.disabled = true;
-  try {
-    const response = await fetch(endpoint.replace("/preferences", "/request-link"), { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: document.getElementById("link-email").value }) });
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Request failed.");
-    message(data.message);
-  } catch (error) { message(error.message, true); }
-  finally { button.disabled = false; }
-});
 
 async function load() {
-  if (!/^[a-f0-9]{64}$/.test(token)) { clearAccess(); message("Sign in to manage your alerts."); return; }
   try {
-    const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` } });
+    const response = await fetch(endpoint, { signal: AbortSignal.timeout(30000), cache: "no-store" });
     const data = await response.json();
-    if (response.status === 401) clearAccess();
     if (!response.ok) throw new Error(data.error || "Unable to load alerts.");
-    try { sessionStorage.setItem(accessKey, token); } catch {}
     version = data.version;
-    courses = data.courses;
-    document.getElementById("email").textContent = data.email;
+    courses = [...data.courses].sort((left, right) => shortCourseName(left).localeCompare(shortCourseName(right)) || left.localeCompare(right));
+    courseGroups = data.courseGroups || [];
     document.getElementById("paused").checked = data.paused;
     data.rules.forEach(addRule);
     form.hidden = false;
-    signOut.hidden = false;
-    message("All changes apply after saving.");
-  } catch (error) { message(error.message, true); requestLink.hidden = false; }
+    form.querySelector(".actions").prepend(status);
+    message(data.savedAt ? `Last saved ${savedTime(data.savedAt)}. ${data.rules.length} alerts loaded.` : `${data.rules.length} saved alerts loaded.`);
+  } catch (error) { message(`Unable to load alerts. Reload to try again. ${error.message}`, true); }
 }
 load();

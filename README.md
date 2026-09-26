@@ -40,33 +40,35 @@ Sycamore's `cacheMaxAgeHours: 24` preserves `verifiedAt`, `cacheExpiresAt`, and 
 
 The public Refresh button still runs the cloud workflow. It does not contact or wake the laptop; there is no remote request queue or inbound laptop service. The phone sees the latest published laptop data until the next successful scheduled update. A full power-off/sleep-and-wake test is not part of installation verification.
 
-## Email reports
+## Notifications
 
 ### Personal alerts
 
-The separate `alert-worker/` service stores private subscriber preferences in Cloudflare D1. The initial rules are Magnolia Green on Saturdays through 10:00 AM inclusive, at any price, and Spring Creek on any day for at most $119.99 per golfer. Both use Eastern time, exact public 18-hole rates, and any verified available party size. Stale, inexact, restricted, past-start, and incompatible-party offers are excluded.
+The separate `alert-worker/` service stores rules in Cloudflare D1. Production uses push-only delivery (`EMAIL_DELIVERY_ENABLED=false`); email sends, recovery emails, and email enrollment are disabled. Existing rules are preserved. Matching uses Eastern time, exact public 18-hole rates, and verified available party sizes. Stale, inexact, restricted, past-start, and incompatible-party offers are excluded.
 
 The website navigation provides List, Map, and Alerts pages; `?view=map` opens directly to the map. Course-row hover shading applies only to fine pointers with hover support, and native tap highlighting is disabled on those rows to avoid sticky highlighting while scrolling a phone. Keyboard focus outlines remain visible.
 
-Every email includes all saved rules and a private link to `alerts.html`, the same editor reached through the website's Alerts navigation. The editor supports course, weekdays, start/end time, minimum/maximum price, one through four golfers or any available size, optional date bounds, Hot Deals only, per-rule enabled, pause all, and adding/removing rules. Saves use version checks to prevent another tab's newer settings being overwritten. An email already handed to the relay cannot be recalled by pausing.
+The alert Course dropdown starts with All courses, Local courses, and Regional courses. Group selections use the same Local membership as the website, match only supported inventory courses, and keep all other alert filters. Individual choices use the existing shortened names and sort by those labels (Highlands under H, not The under T); saved values remain the full canonical course names. Group rules are stored as `group:all`, `group:local`, or `group:regional`.
 
-Management links expire after 90 days. Their tokens are SHA-256 hashed in the access-token table, passed to the page in a URL fragment, removed from the address bar, and sent to the API only as a Bearer header. After successful authentication, the editor retains the token in tab-scoped `sessionStorage` so reloading or returning from List/Map restores access. Sign out and unauthorized responses clear that stored access; no token is placed in persistent `localStorage`. Sign out does not pause alerts or revoke links already delivered by email. Without authenticated access, the page shows an email-link sign-in form, never private preferences. The page can request a replacement link for an existing subscriber, with a generic response and limits of three requests per email/day and ten per requesting IP/day. Pending email messages temporarily contain their management links in the private delivery table; successful/canceled batches erase message content. No subscriber email, token, or preferences enter the public static feed.
+Alerts opens directly without sign-in. `PUBLIC_EDITOR_EMAIL` selects the single existing mailbox's rules on the server; no admin or relay secret is exposed. This is intentionally a public editor: anyone with the site address can view/change those rules or register their own device. Do not use this mode for confidential or multi-user settings. The editor supports course, weekdays, times, prices, golfers, date bounds, Hot Deals, enabled/pause, and add/remove. Saves use version checks, prevent editing during a request, and display server-confirmed timestamps beside sticky mobile Save controls. Network failures explicitly distinguish unconfirmed saves from success.
 
-The Worker checks the published feed every 15 minutes, not each course's live booking system. Existing GitHub collection is scheduled at 10:05, 11:05, 22:05, and 23:05 UTC, subject to runner delays; manual Refresh also updates it. A 15-minute alert check does not imply 15-minute inventory freshness. Feed and successful source observations older than 30 hours are rejected. Unchanged rule/course/date/time/price/party matches are suppressed after confirmed relay acceptance; up to 100 new matches are batched per check. Failed sends retry, while expired/no-longer-matching pending offers are canceled. The relay has no exactly-once guarantee: an ambiguous network timeout after acceptance can cause a repeated email.
+On iOS 16.4 or newer, open the site in Safari, use Share > Add to Home Screen, open the Home Screen app, then Alerts > Enable notifications > Allow. Permission must be granted on that phone from a user gesture. Send test notification confirms push-service acceptance, not lock-screen display; Focus settings and OS delivery can delay/suppress display. Other supported browsers can enable push directly. Disable on this device unsubscribes that installation; Pause all alerts stops scheduled delivery on every registered device. Up to ten devices are supported.
+
+`public/sw.js` displays notifications and opens the site on tap; it does not cache pages or intercept inventory fetches. The existing artwork is supplied as a PNG for iPhone Home Screen icons. VAPID keys are stored as Worker secrets, with only the public key exposed to browsers. `@block65/webcrypto-web-push` provides Apple-compatible aes128gcm encryption. Endpoints are restricted to Apple/FCM/Mozilla, redirects are not followed, and registration/test requests are rate-limited. Subscription endpoints and encryption keys stay in D1, not public responses or the repository. Expired subscriptions are deleted; successful matches are deduplicated per device.
+
+The Worker checks the published feed every 15 minutes, not each course's live booking system. Existing GitHub collection is scheduled at 10:05, 11:05, 22:05, and 23:05 UTC, subject to runner delays; manual Refresh also updates it. A 15-minute alert check does not imply 15-minute inventory freshness. Feed and successful source observations older than 30 hours are rejected. Up to 100 newly matching starts are grouped per device/check; a notification summarizes the first three. Failed push sends retry on a later check if offers still qualify. Acceptance is not an exactly-once guarantee: an ambiguous network failure can cause a repeated notification.
 
 Deployment and verification, from the project root:
 
 ```powershell
 npm.cmd --prefix alert-worker ci
 node alert-worker/verify.mjs
-node alert-worker/node_modules/wrangler/bin/wrangler.js d1 execute golfwithjim-alerts --remote --config alert-worker/wrangler.toml --file alert-worker/schema.sql
+node alert-worker/setup-push.mjs
+node alert-worker/node_modules/wrangler/bin/wrangler.js d1 execute golfwithjim-alerts --remote --config alert-worker/wrangler.toml --file alert-worker/schema.sql --yes
 npm.cmd --prefix alert-worker run deploy
-node alert-worker/activate.mjs YOUR_EMAIL
 ```
 
-Activation prompts securely for the existing email relay secret, creates a separate random admin secret without printing it, enrolls the address, sends the welcome/settings email, and checks current published matches. Enter the relay secret directly in the terminal, never in chat, source, or GitHub Pages. It must match the email relay's Apps Script property `FBP_NOTIFICATION_RELAY_SECRET`. Existing enrollment/preferences are preserved. Worker deployment and Pages publication are separate operations. `GET /health` reports configuration only, not successful delivery; private delivery records and the relay response establish acceptance, not inbox arrival.
-
-If activation stops after the email secret was successfully stored, resume with `node alert-worker/activate.mjs YOUR_EMAIL --resume`; this preserves the saved email secret and does not prompt for it again.
+Existing databases created before push need `migrate-save-time.sql` applied exactly once before the schema/deploy commands. New databases use `schema.sql` directly. `setup-push.mjs` generates VAPID keys and passes them to Wrangler over stdin without printing or writing them to source; do not rotate keys after devices subscribe. Worker deployment and Pages publication are separate operations. `GET /health` reports configuration only. The integration suite exercises encrypted push with mocked delivery and verifies no email in push-only mode; real iPhone permission and receipt require a device test. Legacy email code remains available but is disabled in production; do not run email activation for push-only operation.
 
 ### Legacy reports
 

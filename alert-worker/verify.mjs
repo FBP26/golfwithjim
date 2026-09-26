@@ -3,18 +3,23 @@ import { readFile } from "node:fs/promises";
 import { build } from "esbuild";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import { defaultAlerts } from "../src/personal-alerts.js";
+import { createECDH, randomBytes } from "node:crypto";
 
 const bundle = await build({ entryPoints: [new URL("worker.js", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1")], bundle: true, write: false, format: "esm", platform: "browser", target: "es2022" });
 const messages = [];
 let acceptEmail = true;
+let pushStatus = 201;
+const pushes = [];
 let onDelivery = () => {};
 const future = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
 const feed = { checkedAt: new Date().toISOString(), courses: defaultAlerts.map(rule => ({ course: rule.course, collector: "golfnow" })), sourceChecks: defaultAlerts.map(rule => ({ course: rule.course, checkedAt: new Date().toISOString() })), teeTimes: [{ course: "Spring Creek Golf Club", date: future, time: "9:00 AM", allInPrice: 119, holes: 18, priceIsExact: true, availablePlayers: 4, availablePartySizes: [2, 4], rateName: "Public", url: "https://example.test/book" }] };
-const runtime = new Miniflare(convertV4MiniflareOptions({ workers: [{ modules: true, script: bundle.outputFiles[0].text, compatibilityDate: "2026-09-26", d1Databases: ["DB"], bindings: { ADMIN_SECRET: "test-admin", EMAIL_RELAY_SECRET: "test-relay", EMAIL_RELAY_URL: "https://mail.test/send" }, outboundService: async request => {
-  if (request.url.startsWith("https://mail.test/")) { if (!acceptEmail) return Response.json({ ok: false }, { status: 503 }); messages.push(await request.json()); onDelivery(); return Response.json({ ok: true }); }
+const createRuntime = (bindings = {}) => new Miniflare(convertV4MiniflareOptions({ workers: [{ modules: true, script: bundle.outputFiles[0].text, compatibilityDate: "2026-09-26", d1Databases: ["DB"], bindings: { ADMIN_SECRET: "test-admin", EMAIL_RELAY_SECRET: "test-relay", EMAIL_RELAY_URL: "https://mail.test/send", PUBLIC_EDITOR_EMAIL: "public@example.test", ...bindings }, outboundService: async request => {
+  if (request.url.startsWith("https://mail.test/")) { const message = await request.json(); if (!acceptEmail) return Response.json({ ok: false }, { status: 503 }); messages.push(message); onDelivery(); return Response.json({ ok: true }); }
+  if (request.url.startsWith("https://web.push.apple.com/")) { assert.equal(request.headers.get("Content-Encoding"), "aes128gcm"); assert.match(request.headers.get("Authorization"), /^vapid /); assert.equal((await request.arrayBuffer()).byteLength, 4096); if (pushStatus === 201) pushes.push(request.url); return new Response(null, { status: pushStatus }); }
   if (request.url.startsWith("https://fbp26.github.io/golfwithjim/api/")) return Response.json(feed);
   return new Response("Unexpected request", { status: 500 });
 } }] }));
+const runtime = createRuntime();
 
 try {
   const database = await runtime.getD1Database("DB");
@@ -62,5 +67,70 @@ try {
   }
   assert.equal(messages.length, 6);
   assert.match(messages.at(-1).body, /all paused/);
+  assert.equal((await admin("enroll", { email: "public@example.test" })).status, 200);
+  assert.doesNotMatch(messages.at(-1).body, /#token=/);
+  const publicPreference = (method = "GET", body) => runtime.dispatchFetch("https://alerts.test/preferences", { method, headers: { Origin: "https://fbp26.github.io", "Content-Type": "application/json" }, ...(body ? { body: JSON.stringify(body) } : {}) });
+  const publicOriginal = await (await publicPreference()).json();
+  assert.equal(publicOriginal.email, "public@example.test");
+  assert.deepEqual(publicOriginal.courseGroups.map(group => group.value), ["group:all", "group:local", "group:regional"]);
+  const publicSaved = await (await publicPreference("PUT", { ...publicOriginal, paused: true, rules: [{ ...publicOriginal.rules[0], course: "group:all" }] })).json();
+  assert.equal(publicSaved.ok, true);
+  assert.ok(publicSaved.savedAt > 0);
+  assert.equal((await publicPreference("PUT", { ...publicOriginal, paused: false })).status, 409);
+  const publicReloaded = await (await publicPreference()).json();
+  assert.equal(publicReloaded.paused, true);
+  assert.equal(publicReloaded.rules[0].course, "group:all");
+  assert.equal(publicReloaded.savedAt, publicSaved.savedAt);
+  assert.equal((await (await admin("check")).json()).sent, 0);
+  assert.equal((await runtime.dispatchFetch("https://alerts.test/admin/check", { method: "POST" })).status, 401);
+  assert.equal((await runtime.dispatchFetch("https://alerts.test/preferences", { method: "PUT", headers: { Origin: "https://evil.test" } })).status, 403);
+  console.log("PASS: public single-mailbox editing, server save timestamps and stale-save protection; admin remains private.");
   console.log("PASS: D1 enrollment, welcome summary/link, matching delivery, failed-delivery retry, deduplication, preferences, version conflicts, pause, token hashing/expiry and rate-limited recovery. All email was mocked.");
 } finally { await runtime.dispose(); }
+
+const vapid = createECDH("prime256v1");
+vapid.generateKeys();
+const pushRuntime = createRuntime({ EMAIL_DELIVERY_ENABLED: "false", VAPID_PUBLIC_KEY: vapid.getPublicKey().toString("base64url"), VAPID_PRIVATE_KEY: vapid.getPrivateKey().toString("base64url") });
+try {
+  const database = await pushRuntime.getD1Database("DB");
+  const schema = await readFile(new URL("schema.sql", import.meta.url), "utf8");
+  for (const statement of schema.split(";").map(value => value.trim()).filter(Boolean)) await database.prepare(statement).run();
+  await database.prepare("INSERT INTO subscribers (id, email, rules, created_at) VALUES (?, ?, ?, ?)").bind("push-owner", "public@example.test", JSON.stringify(defaultAlerts), Date.now()).run();
+  const deviceKey = createECDH("prime256v1");
+  deviceKey.generateKeys();
+  const subscription = { endpoint: "https://web.push.apple.com/device-one", keys: { p256dh: deviceKey.getPublicKey().toString("base64url"), auth: randomBytes(16).toString("base64url") } };
+  const pushAction = (action, value = subscription) => pushRuntime.dispatchFetch(`https://alerts.test/push/${action}`, { method: "POST", headers: { "Content-Type": "application/json", Origin: "https://fbp26.github.io" }, body: JSON.stringify({ subscription: value }) });
+  const check = async () => (await pushRuntime.dispatchFetch("https://alerts.test/admin/check", { method: "POST", headers: { Authorization: "Bearer test-admin" } })).json();
+  const mailCount = messages.length;
+  assert.equal((await (await pushRuntime.dispatchFetch("https://alerts.test/push/config")).json()).configured, true);
+  assert.equal((await pushAction("test")).status, 400);
+  assert.equal((await pushAction("subscribe", { ...subscription, endpoint: "https://localhost/private" })).status, 400);
+  assert.equal((await pushAction("subscribe")).status, 200);
+  assert.equal((await pushAction("subscribe")).status, 200);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM push_devices").first()).total, 1);
+  const testPush = await pushAction("test");
+  assert.equal(testPush.status, 200, await testPush.text());
+  assert.equal(pushes.length, 1);
+  assert.equal((await check()).pushSent, 1);
+  assert.equal((await check()).pushSent, 0);
+  feed.teeTimes[0].allInPrice = 117;
+  pushStatus = 503;
+  assert.equal((await check()).pushFailed, 1);
+  pushStatus = 201;
+  assert.equal((await check()).pushSent, 1);
+  await database.prepare("UPDATE subscribers SET paused=1").run();
+  feed.teeTimes[0].allInPrice = 116;
+  assert.equal((await check()).pushSent, 0);
+  await database.prepare("UPDATE subscribers SET paused=0").run();
+  pushStatus = 410;
+  assert.equal((await check()).pushSent, 0);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM push_devices").first()).total, 0);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM push_matches").first()).total, 0);
+  pushStatus = 201;
+  assert.equal((await pushAction("subscribe")).status, 200);
+  assert.equal((await pushAction("unsubscribe")).status, 200);
+  assert.equal((await database.prepare("SELECT COUNT(*) AS total FROM push_devices").first()).total, 0);
+  assert.equal((await pushRuntime.dispatchFetch("https://alerts.test/request-link", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: "public@example.test" }) })).status, 409);
+  assert.equal(messages.length, mailCount);
+  console.log("PASS: Apple-compatible encrypted push, device registration/test/removal, deduplication, failure retry, pause, expired subscription cleanup, and ZERO email delivery in push-only mode. All push delivery was mocked.");
+} finally { await pushRuntime.dispose(); }
