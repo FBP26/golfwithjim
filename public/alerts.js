@@ -7,10 +7,18 @@ const status = document.getElementById("status");
 const form = document.getElementById("preferences");
 const container = document.getElementById("rules");
 const save = document.getElementById("save");
+const refreshStatus = document.getElementById("alerts-refresh");
+const actions = form.querySelector(".actions");
+new ResizeObserver(() => {
+  document.documentElement.style.setProperty("--actions-height", `${Math.ceil(actions.getBoundingClientRect().height)}px`);
+}).observe(actions);
 let version = 0;
 let courses = [];
 let courseGroups = [];
 let dirty = false;
+let loading = false;
+let saving = false;
+let refreshTimer;
 const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
 
 function message(text, error = false) {
@@ -54,6 +62,8 @@ document.getElementById("add").addEventListener("click", () => {
 });
 form.addEventListener("submit", async event => {
   event.preventDefault();
+  if (loading || saving) return;
+  saving = true;
   const payload = { rules: readRules(), paused: document.getElementById("paused").checked, version };
   const controls = [...form.querySelectorAll("input, select, button")];
   controls.forEach(control => { control.disabled = true; });
@@ -69,11 +79,25 @@ form.addEventListener("submit", async event => {
     dirty = false;
     message(`Saved ${payload.rules.length} alert${payload.rules.length === 1 ? "" : "s"} at ${savedTime(data.savedAt)}.`);
   } catch (error) { dirty = true; message(error.name === "TimeoutError" || error.name === "TypeError" ? "Save not confirmed: connection interrupted. Reload to check your saved alerts before retrying." : `Not saved: ${error.message}`, true); }
-  finally { controls.forEach(control => { control.disabled = false; }); form.removeAttribute("aria-busy"); save.textContent = dirty ? "Retry save" : "Saved"; }
+  finally { saving = false; controls.forEach(control => { control.disabled = false; }); form.removeAttribute("aria-busy"); save.textContent = dirty ? "Retry save" : "Saved"; }
 });
 window.addEventListener("beforeunload", event => { if (dirty) { event.preventDefault(); event.returnValue = ""; } });
 
-async function load() {
+function showRefresh(text, { busy = false, settled = false, error = false } = {}) {
+  clearTimeout(refreshTimer);
+  refreshStatus.textContent = text;
+  refreshStatus.hidden = false;
+  refreshStatus.classList.toggle("refreshing", busy);
+  refreshStatus.classList.toggle("error", error);
+  if (settled) refreshTimer = setTimeout(() => { refreshStatus.hidden = true; }, 3000);
+}
+
+async function load({ refresh = false } = {}) {
+  if (loading || saving) return;
+  loading = true;
+  form.setAttribute("aria-busy", "true");
+  form.querySelectorAll("input, select, button").forEach(control => { control.disabled = true; });
+  if (refresh) showRefresh("Refreshing alerts...", { busy: true });
   try {
     const response = await fetch(endpoint, { signal: AbortSignal.timeout(30000), cache: "no-store" });
     const data = await response.json();
@@ -82,10 +106,64 @@ async function load() {
     courses = [...data.courses].sort((left, right) => shortCourseName(left).localeCompare(shortCourseName(right)) || left.localeCompare(right));
     courseGroups = data.courseGroups || [];
     document.getElementById("paused").checked = data.paused;
+    container.replaceChildren();
     data.rules.forEach(addRule);
+    dirty = false;
     form.hidden = false;
     form.querySelector(".actions").prepend(status);
     message(data.savedAt ? `Last saved ${savedTime(data.savedAt)}. ${data.rules.length} alerts loaded.` : `${data.rules.length} saved alerts loaded.`);
-  } catch (error) { message(`Unable to load alerts. Reload to try again. ${error.message}`, true); }
+    if (refresh) showRefresh("Alerts refreshed", { settled: true });
+  } catch (error) {
+    message(`Unable to ${refresh ? "refresh" : "load"} alerts. ${refresh ? "Current entries were kept. Pull down to retry." : "Pull down to try again."} ${error.message}`, true);
+    if (refresh) showRefresh("Could not refresh alerts", { settled: true, error: true });
+  } finally {
+    loading = false;
+    form.removeAttribute("aria-busy");
+    form.querySelectorAll("input, select, button").forEach(control => { control.disabled = false; });
+    save.textContent = dirty ? "Save changes" : "Saved";
+  }
 }
+
+let pullStartX = 0;
+let pullStartY = 0;
+let pullDistance = 0;
+let pulling = false;
+const pullThreshold = 72;
+document.addEventListener("touchstart", event => {
+  pulling = false;
+  if (loading || saving || window.scrollY > 0 || event.touches.length !== 1 || event.target.closest("input, select, textarea, button, a, .actions")) return;
+  pulling = true;
+  pullDistance = 0;
+  pullStartX = event.touches[0].clientX;
+  pullStartY = event.touches[0].clientY;
+}, { passive: true });
+document.addEventListener("touchmove", event => {
+  if (!pulling) return;
+  const vertical = event.touches.length === 1 ? event.touches[0].clientY - pullStartY : 0;
+  const horizontal = event.touches.length === 1 ? Math.abs(event.touches[0].clientX - pullStartX) : 0;
+  if (window.scrollY > 0 || event.touches.length !== 1 || vertical < -8 || horizontal > Math.max(12, vertical)) {
+    pulling = false;
+    refreshStatus.hidden = true;
+    return;
+  }
+  pullDistance = Math.max(0, vertical);
+  if (pullDistance < 10) return;
+  event.preventDefault();
+  showRefresh(pullDistance >= pullThreshold ? "Release to refresh alerts" : "Pull to refresh alerts");
+}, { passive: false });
+document.addEventListener("touchend", () => {
+  if (!pulling) return;
+  pulling = false;
+  if (pullDistance < pullThreshold) { refreshStatus.hidden = true; return; }
+  if (dirty && !window.confirm("Discard unsaved changes and reload your saved alerts?")) {
+    showRefresh("Refresh canceled. Unsaved changes kept.", { settled: true });
+    return;
+  }
+  load({ refresh: true });
+});
+document.addEventListener("touchcancel", () => {
+  if (!pulling) return;
+  pulling = false;
+  refreshStatus.hidden = true;
+});
 load();

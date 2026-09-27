@@ -465,6 +465,7 @@ function setActiveTab(view) {
   history.replaceState(null, "", url);
   elements["view-list-container"].classList.toggle("map-view-hidden", showMap);
   elements["view-map-container"].classList.toggle("map-view-hidden", !showMap);
+  delete document.documentElement.dataset.initialView;
   if (showMap) {
     initMap();
     updateMapView();
@@ -674,4 +675,5 @@ function expireCachedInventory() {
 
 setInterval(expireCachedInventory, 60_000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) expireCachedInventory(); });
-loadInventory().then(() => { if (new URLSearchParams(location.search).get("view") === "map") setActiveTab("map"); });
+setActiveTab(new URLSearchParams(location.search).get("view") === "map" ? "map" : "list");
+loadInventory();

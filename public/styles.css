@@ -262,6 +262,10 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .nav-tab { display: inline-flex; align-items: center; min-height: 36px; text-decoration: none; }
 
 .map-view-hidden { display: none !important; }
+html[data-initial-view="map"] #view-list-container { display: none; }
+html[data-initial-view="map"] #view-map-container { display: block !important; }
+html[data-initial-view="map"] #tab-list { background: transparent; color: #cad7d0; }
+html[data-initial-view="map"] #tab-map { background: var(--lime); color: var(--green); }
 .map-layout { display: flex; flex-direction: column; gap: 10px; height: calc(100vh - 160px); min-height: 550px; margin-top: 10px; }
 .map-topbar { display: flex; align-items: center; gap: 12px; }
 .map-topbar .date-strip { flex: 1; padding-bottom: 0; }
