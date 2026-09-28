@@ -36,6 +36,15 @@ test("isolated discounts qualify but AM-PM and twilight transitions do not", () 
   }
   assert.equal(qualifyDeals([offer("9:30 AM", 100, { rateName: "Public walking" }), offer("9:45 AM", 75), offer("10:00 AM", 100)])[1].hotDeal, false);
 });
+test("four-player promotions compare to a same-start regular course rate only when that rate supports four", () => {
+  const promotion = offer("7:30 AM", 47.49, { rateName: "4 Player Promotion", availablePartySizes: [4] });
+  const regular = offer("7:30 AM", 57.49, { rateName: "18 Holes", availablePartySizes: [1, 2, 3, 4] });
+  const qualified = qualifyDeals([promotion, regular]);
+  assert.equal(qualified[0].hotDeal, true);
+  assert.equal(qualified[0].deal.basis, "Same start regular course rate");
+  assert.equal(qualifyDeals([promotion, { ...regular, availablePartySizes: [1, 2, 3] }])[0].hotDeal, false);
+  assert.equal(qualifyDeals([promotion, { ...regular, rateName: "All You Can Play" }])[0].hotDeal, false);
+});
 test("history retains real source dates, ignores failed/cached data and is replay-safe", () => {
   const feed = { sourceChecks: [{ course: "Test Course", source: "Test", checkedAt: new Date(now).toISOString() }], teeTimes: [offer("9:00 AM", 100)] };
   const rows = priceObservations(feed, now);

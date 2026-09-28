@@ -10,6 +10,10 @@ export const median = values => {
 const easternDay = value => new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(value));
 const rateKey = offer => String(offer.rateName || "public").toLowerCase().replace(/\b(hot\s*deal|golfpass|discounted|special|promo)\b/g, "").replace(/[^a-z0-9]+/g, " ").trim() || "public";
 const partyKey = offer => (offer.availablePartySizes?.length ? [...offer.availablePartySizes] : [1, 2, 3, 4].filter(size => size <= offer.availablePlayers)).sort().join(",");
+const isPromotionRate = rateName => /\b(promo(?:tion)?|hot\s*deal|golfpass|discount(?:ed)?|special)\b/i.test(String(rateName));
+const isRegularCourseRate = rateName => /^(18 holes|standard|regular|public|online rate)$/i.test(String(rateName).replace(/\s+/g, " ").trim());
+const includesParty = (available, required) => required.every(size => available.includes(size));
+const partySizes = value => String(value).split(",").map(Number).filter(Number.isFinite);
 const leadBand = (date, observed) => {
   const days = Math.max(0, Math.round((Date.parse(date) - Date.parse(observed)) / dayMillis));
   return days === 0 ? "same day" : days <= 3 ? "1-3 days" : days <= 7 ? "4-7 days" : "8+ days";
@@ -100,6 +104,19 @@ export function qualifyDeals(offers, history = [], now = Date.now(), sourceCheck
     const peers = groups.get(JSON.stringify([family(offer), offer.date, period(minutes)])) || [];
     const atSameTime = peers.filter(peer => peer !== offer && parseTimeMinutes(peer.time) === minutes && peer.allInPrice > offer.allInPrice);
     if (atSameTime.length) references.push({ price: Math.min(...atSameTime.map(peer => peer.allInPrice)), basis: "Same start and comparable rate", samples: atSameTime.length });
+    if (isPromotionRate(offer.rateName)) {
+      const promotionParty = partySizes(partyKey(offer));
+      const regularAtSameStart = offers.filter(peer => peer !== offer && peer.course === offer.course && peer.source === offer.source && peer.date === offer.date
+        && parseTimeMinutes(peer.time) === minutes && isRegularCourseRate(peer.rateName) && includesParty(partySizes(partyKey(peer)), promotionParty) && peer.allInPrice > offer.allInPrice);
+      if (regularAtSameStart.length) references.push({ price: Math.min(...regularAtSameStart.map(peer => peer.allInPrice)), basis: "Same start regular course rate", samples: regularAtSameStart.length });
+      const historicalRegular = history.filter(row => row.course === offer.course && row.source === offer.source && isRegularCourseRate(row.rate)
+        && row.band === Math.floor(minutes / 15) * 15 && includesParty(partySizes(row.party), promotionParty) && row.observed < today
+        && new Date(`${row.date}T12:00:00Z`).getUTCDay() === new Date(`${offer.date}T12:00:00Z`).getUTCDay()
+        && row.lead === leadBand(offer.date, today) && Math.abs(Date.parse(row.date) - Date.parse(offer.date)) <= 56 * dayMillis);
+      if (new Set(historicalRegular.map(row => row.observed)).size >= 3 && new Set(historicalRegular.map(row => row.date)).size >= 3) {
+        references.push({ price: median(historicalRegular.map(row => row.median)), basis: "Historical regular course rate at same weekday and start", samples: historicalRegular.length });
+      }
+    }
     const before = peers.filter(peer => parseTimeMinutes(peer.time) < minutes && minutes - parseTimeMinutes(peer.time) <= 30);
     const after = peers.filter(peer => parseTimeMinutes(peer.time) > minutes && parseTimeMinutes(peer.time) - minutes <= 30);
     if (before.length && after.length) references.push({ price: Math.min(...before.map(peer => peer.allInPrice), ...after.map(peer => peer.allInPrice)), basis: "Comparable starts on both sides", samples: before.length + after.length });
