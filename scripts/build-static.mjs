@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { isEligible, isUpcoming, normalizeTeeTime } from "../src/analyze.js";
 import { config, sourceRegistry } from "../src/config.js";
 import { teeTimeArray } from "../src/source.js";
+import { qualifyDeals } from "../src/price-history.js";
 
 const root = resolve(import.meta.dirname, "..");
 const output = resolve(root, "dist");
@@ -22,10 +23,12 @@ await cp(resolve(root, "public"), output, { recursive: true });
 await mkdir(resolve(output, "src"), { recursive: true });
 await mkdir(resolve(output, "api"), { recursive: true });
 await cp(resolve(root, "src/dashboard.js"), resolve(output, "src/dashboard.js"));
+await cp(resolve(root, "src/analyze.js"), resolve(output, "src/analyze.js"));
+await cp(resolve(root, "src/price-history.js"), resolve(output, "src/price-history.js"));
 await writeFile(resolve(output, "api/tee-times.json"), `${JSON.stringify({
   checkedAt: payload.checkedAt,
   sourceChecks: payload.sourceChecks || [],
-  teeTimes,
+  teeTimes: qualifyDeals(teeTimes, [], Date.now(), payload.sourceChecks || []),
   courses: sourceRegistry.interactiveOnly,
 })}\n`);
 await writeFile(resolve(output, ".nojekyll"), "");

@@ -1,6 +1,8 @@
 import { defaultAlerts, validateAlerts, matchesAlert, alertSummary, alertCourseGroups } from "../src/personal-alerts.js";
 import { pushConfigured, pushRequest, checkPushAlerts } from "./push.js";
 import { signupEmailConfigured, flushSignupEmails } from "./signup-notifications.js";
+import { recordPrices, priceRequest } from "./prices.js";
+import { qualifyDeals } from "../src/price-history.js";
 
 const siteOrigin = "https://fbp26.github.io";
 const feedUrl = "https://fbp26.github.io/golfwithjim/api/tee-times.json";
@@ -123,7 +125,9 @@ export async function checkAlerts(env) {
   if (!lock.meta.changes) return { busy: true, sent: 0 };
   let sent = 0;
   try {
-    const feed = await getFeed();
+    let feed = await getFeed();
+    try { feed = await recordPrices(env, feed); }
+    catch (error) { console.error("Price history capture failed", error.message); feed = { ...feed, teeTimes: qualifyDeals(feed.teeTimes, [], Date.now(), feed.sourceChecks || []) }; }
     const subscribers = emailEnabled ? (await env.DB.prepare("SELECT * FROM subscribers WHERE paused = 0").all()).results : [];
     for (const subscriber of subscribers) {
       const pending = await env.DB.prepare("SELECT * FROM delivery_batches WHERE subscriber_id = ? AND sent_at IS NULL ORDER BY created_at LIMIT 1").bind(subscriber.id).first();
@@ -158,6 +162,10 @@ export default {
     if (url.pathname === "/health") return json({ ok: true, emailConfigured: Boolean(env.EMAIL_RELAY_URL && env.EMAIL_RELAY_SECRET), emailEnabled: env.EMAIL_DELIVERY_ENABLED !== "false", pushConfigured: pushConfigured(env), signupEmailConfigured: signupEmailConfigured(env) });
     const origin = request.headers.get("Origin");
     if (origin && origin !== siteOrigin) return json({ error: "Origin not allowed." }, 403);
+    if (["/prices", "/prices/current"].includes(url.pathname) && request.method === "GET") {
+      try { return json(await priceRequest(env, url)); }
+      catch { return json({ error: "Price history is temporarily unavailable." }, 503); }
+    }
     if (url.pathname.startsWith("/push/")) {
       try {
         const result = await pushRequest(request, env, url.pathname);

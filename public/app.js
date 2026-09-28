@@ -1,4 +1,5 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable, isSelectableCourse, coursesInGroup } from "./src/dashboard.js?v=20260926-stonehouse";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable, isSelectableCourse, coursesInGroup } from "./src/dashboard.js?v=20260928-prices";
+import { applyPriceSnapshot } from "./src/price-history.js?v=20260928";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -218,7 +219,7 @@ function renderResults() {
       return `<details class="course-row"${notificationId ? " open" : ""}><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
     }).join("");
     const count = groupTeeTimes(dateTimes).length;
-    return `<details class="date-group"${notificationId || dateIndex === 0 ? " open" : ""}><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small></span><em>${count} tee time${count === 1 ? "" : "s"}</em></summary><div class="date-courses">${courseRows}</div></details>`;
+    return `<details class="date-group"${notificationId || dateIndex === 0 ? " open" : ""}><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong></span><span class="date-counts"><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small><em>${count} tee time${count === 1 ? "" : "s"}</em></span></summary><div class="date-courses">${courseRows}</div></details>`;
   }).join("") + (notificationId ? "" : trackedCoursesHtml(filtered));
   updateMapView();
 }
@@ -478,6 +479,7 @@ window.addEventListener("resize", () => { if (map && !elements["view-map-contain
 // -------------------------------------------------------------------------
 
 async function loadInventory({ liveRefresh = false } = {}) {
+  const pricing = notificationId ? Promise.resolve(null) : fetch("https://golfwithjim-alerts.fbp-api-worker.workers.dev/prices/current", { signal: AbortSignal.timeout(3000), cache: "no-store" }).then(response => response.ok ? response.json() : null).catch(() => null);
   elements.refresh.classList.add("refreshing");
   elements.refresh.disabled = true;
   elements["refresh-label"].textContent = liveRefresh ? "Refreshing tee times" : "Loading tee times";
@@ -513,7 +515,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     if (notificationId && payload.notificationId !== notificationId) throw new Error("Saved notification results are unavailable.");
     if (liveRefresh && isGitHubPages && payload.checkedAt === state.checkedAt) throw new Error("Refresh is still running. Try again shortly.");
     state.checkedAt = payload.checkedAt;
-    state.teeTimes = notificationId ? payload.teeTimes : payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
+    state.teeTimes = notificationId ? payload.teeTimes : applyPriceSnapshot(payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true })), await pricing, payload.checkedAt, Date.now(), payload.sourceChecks || []);
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
     resetFilters();

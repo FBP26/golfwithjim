@@ -64,6 +64,8 @@ export function normalizeTeeTime(raw) {
     verifiedAt: raw.verifiedAt || null,
     cacheExpiresAt: raw.cacheExpiresAt || null,
     hotDeal: Boolean(raw.hotDeal),
+    providerHotDeal: Boolean(raw.providerHotDeal ?? raw.hotDeal),
+    deal: raw.deal || null,
     rateName: String(raw.rateName || "Standard"),
     distanceMiles: Number(raw.distanceMiles),
     url: String(raw.url || ""),

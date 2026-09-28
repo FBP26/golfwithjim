@@ -1,0 +1,28 @@
+main { max-width: 1232px; padding-bottom: 32px; }
+.price-filters { display: grid; grid-template-columns: minmax(200px,2fr) repeat(4,minmax(100px,1fr)) 44px; gap: 12px; align-items: end; }
+.price-filters button { padding: 8px; font-size: 22px; }
+.price-summary { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; padding: 20px 0; border-block: 1px solid var(--line); }
+.price-summary div { min-width: 0; }
+.price-summary span { display: block; font-size: 12px; color: var(--muted); }
+.price-summary strong { display: block; font-size: 26px; }
+.price-section { padding: 24px 0; border-bottom: 1px solid var(--line); }
+h2 { margin: 0 0 12px; font-size: 19px; }
+.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.section-heading label { min-width: 160px; }
+.price-chart { position: relative; height: 320px; width: 100%; }
+.price-note, #price-status { color: var(--muted); font-size: 13px; }
+#price-status { min-height: 20px; }
+#price-status.error { color: var(--error); }
+.price-table-wrap { width: 100%; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
+th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; }
+caption { text-align: left; font-size: 12px; color: var(--muted); padding-bottom: 8px; }
+.price-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 16px; padding-top: 12px; }
+.price-pagination button { width: 44px; padding: 8px; }
+.price-deal { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.price-deal div { min-width: 0; }
+.price-deal small { display: block; color: var(--muted); }
+.price-deal a { color: var(--green); font-weight: bold; white-space: nowrap; }
+.price-discount { color: var(--green); font-weight: bold; }
+@media(max-width:800px) { .price-filters { grid-template-columns: repeat(2,minmax(0,1fr)); } .course-filter { grid-column: 1 / -1; } .price-summary { grid-template-columns: repeat(2,minmax(0,1fr)); } .price-chart { height: 280px; } .price-deal { align-items: flex-start; } }

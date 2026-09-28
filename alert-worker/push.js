@@ -1,5 +1,6 @@
 import { buildPushPayload } from "@block65/webcrypto-web-push";
 import { signupStatement } from "./signup-notifications.js";
+import { pushNotice } from "../src/push-format.js";
 
 export function validateSubscription(value) {
   if (!value || typeof value.endpoint !== "string" || value.endpoint.length > 2048) throw new Error("Invalid push subscription.");
@@ -71,15 +72,15 @@ export async function checkPushAlerts(env, feed, selectMatches) {
   for (const device of devices) {
     try {
       const seen = new Set((await env.DB.prepare("SELECT match_key FROM push_matches WHERE device_id = ?").bind(device.id).all()).results.map(row => row.match_key));
-      const matches = selectMatches(feed, JSON.parse(device.rules), seen).slice(0, 100);
+      const rules = JSON.parse(device.rules);
+      const matches = selectMatches(feed, rules, seen).slice(0, 100);
       if (!matches.length) continue;
-      const body = matches.slice(0, 3).map(({ teeTime }) => `${teeTime.course}: ${teeTime.date} ${teeTime.time}, $${teeTime.allInPrice.toFixed(2)}`).join("\n");
       const resultId = crypto.randomUUID();
       const createdAt = Date.now();
       const matchedCourses = new Set(matches.map(match => match.teeTime.course));
       const payload = { notificationId: resultId, createdAt, checkedAt: feed.checkedAt, teeTimes: matches.map(match => match.teeTime), courses: feed.courses.filter(course => matchedCourses.has(course.course)), sourceChecks: feed.sourceChecks.filter(source => matchedCourses.has(source.course)) };
       await env.DB.prepare("INSERT INTO push_results (id, created_at, expires_at, payload) VALUES (?, ?, ?, ?)").bind(resultId, createdAt, createdAt + 30 * 86400000, JSON.stringify(payload)).run();
-      const response = await sendPush(env, JSON.parse(device.subscription), { title: `Golf With Jim: ${matches.length} matching tee time${matches.length === 1 ? "" : "s"}`, body, tag: `golf-${resultId}`, url: `./?notification=${resultId}` });
+      const response = await sendPush(env, JSON.parse(device.subscription), pushNotice(matches, rules, resultId));
       if (!response.ok) {
         await env.DB.prepare("DELETE FROM push_results WHERE id = ?").bind(resultId).run();
         if (response.status === 404 || response.status === 410) await env.DB.prepare("DELETE FROM push_devices WHERE id = ?").bind(device.id).run();

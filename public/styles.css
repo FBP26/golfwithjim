@@ -143,6 +143,7 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .date-heading::before, .course-row > summary::before { content: ""; width: 7px; height: 7px; flex: 0 0 auto; border-right: 2px solid var(--green-2); border-bottom: 2px solid var(--green-2); transform: rotate(-45deg); transition: transform .15s; }
 .date-group[open] > .date-heading::before, .course-row[open] > summary::before { transform: rotate(45deg); }
 .date-heading > span { margin-right: auto; }
+.date-heading > .date-counts { margin-right: 0; margin-left: auto; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 10px; text-align: right; }
 .course-row { border-bottom: 1px solid var(--line); }
 .course-row > summary { display: grid; grid-template-columns: 9px minmax(190px, .72fr) minmax(190px, 1.8fr); align-items: center; gap: 10px; min-height: 67px; }
 .course-row > summary { -webkit-tap-highlight-color: transparent; }

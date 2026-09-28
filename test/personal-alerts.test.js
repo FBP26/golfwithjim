@@ -6,6 +6,21 @@ import { defaultAlerts, validateAlerts, matchesAlert, alertSummary, alertCourseG
 import worker, { selectMatches, formatPersonalEmail, tokenDigest } from "../alert-worker/worker.js";
 import { validateSubscription } from "../alert-worker/push.js";
 import { shortCourseName } from "../src/dashboard.js";
+import { pushDate, pushNotice } from "../src/push-format.js";
+
+test("push copy uses short course names, brief rule titles and year-free dates within payload limits", () => {
+  assert.equal(pushDate("2026-10-01", "9:44 AM"), "Thur, Oct 1 9:44 AM");
+  assert.equal(pushDate("2026-09-28", "9:44 AM"), "Mon, Sept 28 9:44 AM");
+  const rule = { id: "deal", course: "Gold Course at The Golden Horseshoe", days: [6], maxPrice: 79.99, hotDealsOnly: false };
+  const matches = Array.from({ length: 100 }, (_, index) => ({ ruleId: rule.id, teeTime: { course: "Dogwood Trace Golf Course", date: "2026-10-01", time: "9:44 AM", allInPrice: 38.48 + index } }));
+  const result = pushNotice(matches, [rule], "11111111-1111-4111-8111-111111111111");
+  assert.equal(result.title, "Golden Horseshoe Gold under $80");
+  assert.ok(result.body.startsWith("Dogwood Trace: $38.48 Thur, Oct 1 9:44 AM"));
+  assert.ok(result.body.split("\n").length > 3);
+  assert.ok(new TextEncoder().encode(JSON.stringify(result)).length < 3993);
+  assert.match(result.body, /\+\d+ more$/);
+  assert.equal(pushNotice(matches, [{ ...rule, hotDealsOnly: true }], "id").title, "Hot Deals Alert");
+});
 
 const now = new Date("2026-09-25T12:00:00Z");
 const teeTime = { course: "Magnolia Green Golf Club", date: "2026-09-26", time: "10:00 AM", allInPrice: 130, holes: 18, priceIsExact: true, availablePlayers: 4, availablePartySizes: [2, 4], rateName: "Public 18 Holes" };

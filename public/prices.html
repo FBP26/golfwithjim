@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#15372c">
+  <title>Golf With Jim | Course Prices</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="golf-icon.png">
+  <script src="color-theme.js?v=20260926-alerts"></script>
+  <link rel="stylesheet" href="alerts.css?v=20260928-prices">
+  <link rel="stylesheet" href="prices.css?v=20260928">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="header-tools"><nav class="header-nav-tabs" aria-label="Views"><a class="nav-tab" href="./">List</a><a class="nav-tab" href="./?view=map">Map</a><a class="nav-tab" href="alerts.html">Alerts</a><a class="nav-tab active" href="prices.html" aria-current="page">Prices</a></nav><label class="theme-switch"><input id="theme-toggle" type="checkbox" role="switch">Dark mode</label></div>
+    <div class="alert-heading"><h1>Course prices</h1><img src="golf-icon.png" width="40" height="40" alt="Golf With Jim"></div>
+  </header>
+  <main>
+    <form id="price-filters" class="price-filters">
+      <label class="course-filter">Course<select id="price-course" required></select></label>
+      <label>History<select id="price-range"><option value="30">30 days</option><option value="90" selected>90 days</option><option value="400">All retained history</option></select></label>
+      <label>Provider<select id="price-source"><option value="">All providers</option></select></label>
+      <label>Play day<select id="price-day"><option value="">Every day</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="5">Friday</option><option value="6">Saturday</option><option value="0">Sunday</option></select></label>
+      <label>Start time<select id="price-period"><option value="">All times</option><option value="morning">Before noon</option><option value="afternoon">Noon to 3 PM</option><option value="twilight">3 PM onward</option></select></label>
+      <button id="price-refresh" type="button" title="Refresh price history" aria-label="Refresh price history">&#8635;</button>
+    </form>
+    <p id="price-status" role="status">Loading price history...</p>
+    <section class="price-summary" aria-label="Price summary"><div><span>Lowest observed</span><strong id="price-low">--</strong></div><div><span>Median offered</span><strong id="price-median">--</strong></div><div><span>Observation days</span><strong id="price-days">--</strong></div><div><span>Verified deals now</span><strong id="price-deals">--</strong></div></section>
+    <section class="price-section"><div class="section-heading"><h2>Offered prices</h2><label>Compare by<select id="price-view"><option value="observed">Observation date</option><option value="weekday">Day of play</option><option value="month">Month of play</option></select></label></div><div class="price-chart"><canvas id="price-chart" role="img" aria-label="Lowest and median offered prices over time"></canvas><p id="chart-empty" hidden>No observations match these filters.</p></div><p class="price-note">USD per golfer, public 18-hole offers. Observed prices, not completed bookings. Rate terms and availability may differ.</p></section>
+    <section class="price-section"><h2>Weekday and start-time prices</h2><div class="price-table-wrap"><table id="price-week-grid"><caption>Median offered price by day of play and time window</caption><thead><tr><th>Day</th><th>Before noon</th><th>Noon-3 PM</th><th>3 PM onward</th></tr></thead><tbody></tbody></table></div></section>
+    <section class="price-section"><h2>Verified deals now</h2><p class="price-note">At least 20% and $10 below a comparable price. Provider labels alone do not qualify.</p><div id="current-price-deals"></div></section>
+    <section class="price-section"><div class="section-heading"><h2>Price observations</h2><button id="price-export" type="button" disabled>Export CSV</button></div><p class="price-note">Daily low/high and latest observed median, grouped by 15-minute start window and matching rate terms.</p><div class="price-table-wrap"><table><thead><tr><th>Observed</th><th>Play date</th><th>Start window</th><th>Provider / rate</th><th>Golfers</th><th>Low</th><th>Median</th><th>High</th></tr></thead><tbody id="price-rows"></tbody></table></div><div class="price-pagination"><button id="price-previous" type="button" aria-label="Previous observations" disabled>&#8592;</button><span id="price-page"></span><button id="price-next" type="button" aria-label="Next observations" disabled>&#8594;</button></div></section>
+  </main>
+  <script type="module" src="prices.js?v=20260928"></script>
+</body>
+</html>

@@ -90,6 +90,8 @@ export function groupTeeTimes(teeTimes) {
 }
 
 export function shortCourseName(name) {
+  if (name === "Gold Course at The Golden Horseshoe") return "Golden Horseshoe Gold";
+  if (name === "Green Course at The Golden Horseshoe") return "Golden Horseshoe Green";
   const shortened = String(name).replace(/^(?:The\s+)?(?:Golf\s+)?Club at\s+(?:The\s+)?/i, "").replace(/^The\s+/i, "").replace(/\s+(?:Golf\s+(?:Club|Course)|(?:Golf\s*&\s*)?Country Club)\b/gi, "").trim();
   if (shortened === "Mill Quarter Plantation") return "Mill Quarter";
   if (shortened === "Independence Championship Course") return "Independence";

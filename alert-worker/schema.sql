@@ -66,3 +66,13 @@ CREATE TABLE IF NOT EXISTS push_results (
   expires_at INTEGER NOT NULL,
   payload TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS course_price_days (
+  course TEXT NOT NULL,
+  observed_day TEXT NOT NULL,
+  payload TEXT NOT NULL,
+  PRIMARY KEY (course, observed_day)
+);
+CREATE TABLE IF NOT EXISTS price_state (
+  id INTEGER PRIMARY KEY CHECK (id=1),
+  payload TEXT NOT NULL
+);

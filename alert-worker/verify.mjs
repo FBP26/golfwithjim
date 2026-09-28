@@ -4,6 +4,7 @@ import { build } from "esbuild";
 import { Miniflare, convertV4MiniflareOptions } from "miniflare";
 import { defaultAlerts } from "../src/personal-alerts.js";
 import { createECDH, randomBytes } from "node:crypto";
+import { recordPrices } from "./prices.js";
 
 const bundle = await build({ entryPoints: [new URL("worker.js", import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, "$1")], bundle: true, write: false, format: "esm", platform: "browser", target: "es2022" });
 const messages = [];
@@ -84,6 +85,28 @@ try {
   assert.equal((await (await admin("check")).json()).sent, 0);
   assert.equal((await runtime.dispatchFetch("https://alerts.test/admin/check", { method: "POST" })).status, 401);
   assert.equal((await runtime.dispatchFetch("https://alerts.test/preferences", { method: "PUT", headers: { Origin: "https://evil.test" } })).status, 403);
+  const captureNow = Date.now();
+  const priceFeed = { checkedAt: new Date(captureNow).toISOString(), sourceChecks: [{ course: "Price Test", source: "Test", checkedAt: new Date(captureNow).toISOString() }], teeTimes: [{ ...feed.teeTimes[0], course: "Price Test", source: "Test", allInPrice: 100, standardAllInPrice: 150 }] };
+  assert.equal((await recordPrices({ DB: database }, priceFeed, { now: captureNow })).teeTimes[0].hotDeal, true);
+  const firstPrices = await database.prepare("SELECT payload FROM course_price_days WHERE course='Price Test'").first();
+  await recordPrices({ DB: database }, priceFeed, { now: captureNow });
+  assert.deepEqual(await database.prepare("SELECT payload FROM course_price_days WHERE course='Price Test'").first(), firstPrices);
+  priceFeed.teeTimes[0].allInPrice = 75;
+  priceFeed.checkedAt = priceFeed.sourceChecks[0].checkedAt = new Date(captureNow + 1000).toISOString();
+  await recordPrices({ DB: database }, priceFeed, { now: captureNow + 1000 });
+  const historyResponse = await runtime.dispatchFetch("https://alerts.test/prices?course=Price%20Test&days=400", { headers: { Origin: "https://fbp26.github.io" } });
+  assert.equal(historyResponse.status, 200);
+  const historyRows = (await historyResponse.json()).observations;
+  assert.equal(historyRows.length, 1);
+  assert.deepEqual([historyRows[0].low, historyRows[0].median, historyRows[0].high], [75, 75, 100]);
+  assert.equal((await (await runtime.dispatchFetch("https://alerts.test/prices/current")).json()).deals.length, 1);
+  assert.ok((await (await runtime.dispatchFetch("https://alerts.test/prices")).json()).courses.some(row => row.course === "Price Test"));
+  assert.equal((await runtime.dispatchFetch("https://alerts.test/prices", { headers: { Origin: "https://evil.test" } })).status, 403);
+  priceFeed.sourceChecks[0].error = "Provider unavailable";
+  assert.equal((await recordPrices({ DB: database }, priceFeed)).teeTimes[0].hotDeal, false);
+  assert.equal((await (await runtime.dispatchFetch("https://alerts.test/prices/current")).json()).deals.length, 0);
+  assert.equal((await (await runtime.dispatchFetch("https://alerts.test/prices?course=Price%20Test")).json()).observations.length, 1);
+  console.log("PASS: real D1 price capture, replay idempotency, intraday ranges, public history/current endpoints, origin checks and failed-source rejection.");
   console.log("PASS: public single-mailbox editing, server save timestamps and stale-save protection; admin remains private.");
   console.log("PASS: D1 enrollment, welcome summary/link, matching delivery, failed-delivery retry, deduplication, preferences, version conflicts, pause, token hashing/expiry and rate-limited recovery. All email was mocked.");
 } finally { await runtime.dispose(); }

@@ -93,9 +93,9 @@ const server = createServer(async (request, response) => {
     const url = new URL(request.url, `http://${request.headers.host}`);
     if (url.pathname === "/api/tee-times") return json(response, await inventory());
     if (url.pathname === "/api/tee-times/refresh" && request.method === "POST") return json(response, await refreshInventory());
-    if (url.pathname === "/src/dashboard.js") {
+    if (["/src/dashboard.js", "/src/analyze.js", "/src/price-history.js"].includes(url.pathname)) {
       response.writeHead(200, { "Content-Type": contentTypes[".js"] });
-      return response.end(await readFile(join(root, "src", "dashboard.js")));
+      return response.end(await readFile(join(root, url.pathname.slice(1))));
     }
     if (await serveFile(url.pathname, response)) return;
     json(response, { error: "Not found" }, 404);

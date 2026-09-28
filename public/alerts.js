@@ -1,4 +1,4 @@
-import { shortCourseName } from "./src/dashboard.js?v=20260926-stonehouse";
+import { shortCourseName } from "./src/dashboard.js?v=20260928-prices";
 
 const endpoint = "https://golfwithjim-alerts.fbp-api-worker.workers.dev/preferences";
 try { sessionStorage.removeItem("golfwithjim-alert-access"); } catch {}
