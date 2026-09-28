@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { normalizeTeeTime } from "../src/analyze.js";
+import { LOCAL_COURSES } from "../src/dashboard.js";
 import { priceObservations, mergePriceDay, qualifyDeals, offerKey, dealPolicy } from "../src/price-history.js";
 
 const root = resolve(import.meta.dirname, "..");
@@ -34,7 +35,8 @@ for (const rows of days.values()) {
 statements.push("INSERT INTO course_price_days(course,observed_day,payload) SELECT parts.course,parts.observed_day,json_group_array(json(quote.value)) FROM price_history_seed_parts AS parts,json_each(parts.payload) AS quote WHERE true GROUP BY parts.course,parts.observed_day ON CONFLICT(course,observed_day) DO NOTHING;", "DROP TABLE price_history_seed_parts;");
 const qualified = qualifyDeals(current.teeTimes, observations, Date.now(), current.sourceChecks || []);
 const state = { checkedAt: current.checkedAt, computedAt: new Date().toISOString(), policy: dealPolicy, deals: qualified.filter(offer => offer.deal).map(offer => ({ key: offerKey(offer), deal: offer.deal })) };
-statements.push(`INSERT INTO price_state(id,payload) VALUES(1,${literal(JSON.stringify(state))}) ON CONFLICT(id) DO NOTHING;`);
+const replaceCurrent = process.argv.includes("--replace-current");
+statements.push(`INSERT INTO price_state(id,payload) VALUES(1,${literal(JSON.stringify(state))}) ON CONFLICT(id) DO ${replaceCurrent ? "UPDATE SET payload=excluded.payload" : "NOTHING"};`);
 if (statements.some(statement => Buffer.byteLength(statement) > 90000)) throw new Error("Seed statement exceeds D1 SQL budget.");
 const database = new DatabaseSync(":memory:");
 try {
@@ -47,4 +49,4 @@ try {
 const output = resolve(import.meta.dirname, ".wrangler", "price-history-seed.sql");
 await mkdir(resolve(import.meta.dirname, ".wrangler"), { recursive: true });
 await writeFile(output, statements.join("\n"));
-console.log(JSON.stringify({ revisions: revisions.length, courseDays: days.size, courses: new Set(observations.map(row => row.course)).size, observations: observations.length, firstDay: observations.map(row => row.observed).sort()[0], lastDay: observations.map(row => row.observed).sort().at(-1), currentDeals: state.deals.length, output }));
+console.log(JSON.stringify({ revisions: revisions.length, courseDays: days.size, courses: new Set(observations.map(row => row.course)).size, observations: observations.length, firstDay: observations.map(row => row.observed).sort()[0], lastDay: observations.map(row => row.observed).sort().at(-1), currentDeals: state.deals.length, localCurrentDeals: qualified.filter(offer => offer.deal && LOCAL_COURSES.has(offer.course)).length, localDealCourses: [...new Set(qualified.filter(offer => offer.deal && LOCAL_COURSES.has(offer.course)).map(offer => offer.course))], replaceCurrent, output }));

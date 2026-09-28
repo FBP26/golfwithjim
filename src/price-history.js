@@ -1,6 +1,6 @@
 import { isPublicRate, parseTimeMinutes } from "./analyze.js";
 
-export const dealPolicy = { minimumPercent: 20, minimumSavings: 10, historyDays: 56 };
+export const dealPolicy = { minimumPercent: 15, minimumSavings: 5, referenceSavingsFraction: 0.1, maximumSavingsFloor: 15, historyDays: 56 };
 const dayMillis = 86400000;
 export const median = values => {
   const sorted = values.toSorted((left, right) => left - right);
@@ -111,7 +111,8 @@ export function qualifyDeals(offers, history = [], now = Date.now(), sourceCheck
     if (!reference || reference.price <= offer.allInPrice) return output;
     const savings = Math.round((reference.price - offer.allInPrice) * 100) / 100;
     const percent = savings / reference.price * 100;
-    if (savings >= dealPolicy.minimumSavings && percent + 0.000001 >= dealPolicy.minimumPercent) {
+    const minimumSavings = Math.max(dealPolicy.minimumSavings, Math.min(dealPolicy.maximumSavingsFloor, reference.price * dealPolicy.referenceSavingsFraction));
+    if (savings + 0.000001 >= minimumSavings && percent + 0.000001 >= dealPolicy.minimumPercent) {
       output.hotDeal = true;
       output.deal = { referencePrice: reference.price, savings, percent: Math.round(percent), basis: reference.basis, samples: reference.samples };
     }
