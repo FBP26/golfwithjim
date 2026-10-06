@@ -78,7 +78,9 @@ export function filterTeeTimes(teeTimes, filters = {}) {
     && teeTime.allInPrice <= maximumPrice
     && (!filters.date || teeTime.date === filters.date)
     && (!filters.hotDealsOnly || teeTime.hotDeal)
-    && (!filters.priceOption || priceOptionLabels(teeTime).includes(filters.priceOption))
+    && (!filters.priceOption || (filters.priceOption === "__discounts"
+      ? priceOptionLabels(teeTime).length > 0
+      : priceOptionLabels(teeTime).includes(filters.priceOption)))
     && timeMinutes(teeTime.time) >= earliest
     && timeMinutes(teeTime.time) <= latest)
     .toSorted((left, right) => left.date.localeCompare(right.date)

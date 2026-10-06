@@ -230,8 +230,14 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .course-distance { font-size: 10px; color: var(--muted); white-space: nowrap; }
 .course-price { font-size: 12px; white-space: nowrap; }
 .course-window { grid-column: 2 / -1; font-size: 11px; color: var(--muted); }
-.tee-offer { display: block; color: var(--ink); text-decoration: none; padding: 5px 0; border-top: 1px solid var(--line); }
-.tee-offer small { font-size: 10px; color: var(--muted); }
+.tee-offer { display: block; min-width: 0; color: var(--ink); text-decoration: none; padding: 3px 0; border-top: 1px solid var(--line); }
+.tee-time > strong { color: var(--green); font-size: 13px; }
+.tee-offer-highlights { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 700; }
+.tee-offer-highlights b { color: var(--green); font-size: 14px; }
+.tee-offer.hot .tee-offer-highlights b { color: var(--deal); }
+.tee-offer-highlights > span { flex: 0 0 auto; color: var(--ink); font-size: 11px; }
+.tee-offer .golfpass-label { display: inline; margin-left: 4px; font-size: 9px; }
+.tee-offer small { display: block; overflow: hidden; color: var(--muted); font-size: 9px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
 .tee-offer.hot small { color: var(--deal); }
 .tee-offer:hover { text-decoration: underline; }
 @media (max-width: 560px) {

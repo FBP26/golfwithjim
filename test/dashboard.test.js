@@ -127,6 +127,7 @@ test("filters by provider discounts and nonstandard rate names", () => {
   assert.deepEqual(priceOptionLabels(offers[2]), []);
   assert.deepEqual(filterTeeTimes(offers, { priceOption: "GolfPass", maximumDistance: 50 }).map(teeTime => teeTime.course), ["Early"]);
   assert.deepEqual(filterTeeTimes(offers, { priceOption: "GolfNow Hot Deal", maximumDistance: 50 }).map(teeTime => teeTime.course), ["Later"]);
+  assert.deepEqual(filterTeeTimes(offers, { priceOption: "__discounts", maximumDistance: 50 }).map(teeTime => teeTime.course), ["Early", "Later"]);
 });
 
 test("keeps Sycamore Creek on the normal 18-hole pricing path", () => {
