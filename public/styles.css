@@ -242,6 +242,8 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .tee-offer.hot .tee-offer-price b { color: var(--deal); }
 .tee-offer .tee-offer-spots { color: var(--ink); font-size: 13px; font-weight: 700; white-space: nowrap; }
 .tee-offer .tee-offer-badge { color: var(--green-2); font-size: 11px; font-weight: 700; white-space: nowrap; }
+html[data-theme="dark"] .tee-offer,
+html[data-theme="dark"] .tee-offer.hot { background: transparent; }
 html[data-theme="dark"] .tee-offer .tee-offer-spots { color: #f1f5f2; }
 html[data-theme="dark"] .tee-offer-badge { color: #b9e3cc; }
 .tee-offer:hover { text-decoration: underline; }
