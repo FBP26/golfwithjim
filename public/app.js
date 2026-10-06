@@ -155,7 +155,7 @@ function metricsHtml(summary) {
   return [
     `<div class="metric"><span>Tee times</span><strong>${summary.starts}</strong></div>`,
     `<div class="metric"><span>Courses</span><strong>${summary.courses}</strong></div>`,
-    `<div class="metric"><span>Deals & offers</span><strong>${summary.hotDeals}</strong></div>`,
+    `<button class="metric metric-action metric-deals${state.priceOption === "__discounts" ? " active" : ""}" type="button" data-metric-filter="deals" aria-pressed="${state.priceOption === "__discounts"}"><span>Deals & offers</span><strong>${summary.hotDeals}</strong></button>`,
     `<button class="metric metric-action${state.exactPrice != null ? " active" : ""}" type="button" data-metric-filter="price" data-price="${lowestPrice ?? ""}" aria-pressed="${state.exactPrice != null}"${lowestPrice == null ? " disabled" : ""}><span>From</span><strong>${lowestPrice == null ? "-" : money(lowestPrice)}</strong></button>`,
   ].join("");
 }
@@ -172,7 +172,7 @@ function renderPriceOptions() {
     return (leftPriority < 0 ? preferredOrder.length : leftPriority) - (rightPriority < 0 ? preferredOrder.length : rightPriority)
       || left[0].localeCompare(right[0]);
   });
-  elements["price-option"].innerHTML = `<option value="">All tee times</option><option value="__discounts">Any deal or discount</option>${labels.map(([label, count]) => `<option value="${escapeHtml(label)}">${escapeHtml(label)} (${count})</option>`).join("")}`;
+  elements["price-option"].innerHTML = `<option value="">All tee times</option><option value="__discounts">All deals & offers</option>${labels.map(([label, count]) => `<option value="${escapeHtml(label)}">${escapeHtml(label)} (${count})</option>`).join("")}`;
 }
 
 function verificationStatus(times) {
@@ -245,7 +245,10 @@ function renderResults() {
       const highestPrice = Math.max(...courseTimes.map(teeTime => teeTime.allInPrice));
       const starts = groupTeeTimes(ordered);
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
-      const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span class="tee-offer-highlights"><b>${golfPassPriceMarkup(teeTime)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(rateDisplayLabel(teeTime.rateName))}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
+      const tiles = starts.map(start => `<div class="tee-time">${start.offers.map(teeTime => {
+        const details = `${sourceDisplayLabel(teeTime.source)} · ${rateDisplayLabel(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}`;
+        return `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener" title="${escapeHtml(details)}" aria-label="${escapeHtml(`${teeTime.time}, ${exactMoney(teeTime.allInPrice)}, ${teeTime.availablePlayers} spots. ${details}`)}"><strong>${escapeHtml(teeTime.time)}</strong><span class="tee-offer-price"><b>${golfPassPriceMarkup(teeTime)}</b>${teeTime.hotDeal && teeTime.golfPassAllInPrice == null ? "<em>Hot deal</em>" : ""}</span><span class="tee-offer-spots">${teeTime.availablePlayers} spots</span></a>`;
+      }).join("")}</div>`).join("");
       const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
       return `<details class="course-row"${notificationId ? " open" : ""}><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
@@ -680,7 +683,10 @@ elements.metrics.addEventListener("click", event => {
   if (notificationId) return;
   const button = event.target.closest("[data-metric-filter]");
   if (!button) return;
-  if (button.dataset.metricFilter === "price") {
+  if (button.dataset.metricFilter === "deals") {
+    state.priceOption = state.priceOption === "__discounts" ? "" : "__discounts";
+    elements["price-option"].value = state.priceOption;
+  } else if (button.dataset.metricFilter === "price") {
     state.exactPrice = state.exactPrice == null ? Number(button.dataset.price) : null;
   }
   renderResults();
