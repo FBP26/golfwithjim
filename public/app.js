@@ -119,10 +119,13 @@ function rateDisplayLabel(rateName) {
 }
 
 function golfPassPriceMarkup(teeTime) {
-  const price = exactMoney(teeTime.allInPrice);
-  return teeTime.golfPassAllInPrice == null
-    ? price
-    : `${price} <small class="golfpass-label">GolfPass</small>`;
+  return exactMoney(teeTime.allInPrice);
+}
+
+function offerBadge(teeTime) {
+  if (teeTime.golfPassAllInPrice != null) return "GolfPass";
+  if (teeTime.hotDeal) return "Hot deal";
+  return "";
 }
 
 function bestBookingTeeTime(times) {
@@ -247,7 +250,8 @@ function renderResults() {
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
       const tiles = starts.map(start => `<div class="tee-time">${start.offers.map(teeTime => {
         const details = `${sourceDisplayLabel(teeTime.source)} · ${rateDisplayLabel(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}`;
-        return `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener" title="${escapeHtml(details)}" aria-label="${escapeHtml(`${teeTime.time}, ${exactMoney(teeTime.allInPrice)}, ${teeTime.availablePlayers} spots. ${details}`)}"><strong>${escapeHtml(teeTime.time)}</strong><span class="tee-offer-price"><b>${golfPassPriceMarkup(teeTime)}</b>${teeTime.hotDeal && teeTime.golfPassAllInPrice == null ? "<em>Hot deal</em>" : ""}</span><span class="tee-offer-spots">${teeTime.availablePlayers} spots</span></a>`;
+        const badge = offerBadge(teeTime);
+        return `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener" title="${escapeHtml(details)}" aria-label="${escapeHtml(`${teeTime.time}, ${exactMoney(teeTime.allInPrice)}, ${teeTime.availablePlayers} spots. ${details}`)}"><strong>${escapeHtml(teeTime.time)}</strong><span class="tee-offer-price"><b>${golfPassPriceMarkup(teeTime)}</b></span><span class="tee-offer-spots">${teeTime.availablePlayers} spots</span>${badge ? `<span class="tee-offer-badge">${badge}</span>` : ""}</a>`;
       }).join("")}</div>`).join("");
       const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;

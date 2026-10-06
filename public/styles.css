@@ -234,15 +234,16 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .tee-time > strong { color: var(--green); font-size: 13px; }
 .tee-list { columns: initial; display: grid; gap: 3px; }
 .tee-time { display: contents; }
-.tee-offer { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; align-items: center; gap: 8px; min-width: 0; min-height: 34px; padding: 4px 8px; border-left: 3px solid var(--green-2); background: #eef1e9; }
+.tee-offer { display: grid; grid-template-columns: max-content max-content max-content max-content; align-items: center; gap: 10px; width: fit-content; max-width: 100%; min-width: 0; min-height: 34px; padding: 4px 8px; border-left: 3px solid var(--green-2); background: #eef1e9; }
 .tee-offer.hot { border-left-color: var(--deal); background: #f6ece9; }
 .tee-offer > strong { color: var(--green); font-size: 13px; white-space: nowrap; }
 .tee-offer-price { display: flex; align-items: baseline; min-width: 0; gap: 5px; }
-.tee-offer-price b { color: var(--green); font-size: 14px; white-space: nowrap; }
-.tee-offer.hot .tee-offer-price b, .tee-offer-price em { color: var(--deal); }
-.tee-offer-price em { overflow: hidden; font-size: 9px; font-style: normal; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.tee-offer-spots { color: var(--ink); font-size: 11px; font-weight: 700; white-space: nowrap; }
-.tee-offer .golfpass-label { display: inline; margin-left: 4px; font-size: 9px; }
+.tee-offer-price b { color: var(--green); font-size: 13px; white-space: nowrap; }
+.tee-offer.hot .tee-offer-price b { color: var(--deal); }
+.tee-offer .tee-offer-spots { color: var(--ink); font-size: 13px; font-weight: 700; white-space: nowrap; }
+.tee-offer .tee-offer-badge { color: var(--green-2); font-size: 11px; font-weight: 700; white-space: nowrap; }
+html[data-theme="dark"] .tee-offer .tee-offer-spots { color: #f1f5f2; }
+html[data-theme="dark"] .tee-offer-badge { color: #b9e3cc; }
 .tee-offer:hover { text-decoration: underline; }
 @media (max-width: 560px) {
   main { padding-top: 6px; }
