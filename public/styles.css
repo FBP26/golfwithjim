@@ -168,6 +168,7 @@ input[type="range"] { width: 100%; accent-color: var(--green-2); }
 .tee-time span { display: flex; justify-content: space-between; gap: 5px; margin-top: 3px; color: var(--muted); font-size: 10px; }
 .tee-time b { color: var(--ink); font-size: 12px; }
 .deal-label { color: var(--deal); font-weight: 700; }
+.golfpass-label { display: block; color: var(--green-2); font-size: 9px; font-weight: 700; }
 .loading, .empty { padding: 70px 10px; color: var(--muted); text-align: center; font: 500 16px "Newsreader", serif; }
 .tracked-group { margin-top: 24px; padding-top: 17px; border-top: 2px solid var(--green); }
 .tracked-group h3 { margin: 0 0 7px; font: 600 18px "Newsreader", serif; }

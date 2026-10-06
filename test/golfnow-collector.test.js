@@ -117,3 +117,24 @@ test("retains GolfNow one-player inventory for the optional one-player filter", 
   assert.equal(result[0].availablePlayers, 1);
   assert.equal(result[0].allInPrice, 39.99);
 });
+
+test("records the fee-inclusive GolfPass price when GolfNow provides one", () => {
+  const result = extractGolfNowInventory({ ttResults: { teeTimes: [{
+    time: { formatted: "11:44", formattedTimeMeridian: "AM" },
+    playerRule: "OneTwoThreeFour",
+    teeTimeRates: [rate({
+      singlePlayerPrice: { feeMessagingDisplayRates: { totalPrice: money(63.79) } },
+      hasMemberPricingWithFees: true,
+      memberPricingTotalPriceWithFees: money(51),
+    })],
+  }] } }, {
+    course: "The Hollows Golf Club",
+    date: "2026-10-10",
+    distanceMiles: 29,
+  });
+
+  assert.equal(result.length, 1);
+  assert.equal(result[0].standardAllInPrice, 63.79);
+  assert.equal(result[0].golfPassAllInPrice, 51);
+  assert.equal(result[0].golfPassEligible, true);
+});

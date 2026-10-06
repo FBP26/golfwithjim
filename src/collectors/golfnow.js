@@ -50,6 +50,12 @@ function allInPrice(rate) {
   return Number(rate.singlePlayerPrice?.feeMessagingDisplayRates?.totalPrice?.value);
 }
 
+function golfPassAllInPrice(rate) {
+  if (!rate.hasMemberPricingWithFees) return null;
+  const price = Number(rate.memberPricingTotalPriceWithFees?.value);
+  return price > 0 ? price : null;
+}
+
 export function extractGolfNowInventory(payload, defaults = {}) {
   return (payload.ttResults?.teeTimes || []).flatMap(teeTime => {
     const rates = (teeTime.teeTimeRates || [])
@@ -70,6 +76,9 @@ export function extractGolfNowInventory(payload, defaults = {}) {
       availablePartySizes: defaults.requestedPlayers ? [defaults.requestedPlayers] : null,
       holes: 18,
       allInPrice: allInPrice(rate),
+      standardAllInPrice: allInPrice(rate),
+      golfPassAllInPrice: golfPassAllInPrice(rate),
+      golfPassEligible: golfPassAllInPrice(rate) != null,
       priceIsExact: true,
       hotDeal: rate.isHotDeal === true,
       rateName: String(rate.rateName || "Standard"),

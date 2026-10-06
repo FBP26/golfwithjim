@@ -108,6 +108,13 @@ function sourceDisplayLabel(source) {
   return source;
 }
 
+function golfPassPriceMarkup(teeTime) {
+  const price = exactMoney(teeTime.allInPrice);
+  return teeTime.golfPassAllInPrice == null
+    ? price
+    : `${price} <small class="golfpass-label">GolfPass · fees incl.</small>`;
+}
+
 function bestBookingTeeTime(times) {
   if (!times.length) return null;
   const minPrice = Math.min(...times.map(teeTime => teeTime.allInPrice));
@@ -213,7 +220,7 @@ function renderResults() {
       const highestPrice = Math.max(...courseTimes.map(teeTime => teeTime.allInPrice));
       const starts = groupTeeTimes(ordered);
       const timeRange = chronological.length === 1 ? chronological[0].time : `${chronological[0].time} - ${chronological.at(-1).time}`;
-      const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${exactMoney(teeTime.allInPrice)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
+      const tiles = starts.map(start => `<div class="tee-time"><strong>${escapeHtml(start.time)}</strong>${start.offers.map(teeTime => `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener"><span><b>${golfPassPriceMarkup(teeTime)}</b><span>${teeTime.availablePlayers} spots</span></span><small>${escapeHtml(sourceDisplayLabel(teeTime.source))} · ${escapeHtml(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}</small></a>`).join("")}</div>`).join("");
       const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
       return `<details class="course-row"${notificationId ? " open" : ""}><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
@@ -304,7 +311,7 @@ function popupTimesTableHtml(times) {
   const showDate = !state.date;
   const showSource = new Set(times.map(teeTime => teeTime.source)).size > 1;
   const ordered = times.toSorted((left, right) => (showDate ? left.date.localeCompare(right.date) : 0) || timeValue(left.time) - timeValue(right.time) || left.allInPrice - right.allInPrice);
-  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${exactMoney(teeTime.allInPrice)}</td>${showSource ? `<td>${escapeHtml(sourceDisplayLabel(teeTime.source))}</td>` : ""}<td>${teeTime.availablePlayers}</td></tr>`).join("");
+  const rows = ordered.map(teeTime => `<tr class="${teeTime.hotDeal ? "hot" : ""}">${showDate ? `<td>${escapeHtml(shortDate(teeTime.date))}</td>` : ""}<td>${escapeHtml(teeTime.time)}</td><td>${golfPassPriceMarkup(teeTime)}</td>${showSource ? `<td>${escapeHtml(sourceDisplayLabel(teeTime.source))}</td>` : ""}<td>${teeTime.availablePlayers}</td></tr>`).join("");
   return `<div class="map-popup-times-wrap"><table class="map-popup-times${showDate ? " has-date" : ""}"><thead><tr>${showDate ? "<th>Date</th>" : ""}<th>Time</th><th>Price</th>${showSource ? "<th>Source</th>" : ""}<th>Spots</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
