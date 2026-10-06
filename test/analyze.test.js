@@ -53,6 +53,15 @@ test("uses an explicit GolfPass all-in price as the effective price", () => {
   assert.equal(result.standardAllInPrice, 75);
 });
 
+test("categorizes provider Hot Deals and verified GolfPass prices as hot deals", () => {
+  assert.equal(normalizeTeeTime(teeTime({ providerHotDeal: true })).hotDeal, true);
+  assert.equal(normalizeTeeTime(teeTime({
+    standardAllInPrice: 75,
+    golfPassAllInPrice: 69,
+    golfPassEligible: true,
+  })).hotDeal, true);
+});
+
 test("finds hot deals and material drops against adjacent 18-hole times", () => {
   const times = [
     teeTime({ id: "early", time: "10:00 AM", allInPrice: 90 }),

@@ -18,11 +18,12 @@ test("deal snapshots require matching fresh inventory and exact offer terms", ()
   assert.equal(applyPriceSnapshot([candidate], snapshot, checkedAt, now, checks)[0].hotDeal, false);
   assert.equal(qualifyDeals([{ ...candidate, standardAllInPrice: 100 }], [], now, checks)[0].hotDeal, false);
 });
-test("genuine deals require a course-relative percentage and savings floor, not a provider label", () => {
-  assert.equal(qualifyDeals([offer("9:00 AM", 95, { hotDeal: true, standardAllInPrice: 100 })])[0].hotDeal, false);
+test("provider promotions and GolfPass prices remain Hot Deals alongside verified discounts", () => {
+  assert.equal(qualifyDeals([offer("9:00 AM", 95, { providerHotDeal: true, standardAllInPrice: 100 })])[0].hotDeal, true);
+  assert.equal(qualifyDeals([offer("9:00 AM", 95, { golfPassEligible: true })])[0].hotDeal, true);
   assert.equal(qualifyDeals([offer("9:00 AM", 75, { standardAllInPrice: 100 })])[0].deal.percent, 25);
   assert.equal(qualifyDeals([offer("9:00 AM", 16, { standardAllInPrice: 20 })])[0].hotDeal, false);
-  assert.equal(qualifyDeals([offer("9:00 AM", 75, { hotDeal: true })])[0].hotDeal, false);
+  assert.equal(qualifyDeals([offer("9:00 AM", 75, { hotDeal: true })])[0].hotDeal, true);
   assert.equal(qualifyDeals([offer("9:00 AM", 34, { standardAllInPrice: 40 })])[0].hotDeal, true);
   assert.equal(qualifyDeals([offer("9:00 AM", 36, { standardAllInPrice: 40 })])[0].hotDeal, false);
   assert.equal(qualifyDeals([offer("9:00 AM", 160, { standardAllInPrice: 190 })])[0].hotDeal, true);

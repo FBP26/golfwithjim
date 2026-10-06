@@ -22,17 +22,18 @@ const period = minutes => minutes < 720 ? "Morning" : minutes < 900 ? "Afternoon
 const valid = offer => !offer.stale && !offer.cacheExpiresAt && offer.priceIsExact === true && offer.holes === 18
   && Number.isFinite(offer.allInPrice) && offer.allInPrice > 0 && offer.availablePlayers > 0
   && isPublicRate(offer.rateName) && Number.isFinite(parseTimeMinutes(offer.time));
+const isTaggedDeal = offer => Boolean(offer.providerHotDeal ?? offer.hotDeal) || offer.golfPassEligible === true;
 const family = offer => JSON.stringify([offer.course, offer.source, rateKey(offer), partyKey(offer)]);
 export const offerKey = offer => JSON.stringify([offer.course, offer.date, offer.time, offer.source, offer.rateName, offer.allInPrice, partyKey(offer)]);
 export function applyPriceSnapshot(offers, snapshot, checkedAt, now = Date.now(), sourceChecks = null) {
   const checked = Date.parse(checkedAt);
-  if (!Number.isFinite(checked) || checked > now + 300000 || now - checked > 30 * 3600000) return offers.map(offer => ({ ...offer, hotDeal: false, deal: null }));
+  if (!Number.isFinite(checked) || checked > now + 300000 || now - checked > 30 * 3600000) return offers.map(offer => ({ ...offer, hotDeal: isTaggedDeal(offer), deal: null }));
   if (!snapshot || !Array.isArray(snapshot.deals) || snapshot.checkedAt !== checkedAt || !Number.isFinite(Date.parse(snapshot.computedAt)) || Date.parse(snapshot.computedAt) > now + 300000 || now - Date.parse(snapshot.computedAt) > 30 * 3600000) return qualifyDeals(offers, [], now, sourceChecks);
   const deals = new Map(snapshot.deals.map(row => [row.key, row.deal]));
   const checks = sourceChecks && sourceTimes(sourceChecks, now);
   return offers.map(offer => {
     const deal = valid(offer) && (!checks || sourceTime(offer, checks)) ? deals.get(offerKey(offer)) || null : null;
-    return { ...offer, hotDeal: Boolean(deal), deal };
+    return { ...offer, hotDeal: Boolean(deal) || isTaggedDeal(offer), deal };
   });
 }
 
@@ -96,7 +97,12 @@ export function qualifyDeals(offers, history = [], now = Date.now(), sourceCheck
     historyGroups.get(key).push(row);
   }
   return offers.map(offer => {
-    const output = { ...offer, providerHotDeal: Boolean(offer.providerHotDeal ?? offer.hotDeal), hotDeal: false, deal: null };
+    const output = {
+      ...offer,
+      providerHotDeal: Boolean(offer.providerHotDeal ?? offer.hotDeal),
+      hotDeal: isTaggedDeal(offer),
+      deal: null,
+    };
     if (!eligible(offer)) return output;
     const minutes = parseTimeMinutes(offer.time);
     const references = [];

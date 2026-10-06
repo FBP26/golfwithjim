@@ -63,7 +63,7 @@ export function normalizeTeeTime(raw) {
     stale: raw.stale === true,
     verifiedAt: raw.verifiedAt || null,
     cacheExpiresAt: raw.cacheExpiresAt || null,
-    hotDeal: Boolean(raw.hotDeal),
+    hotDeal: Boolean(raw.hotDeal || raw.providerHotDeal || golfPassEligible),
     providerHotDeal: Boolean(raw.providerHotDeal ?? raw.hotDeal),
     deal: raw.deal || null,
     rateName: String(raw.rateName || "Standard"),
