@@ -1,4 +1,4 @@
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable, isSelectableCourse, coursesInGroup } from "./src/dashboard.js?v=20260928-prices";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, priceOptionLabels, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable, isSelectableCourse, coursesInGroup } from "./src/dashboard.js?v=20260928-prices";
 import { applyPriceSnapshot } from "./src/price-history.js?v=20260928";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
@@ -10,7 +10,7 @@ document.getElementById("notification-results").hidden = !notificationId;
 
 const state = {
   teeTimes: [], courses: [], sourceChecks: [], date: "", players: 0, earliest: "05:00", latest: "20:00", hiddenCourses: new Set(),
-  maximumDistance: 100, maximumPrice: Infinity, exactPrice: null, hotDealsOnly: false, course: "", sort: "price", checkedAt: "",
+  maximumDistance: 100, maximumPrice: Infinity, exactPrice: null, priceOption: "", course: "", sort: "price", checkedAt: "",
 };
 
 let courseGroup = "local";
@@ -21,6 +21,7 @@ const elements = Object.fromEntries([
   "refresh", "refresh-label", "players-filter", "course-directory", "expand-results", "collapse-results",
   "tab-list", "tab-map", "view-list-container", "view-map-container",
   "map-count", "leaflet-map", "map-date-options",
+  "price-option",
   "pull-refresh", "pull-refresh-label",
   "course-selection", "course-selection-count", "show-courses", "hide-courses",
   "other-course-directory",
@@ -112,7 +113,7 @@ function golfPassPriceMarkup(teeTime) {
   const price = exactMoney(teeTime.allInPrice);
   return teeTime.golfPassAllInPrice == null
     ? price
-    : `${price} <small class="golfpass-label">GolfPass · fees incl.</small>`;
+    : `${price} <small class="golfpass-label">GolfPass</small>`;
 }
 
 function bestBookingTeeTime(times) {
@@ -145,9 +146,24 @@ function metricsHtml(summary) {
   return [
     `<div class="metric"><span>Tee times</span><strong>${summary.starts}</strong></div>`,
     `<div class="metric"><span>Courses</span><strong>${summary.courses}</strong></div>`,
-    `<button class="metric metric-action${state.hotDealsOnly ? " active" : ""}" type="button" data-metric-filter="hot" aria-pressed="${state.hotDealsOnly}"><span>Hot Deals</span><strong>${summary.hotDeals}</strong></button>`,
+    `<div class="metric"><span>Deals & offers</span><strong>${summary.hotDeals}</strong></div>`,
     `<button class="metric metric-action${state.exactPrice != null ? " active" : ""}" type="button" data-metric-filter="price" data-price="${lowestPrice ?? ""}" aria-pressed="${state.exactPrice != null}"${lowestPrice == null ? " disabled" : ""}><span>From</span><strong>${lowestPrice == null ? "-" : money(lowestPrice)}</strong></button>`,
   ].join("");
+}
+
+function renderPriceOptions() {
+  const counts = new Map();
+  for (const teeTime of state.teeTimes) {
+    for (const label of priceOptionLabels(teeTime)) counts.set(label, (counts.get(label) || 0) + 1);
+  }
+  const preferredOrder = ["GolfPass", "GolfNow Hot Deal", "Hot Deal", "Fees waived"];
+  const labels = [...counts].toSorted((left, right) => {
+    const leftPriority = preferredOrder.indexOf(left[0]);
+    const rightPriority = preferredOrder.indexOf(right[0]);
+    return (leftPriority < 0 ? preferredOrder.length : leftPriority) - (rightPriority < 0 ? preferredOrder.length : rightPriority)
+      || left[0].localeCompare(right[0]);
+  });
+  elements["price-option"].innerHTML = `<option value="">All tee times</option>${labels.map(([label, count]) => `<option value="${escapeHtml(label)}">${escapeHtml(label)} (${count})</option>`).join("")}`;
 }
 
 function verificationStatus(times) {
@@ -525,6 +541,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     state.teeTimes = notificationId ? payload.teeTimes : applyPriceSnapshot(payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true })), await pricing, payload.checkedAt, Date.now(), payload.sourceChecks || []);
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
+    renderPriceOptions();
     resetFilters();
     renderDates();
     renderDirectory();
@@ -646,13 +663,15 @@ elements["show-courses"].addEventListener("click", () => { applyCourseGroup("all
 elements["hide-courses"].addEventListener("click", () => { state.hiddenCourses = new Set(selectableCourses().map(course => course.course)); saveCourseSelection(); });
 elements.earliest.addEventListener("input", () => updateTimeWindow("earliest"));
 elements.latest.addEventListener("input", () => updateTimeWindow("latest"));
+elements["price-option"].addEventListener("change", () => {
+  state.priceOption = elements["price-option"].value;
+  renderResults();
+});
 elements.metrics.addEventListener("click", event => {
   if (notificationId) return;
   const button = event.target.closest("[data-metric-filter]");
   if (!button) return;
-  if (button.dataset.metricFilter === "hot") {
-    state.hotDealsOnly = !state.hotDealsOnly;
-  } else {
+  if (button.dataset.metricFilter === "price") {
     state.exactPrice = state.exactPrice == null ? Number(button.dataset.price) : null;
   }
   renderResults();
@@ -662,8 +681,9 @@ elements["expand-results"].addEventListener("click", () => elements.results.quer
 elements["collapse-results"].addEventListener("click", () => elements.results.querySelectorAll("details").forEach(details => { details.open = false; }));
 function resetFilters() {
   state.players = 0; state.earliest = "05:00"; state.latest = "20:00"; state.maximumDistance = 100;
-  state.maximumPrice = Infinity; state.exactPrice = null; state.hotDealsOnly = false; state.course = ""; state.sort = "price";
+  state.maximumPrice = Infinity; state.exactPrice = null; state.priceOption = ""; state.course = ""; state.sort = "price";
   elements.earliest.value = 300; elements.latest.value = 1200;
+  elements["price-option"].value = "";
   elements.sort.value = "price";
   elements["earliest-output"].value = "5:00 AM"; elements["latest-output"].value = "8:00 PM";
   elements["players-filter"].querySelectorAll("button").forEach(button => button.classList.toggle("active", button.dataset.players === "0"));

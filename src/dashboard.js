@@ -50,6 +50,18 @@ export function isMainCourse(course) {
   return course.mainList === true || Boolean(course.collector && course.showInventory !== false);
 }
 
+const NORMAL_RATE_NAMES = /^(?:18 holes|standard(?: with cart)?|public 18 holes|championship adult 18 holes(?: \d{4})?(?: \d-\d)?)$/i;
+
+export function priceOptionLabels(teeTime) {
+  const labels = [];
+  if (teeTime.golfPassEligible) labels.push("GolfPass");
+  if (teeTime.providerHotDeal) labels.push(teeTime.source === "GolfNow" ? "GolfNow Hot Deal" : "Hot Deal");
+  if (teeTime.feesWaived) labels.push("Fees waived");
+  const rateName = String(teeTime.rateName || "").trim();
+  if (rateName && !NORMAL_RATE_NAMES.test(rateName) && !/^hot deal$/i.test(rateName)) labels.push(rateName);
+  return [...new Set(labels)];
+}
+
 export function filterTeeTimes(teeTimes, filters = {}) {
   const players = Number(filters.players ?? 0);
   const maximumDistance = Number(filters.maximumDistance ?? Number.POSITIVE_INFINITY);
@@ -66,6 +78,7 @@ export function filterTeeTimes(teeTimes, filters = {}) {
     && teeTime.allInPrice <= maximumPrice
     && (!filters.date || teeTime.date === filters.date)
     && (!filters.hotDealsOnly || teeTime.hotDeal)
+    && (!filters.priceOption || priceOptionLabels(teeTime).includes(filters.priceOption))
     && timeMinutes(teeTime.time) >= earliest
     && timeMinutes(teeTime.time) <= latest)
     .toSorted((left, right) => left.date.localeCompare(right.date)

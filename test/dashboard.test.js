@@ -18,7 +18,7 @@ test("Local defaults include Stonehouse and all 24 requested courses partition s
   assert.ok(!all.includes("Birdwood Golf at Boar's Head Resort"));
 });
 import { config, sourceRegistry } from "../src/config.js";
-import { filterTeeTimes, summarizeResults, groupTeeTimes, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable } from "../src/dashboard.js";
+import { filterTeeTimes, summarizeResults, groupTeeTimes, priceOptionLabels, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable } from "../src/dashboard.js";
 
 test("cached inventory expires strictly and never becomes eligible for alerts by default", () => {
   const teeTime = { stale: true, verifiedAt: "2026-09-25T10:00:00Z", cacheExpiresAt: "2026-09-26T10:00:00Z" };
@@ -114,6 +114,19 @@ test("filters tee times across the dashboard controls and orders them chronologi
   assert.deepEqual(summarizeResults(result), { starts: 2, courses: 2, hotDeals: 1, lowestPrice: 45 });
   assert.deepEqual(filterTeeTimes(teeTimes, { players: 2, hotDealsOnly: true, maximumDistance: 50 }).map(teeTime => teeTime.course), ["Later"]);
   assert.deepEqual(filterTeeTimes(teeTimes, { players: 1, maximumDistance: 50 }).map(teeTime => teeTime.course), ["Solo", "Early", "Later"]);
+});
+
+test("filters by provider discounts and nonstandard rate names", () => {
+  const offers = [
+    { ...teeTimes[0], source: "GolfNow", providerHotDeal: true, rateName: "Hot Deal" },
+    { ...teeTimes[1], golfPassEligible: true, rateName: "Pay Now & Save" },
+    { ...teeTimes[2], rateName: "18 Holes" },
+  ];
+  assert.deepEqual(priceOptionLabels(offers[0]), ["GolfNow Hot Deal"]);
+  assert.deepEqual(priceOptionLabels(offers[1]), ["GolfPass", "Pay Now & Save"]);
+  assert.deepEqual(priceOptionLabels(offers[2]), []);
+  assert.deepEqual(filterTeeTimes(offers, { priceOption: "GolfPass", maximumDistance: 50 }).map(teeTime => teeTime.course), ["Early"]);
+  assert.deepEqual(filterTeeTimes(offers, { priceOption: "GolfNow Hot Deal", maximumDistance: 50 }).map(teeTime => teeTime.course), ["Later"]);
 });
 
 test("keeps Sycamore Creek on the normal 18-hole pricing path", () => {
