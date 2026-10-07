@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { collectLiveInventory, mergeCollectedInventory } from "../src/collect.js";
-import { extractTeeSnapInventory } from "../src/collectors/teesnap.js";
+import { collectTeeSnapDay, extractTeeSnapInventory } from "../src/collectors/teesnap.js";
 
 const price = (roundType, priceWithAddOn) => ({ roundType, priceWithAddOn, rackRateName: "Public with cart" });
 const section = (bookings = [], isHeld = false) => ({ teeOff: "FRONT_NINE", bookings, isHeld });
@@ -41,6 +41,25 @@ test("extracts every Queenfield 18-hole start including single openings", () => 
   assert.equal(result[0].rateName, "Public with cart");
   assert.equal(JSON.stringify(result).includes("bookingId"), false);
   assert.equal(JSON.stringify(result).includes("101"), false);
+});
+
+test("uses TeeSnap's current API hostname for booking-site URLs", async () => {
+  let requestedUrl;
+  const result = await collectTeeSnapDay({
+    baseUrl: "https://queenfieldgc.teesnap.net/",
+    courseId: "1512",
+    date: "2026-09-17",
+    course: "Queenfield Golf Club",
+    distanceMiles: 29,
+    fetchImpl: async url => {
+      requestedUrl = new URL(url);
+      return { ok: true, json: async () => ({ teeTimes: { bookings: [], teeTimes: [teeTime("08:40")] } }) };
+    },
+  });
+
+  assert.equal(requestedUrl.hostname, "queenfieldgc.api.teesnap.net");
+  assert.equal(requestedUrl.pathname, "/api/bookingsite/teetimes-day");
+  assert.equal(result.length, 1);
 });
 
 test("collects every configured live source for every requested date", async () => {
@@ -99,7 +118,7 @@ test("replaces collector-owned minima while preserving other saved coverage", ()
     teeTimes: [{ id: "new-one", course: "Queenfield Golf Club" }, { id: "new-two", course: "Queenfield Golf Club" }],
   });
 
-  assert.deepEqual(result.teeTimes.map(item => item.id), ["other", "new-one", "new-two"]);
+  assert.deepEqual(result.teeTimes.map(item => item.id), ["new-one", "new-two", "other"]);
   assert.deepEqual(result.completeSources, ["Queenfield Golf Club"]);
 });
 

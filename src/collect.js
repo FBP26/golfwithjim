@@ -133,6 +133,30 @@ export async function collectLiveInventory({ registry = sourceRegistry, dates, f
   };
 }
 
+function replaceCoursesInPlace(existingItems, replacementItems, replacedCourses, courseOf) {
+  const replacements = new Map();
+  for (const item of replacementItems) {
+    const course = courseOf(item);
+    if (!replacements.has(course)) replacements.set(course, []);
+    replacements.get(course).push(item);
+  }
+  const inserted = new Set();
+  const result = [];
+  for (const item of existingItems) {
+    const course = courseOf(item);
+    if (!replacedCourses.has(course)) {
+      result.push(item);
+    } else if (!inserted.has(course)) {
+      result.push(...(replacements.get(course) || []));
+      inserted.add(course);
+    }
+  }
+  for (const [course, items] of replacements) {
+    if (!inserted.has(course)) result.push(...items);
+  }
+  return result;
+}
+
 export function mergeCollectedInventory(baseFeed, collected, { partial = false } = {}) {
   const baseTeeTimes = Array.isArray(baseFeed) ? baseFeed : baseFeed.teeTimes || [];
   const replacedCourses = new Set(collected.sources);
@@ -150,20 +174,19 @@ export function mergeCollectedInventory(baseFeed, collected, { partial = false }
     const lastSuccessfulAt = check.error ? previous?.lastSuccessfulAt || (!previous?.error ? previous?.checkedAt : undefined) : check.checkedAt;
     return { ...check, ...(lastSuccessfulAt ? { lastSuccessfulAt } : {}) };
   });
+  const existingTeeTimes = baseTeeTimes.map(teeTime => {
+    if (partial && !checkedCourses.has(teeTime.course)) return teeTime;
+    const previous = previousChecks.get(teeTime.course);
+    const verifiedAt = teeTime.verifiedAt || previous?.lastSuccessfulAt || (!previous?.error ? previous?.checkedAt : undefined);
+    return stamp({ ...teeTime, stale: true }, verifiedAt);
+  });
+  const collectedTeeTimes = collected.teeTimes.map(teeTime => stamp(teeTime, collected.checkedAt));
   return {
     checkedAt: collected.checkedAt,
     collection: "saved coverage with complete starts from configured live collectors",
     completeSources: partial ? [...(baseFeed.completeSources || []).filter(course => !checkedCourses.has(course)), ...collected.sources] : collected.sources,
-    sourceChecks: partial ? [...(baseFeed.sourceChecks || []).filter(check => !checkedCourses.has(check.course)), ...checks] : checks,
-    teeTimes: [
-      ...baseTeeTimes.filter(teeTime => !replacedCourses.has(teeTime.course)).map(teeTime => {
-        if (partial && !checkedCourses.has(teeTime.course)) return teeTime;
-        const previous = previousChecks.get(teeTime.course);
-        const verifiedAt = teeTime.verifiedAt || previous?.lastSuccessfulAt || (!previous?.error ? previous?.checkedAt : undefined);
-        return stamp({ ...teeTime, stale: true }, verifiedAt);
-      }),
-      ...collected.teeTimes.map(teeTime => stamp(teeTime, collected.checkedAt)),
-    ],
+    sourceChecks: partial ? replaceCoursesInPlace(baseFeed.sourceChecks || [], checks, checkedCourses, check => check.course) : checks,
+    teeTimes: replaceCoursesInPlace(existingTeeTimes, collectedTeeTimes, replacedCourses, teeTime => teeTime.course),
   };
 }
 

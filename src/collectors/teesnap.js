@@ -49,8 +49,14 @@ export function extractTeeSnapInventory(payload, defaults = {}) {
   });
 }
 
+function teeSnapApiUrl(baseUrl) {
+  const bookingUrl = new URL(baseUrl);
+  bookingUrl.hostname = bookingUrl.hostname.replace(/\.teesnap\.net$/i, ".api.teesnap.net");
+  return new URL("/api/bookingsite/teetimes-day", bookingUrl);
+}
+
 export async function collectTeeSnapDay({ baseUrl, courseId, date, course, distanceMiles, fetchImpl = fetch }) {
-  const url = new URL("/customer-api/teetimes-day", baseUrl);
+  const url = teeSnapApiUrl(baseUrl);
   url.search = new URLSearchParams({ course: courseId, date, players: "1", holes: "18", addons: "on" });
   const response = await fetchImpl(url, {
     headers: {
