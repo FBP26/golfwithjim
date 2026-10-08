@@ -10,8 +10,7 @@ export function pushDate(date, time) {
 export function pushNotice(matches, rules, resultId) {
   const matchedRules = rules.filter(rule => matches.some(match => match.ruleId === rule.id));
   let title = "Tee Time Alerts";
-  if (matchedRules.length && matchedRules.every(rule => rule.hotDealsOnly)) title = "Hot Deals Alert";
-  else if (matchedRules.length === 1 && !matchedRules[0].course.startsWith("group:")) {
+  if (matchedRules.length === 1 && !matchedRules[0].course.startsWith("group:")) {
     const rule = matchedRules[0];
     const limit = rule.maxPrice;
     const qualifier = limit !== null ? (Number.isInteger(limit) ? `up to ${dollars(limit)}` : `under ${dollars(Math.ceil(limit))}`)

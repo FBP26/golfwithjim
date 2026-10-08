@@ -11,7 +11,7 @@ import { pushDate, pushNotice } from "../src/push-format.js";
 test("push copy uses short course names, brief rule titles and year-free dates within payload limits", () => {
   assert.equal(pushDate("2026-10-01", "9:44 AM"), "Thur, Oct 1 9:44 AM");
   assert.equal(pushDate("2026-09-28", "9:44 AM"), "Mon, Sept 28 9:44 AM");
-  const rule = { id: "deal", course: "Gold Course at The Golden Horseshoe", days: [6], maxPrice: 79.99, hotDealsOnly: false };
+  const rule = { id: "deal", course: "Gold Course at The Golden Horseshoe", days: [6], maxPrice: 79.99 };
   const matches = Array.from({ length: 100 }, (_, index) => ({ ruleId: rule.id, teeTime: { course: "Dogwood Trace Golf Course", date: "2026-10-01", time: "9:44 AM", allInPrice: 38.48 + index } }));
   const result = pushNotice(matches, [rule], "11111111-1111-4111-8111-111111111111");
   assert.equal(result.title, "Golden Horseshoe Gold under $80");
@@ -19,7 +19,7 @@ test("push copy uses short course names, brief rule titles and year-free dates w
   assert.ok(result.body.split("\n").length > 3);
   assert.ok(new TextEncoder().encode(JSON.stringify(result)).length < 3993);
   assert.match(result.body, /\+\d+ more$/);
-  assert.equal(pushNotice(matches, [{ ...rule, hotDealsOnly: true }], "id").title, "Hot Deals Alert");
+  assert.equal(pushNotice(matches, [{ ...rule, hotDealsOnly: true }], "id").title, "Golden Horseshoe Gold under $80");
 });
 
 const now = new Date("2026-09-25T12:00:00Z");
