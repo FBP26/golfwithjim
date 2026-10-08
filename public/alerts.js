@@ -54,6 +54,7 @@ function addRule(rule) {
   section.className = "rule";
   section.dataset.id = rule.id;
   section.innerHTML = `<div class="rule-head"><label><input data-field="enabled" type="checkbox"${rule.enabled ? " checked" : ""}>Enabled</label><button type="button" data-remove>Remove</button></div>
+    <label class="alert-name">Alert name<input data-field="name" type="text" maxlength="64" value="${escapeHtml(rule.name ?? "")}" placeholder="Name this alert"></label>
     <div class="rule-grid"><label class="course">Course<select data-field="course"><optgroup label="Course groups">${courseGroups.map(group => `<option value="${escapeHtml(group.value)}"${group.value === rule.course ? " selected" : ""}>${escapeHtml(group.label)}</option>`).join("")}</optgroup><optgroup label="Individual courses">${courses.map(course => `<option value="${escapeHtml(course)}"${course === rule.course ? " selected" : ""}>${escapeHtml(shortCourseName(course))}</option>`).join("")}</optgroup></select></label>
     <label>Price option<select data-field="priceOption">${priceOptionChoices(rule.priceOption ?? defaultAlertPriceOption)}</select></label>
     <label>From<input data-field="from" type="time" value="${rule.from}" required></label><label>Until<input data-field="until" type="time" value="${rule.until}" required></label>
@@ -67,7 +68,7 @@ function addRule(rule) {
 function readRules() {
   return [...container.querySelectorAll(".rule")].map(section => {
     const field = name => section.querySelector(`[data-field="${name}"]`);
-    return { id: section.dataset.id, course: field("course").value, days: [...section.querySelectorAll("[data-day]:checked")].map(input => Number(input.dataset.day)),
+    return { id: section.dataset.id, name: field("name").value, course: field("course").value, days: [...section.querySelectorAll("[data-day]:checked")].map(input => Number(input.dataset.day)),
       from: field("from").value, until: field("until").value, minPrice: Number(field("minPrice").value), maxPrice: field("maxPrice").value === "" ? null : Number(field("maxPrice").value),
       players: Number(field("players").value), priceOption: field("priceOption").value, enabled: field("enabled").checked, startDate: field("startDate").value, endDate: field("endDate").value };
   });
@@ -78,7 +79,7 @@ form.addEventListener("invalid", () => { dirty = true; message("Not saved: check
 container.addEventListener("click", event => { const button = event.target.closest("[data-remove]"); if (button) { button.closest(".rule").remove(); dirty = true; message("Unsaved changes"); } });
 document.getElementById("add").addEventListener("click", () => {
   if (container.children.length >= 20) { message("You can save up to 20 alerts.", true); return; }
-  addRule({ id: crypto.randomUUID(), course: courses[0], days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" });
+  addRule({ id: crypto.randomUUID(), name: "", course: courses[0], days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" });
   dirty = true;
   message("Unsaved changes");
 });

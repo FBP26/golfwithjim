@@ -12,8 +12,8 @@ export const defaultAlertPriceOption = "";
 const easternFormatter = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 
 export const defaultAlerts = [
-  { id: "magnolia-saturday", course: "Magnolia Green Golf Club", days: [6], from: "00:00", until: "10:00", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
-  { id: "spring-creek-price", course: "Spring Creek Golf Club", days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: 119.99, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
+  { id: "magnolia-saturday", name: "Magnolia Saturday", course: "Magnolia Green Golf Club", days: [6], from: "00:00", until: "10:00", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
+  { id: "spring-creek-price", name: "Spring Creek under $120", course: "Spring Creek Golf Club", days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: 119.99, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
 ];
 
 export function validateAlerts(rules, courseNames) {
@@ -22,6 +22,8 @@ export function validateAlerts(rules, courseNames) {
   return rules.map(rule => {
     if (!rule || typeof rule !== "object" || !/^[a-zA-Z0-9-]{1,64}$/.test(rule.id) || ids.has(rule.id)) throw new Error("Invalid alert identifier.");
     ids.add(rule.id);
+    const name = rule.name ?? "";
+    if (typeof name !== "string" || name.trim().length > 64) throw new Error("Enter an alert name up to 64 characters.");
     if (!courseNames.includes(rule.course) && !alertCourseGroups.some(group => group.value === rule.course)) throw new Error("Choose a supported course or course group.");
     if (!Array.isArray(rule.days) || !rule.days.length || rule.days.some(day => !Number.isInteger(day) || day < 0 || day > 6)) throw new Error("Choose at least one day.");
     if (![rule.from, rule.until].every(value => typeof value === "string" && /^([01]\d|2[0-3]):[0-5]\d$/.test(value)) || rule.from > rule.until) throw new Error("Enter an ordered time range.");
@@ -33,7 +35,7 @@ export function validateAlerts(rules, courseNames) {
     if (rule.startDate && rule.endDate && rule.startDate > rule.endDate) throw new Error("The last date must follow the first date.");
     const priceOption = rule.priceOption ?? defaultAlertPriceOption;
     if (typeof rule.enabled !== "boolean" || typeof priceOption !== "string" || priceOption.length > 120) throw new Error("Invalid alert options.");
-    return { id: rule.id, course: rule.course, days: [...new Set(rule.days)].sort(), from: rule.from, until: rule.until, minPrice: rule.minPrice, maxPrice: rule.maxPrice, players: rule.players, priceOption, enabled: rule.enabled, startDate: rule.startDate, endDate: rule.endDate };
+    return { id: rule.id, name: name.trim(), course: rule.course, days: [...new Set(rule.days)].sort(), from: rule.from, until: rule.until, minPrice: rule.minPrice, maxPrice: rule.maxPrice, players: rule.players, priceOption, enabled: rule.enabled, startDate: rule.startDate, endDate: rule.endDate };
   });
 }
 
@@ -64,5 +66,5 @@ export function alertSummary(rule) {
   const course = alertCourseGroups.find(group => group.value === rule.course)?.label || rule.course;
   const priceOption = rule.priceOption ?? defaultAlertPriceOption;
   const option = priceOption === "__discounts" ? "All deals & offers" : priceOption;
-  return `${rule.enabled ? "Active" : "Paused"}: ${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${option ? `; ${option}` : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
+  return `${rule.enabled ? "Active" : "Paused"}: ${rule.name ? `${rule.name}; ` : ""}${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${option ? `; ${option}` : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
 }
