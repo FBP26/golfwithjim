@@ -3,7 +3,7 @@
   "name": "Golf With Jim",
   "short_name": "Golf With Jim",
   "description": "Live Richmond-area golf tee times and deals.",
-  "start_url": "./?release=20261008-main-filter",
+  "start_url": "./?release=20261008-paired-filters",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f4f1e8",
