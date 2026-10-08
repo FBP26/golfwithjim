@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-08T14:15:03.413Z",
+  "checkedAt": "2026-10-08T16:15:03.630Z",
   "collection": "saved coverage with complete starts from configured live collectors",
   "completeSources": [
     "Stonehouse Golf Club",
@@ -141,12 +141,12 @@
     },
     {
       "course": "Sycamore Creek Golf Course",
-      "checkedAt": "2026-10-08T14:15:03.413Z",
+      "checkedAt": "2026-10-08T16:15:03.630Z",
       "requestedFrom": "2026-10-08",
       "requestedThrough": "2026-10-14",
       "latestAvailableDate": "2026-10-14",
-      "teeTimeCount": 281,
-      "lastSuccessfulAt": "2026-10-08T14:15:03.413Z"
+      "teeTimeCount": 273,
+      "lastSuccessfulAt": "2026-10-08T16:15:03.630Z"
     },
     {
       "course": "Brickshire Golf Club",
@@ -5119,131 +5119,12 @@
       "verifiedAt": "2026-10-08T01:50:05.382Z"
     },
     {
-      "id": "chronogolf-528983017",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "10:32 AM",
-      "availablePlayers": 2,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983020",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "10:56 AM",
-      "availablePlayers": 1,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983023",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "11:20 AM",
-      "availablePlayers": 2,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983024",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "11:28 AM",
-      "availablePlayers": 4,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983025",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "11:36 AM",
-      "availablePlayers": 4,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983026",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "11:44 AM",
-      "availablePlayers": 1,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983027",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-08",
-      "time": "11:52 AM",
-      "availablePlayers": 1,
-      "holes": 18,
-      "allInPrice": 50,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
       "id": "chronogolf-528983030",
       "source": "Chronogolf",
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-08",
       "time": "12:16 PM",
-      "availablePlayers": 3,
+      "availablePlayers": 2,
       "holes": 18,
       "allInPrice": 50,
       "priceIsExact": true,
@@ -5251,8 +5132,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983031",
@@ -5268,8 +5149,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983032",
@@ -5285,8 +5166,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983033",
@@ -5302,8 +5183,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983034",
@@ -5319,8 +5200,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983035",
@@ -5328,7 +5209,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-08",
       "time": "12:56 PM",
-      "availablePlayers": 4,
+      "availablePlayers": 3,
       "holes": 18,
       "allInPrice": 50,
       "priceIsExact": true,
@@ -5336,8 +5217,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983036",
@@ -5353,8 +5234,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983037",
@@ -5370,8 +5251,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983039",
@@ -5387,8 +5268,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983041",
@@ -5404,8 +5285,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983042",
@@ -5421,8 +5302,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983043",
@@ -5430,7 +5311,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-08",
       "time": "2:00 PM",
-      "availablePlayers": 4,
+      "availablePlayers": 3,
       "holes": 18,
       "allInPrice": 45,
       "priceIsExact": true,
@@ -5438,8 +5319,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983047",
@@ -5455,8 +5336,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983049",
@@ -5472,8 +5353,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983051",
@@ -5489,8 +5370,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983052",
@@ -5506,8 +5387,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983053",
@@ -5523,8 +5404,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983054",
@@ -5540,8 +5421,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983055",
@@ -5557,8 +5438,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983056",
@@ -5566,7 +5447,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-08",
       "time": "3:44 PM",
-      "availablePlayers": 4,
+      "availablePlayers": 1,
       "holes": 18,
       "allInPrice": 45,
       "priceIsExact": true,
@@ -5574,8 +5455,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983057",
@@ -5591,8 +5472,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983061",
@@ -5608,8 +5489,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983062",
@@ -5617,7 +5498,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-08",
       "time": "4:32 PM",
-      "availablePlayers": 3,
+      "availablePlayers": 1,
       "holes": 18,
       "allInPrice": 45,
       "priceIsExact": true,
@@ -5625,8 +5506,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-08",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983092",
@@ -5642,8 +5523,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983093",
@@ -5659,8 +5540,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983102",
@@ -5676,25 +5557,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983104",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-09",
-      "time": "10:00 AM",
-      "availablePlayers": 2,
-      "holes": 18,
-      "allInPrice": 58,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983106",
@@ -5710,8 +5574,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983108",
@@ -5719,7 +5583,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-09",
       "time": "10:32 AM",
-      "availablePlayers": 4,
+      "availablePlayers": 2,
       "holes": 18,
       "allInPrice": 58,
       "priceIsExact": true,
@@ -5727,8 +5591,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983109",
@@ -5744,8 +5608,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983110",
@@ -5753,7 +5617,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-09",
       "time": "10:48 AM",
-      "availablePlayers": 4,
+      "availablePlayers": 2,
       "holes": 18,
       "allInPrice": 58,
       "priceIsExact": true,
@@ -5761,8 +5625,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983111",
@@ -5778,8 +5642,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983112",
@@ -5795,8 +5659,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983113",
@@ -5812,8 +5676,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983114",
@@ -5829,8 +5693,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983115",
@@ -5846,8 +5710,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983116",
@@ -5863,8 +5727,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983117",
@@ -5880,8 +5744,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983118",
@@ -5897,8 +5761,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983119",
@@ -5914,8 +5778,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983120",
@@ -5931,8 +5795,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983121",
@@ -5948,8 +5812,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983122",
@@ -5965,8 +5829,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983124",
@@ -5982,8 +5846,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983125",
@@ -5999,8 +5863,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983126",
@@ -6016,8 +5880,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983127",
@@ -6033,8 +5897,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983128",
@@ -6050,8 +5914,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983129",
@@ -6067,8 +5931,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983133",
@@ -6084,8 +5948,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983135",
@@ -6101,8 +5965,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983136",
@@ -6118,8 +5982,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983139",
@@ -6135,8 +5999,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983140",
@@ -6152,8 +6016,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983141",
@@ -6169,8 +6033,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983142",
@@ -6186,8 +6050,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983143",
@@ -6203,8 +6067,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983144",
@@ -6220,8 +6084,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983145",
@@ -6237,8 +6101,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983146",
@@ -6254,8 +6118,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983147",
@@ -6271,8 +6135,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983148",
@@ -6288,8 +6152,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983149",
@@ -6305,8 +6169,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983150",
@@ -6322,8 +6186,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983151",
@@ -6339,8 +6203,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983152",
@@ -6356,8 +6220,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-09",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983179",
@@ -6373,8 +6237,25 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
+    },
+    {
+      "id": "chronogolf-528983183",
+      "source": "Chronogolf",
+      "course": "Sycamore Creek Golf Course",
+      "date": "2026-10-10",
+      "time": "8:24 AM",
+      "availablePlayers": 4,
+      "holes": 18,
+      "allInPrice": 64,
+      "priceIsExact": true,
+      "hotDeal": false,
+      "rateName": "Public 18 Holes",
+      "distanceMiles": 17,
+      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983184",
@@ -6390,8 +6271,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983185",
@@ -6399,7 +6280,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-10",
       "time": "8:40 AM",
-      "availablePlayers": 4,
+      "availablePlayers": 1,
       "holes": 18,
       "allInPrice": 64,
       "priceIsExact": true,
@@ -6407,8 +6288,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983186",
@@ -6424,25 +6305,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
-    },
-    {
-      "id": "chronogolf-528983187",
-      "source": "Chronogolf",
-      "course": "Sycamore Creek Golf Course",
-      "date": "2026-10-10",
-      "time": "8:56 AM",
-      "availablePlayers": 2,
-      "holes": 18,
-      "allInPrice": 64,
-      "priceIsExact": true,
-      "hotDeal": false,
-      "rateName": "Public 18 Holes",
-      "distanceMiles": 17,
-      "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983209",
@@ -6458,8 +6322,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983210",
@@ -6475,8 +6339,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983211",
@@ -6492,8 +6356,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983212",
@@ -6509,8 +6373,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983213",
@@ -6526,8 +6390,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983216",
@@ -6543,8 +6407,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983217",
@@ -6560,8 +6424,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983218",
@@ -6577,8 +6441,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983219",
@@ -6594,8 +6458,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983220",
@@ -6611,8 +6475,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983221",
@@ -6628,8 +6492,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983222",
@@ -6645,8 +6509,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983223",
@@ -6662,8 +6526,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983224",
@@ -6679,8 +6543,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983226",
@@ -6696,8 +6560,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983227",
@@ -6713,8 +6577,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983229",
@@ -6730,8 +6594,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983230",
@@ -6747,8 +6611,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983231",
@@ -6764,8 +6628,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983232",
@@ -6781,8 +6645,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983233",
@@ -6798,8 +6662,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983234",
@@ -6815,8 +6679,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983235",
@@ -6832,8 +6696,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983236",
@@ -6849,8 +6713,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983237",
@@ -6866,8 +6730,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983238",
@@ -6883,8 +6747,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983239",
@@ -6900,8 +6764,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983240",
@@ -6917,8 +6781,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983241",
@@ -6934,8 +6798,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983242",
@@ -6951,8 +6815,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983243",
@@ -6968,8 +6832,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983244",
@@ -6985,8 +6849,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983245",
@@ -7002,8 +6866,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-10",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983277",
@@ -7019,8 +6883,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983278",
@@ -7036,8 +6900,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983282",
@@ -7053,8 +6917,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983283",
@@ -7070,8 +6934,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983286",
@@ -7087,8 +6951,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983287",
@@ -7104,8 +6968,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983288",
@@ -7121,8 +6985,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983289",
@@ -7138,8 +7002,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983290",
@@ -7155,8 +7019,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983291",
@@ -7172,8 +7036,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983292",
@@ -7189,8 +7053,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983293",
@@ -7206,8 +7070,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983294",
@@ -7223,8 +7087,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983295",
@@ -7240,8 +7104,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983296",
@@ -7257,8 +7121,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983297",
@@ -7274,8 +7138,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983298",
@@ -7291,8 +7155,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983299",
@@ -7308,8 +7172,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983300",
@@ -7325,8 +7189,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983301",
@@ -7342,8 +7206,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983302",
@@ -7359,8 +7223,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983303",
@@ -7376,8 +7240,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983304",
@@ -7393,8 +7257,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983305",
@@ -7410,8 +7274,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983306",
@@ -7427,8 +7291,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983307",
@@ -7444,8 +7308,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983308",
@@ -7461,8 +7325,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983309",
@@ -7478,8 +7342,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983310",
@@ -7495,8 +7359,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983311",
@@ -7512,8 +7376,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983312",
@@ -7529,8 +7393,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983313",
@@ -7546,8 +7410,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983314",
@@ -7563,8 +7427,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983315",
@@ -7580,8 +7444,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983316",
@@ -7597,8 +7461,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983317",
@@ -7614,8 +7478,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983318",
@@ -7631,8 +7495,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983320",
@@ -7648,8 +7512,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983321",
@@ -7665,8 +7529,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983322",
@@ -7682,8 +7546,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983323",
@@ -7699,8 +7563,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983324",
@@ -7716,8 +7580,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983325",
@@ -7733,8 +7597,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983326",
@@ -7750,8 +7614,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983327",
@@ -7767,8 +7631,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983328",
@@ -7784,8 +7648,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983329",
@@ -7801,8 +7665,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983330",
@@ -7818,8 +7682,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983331",
@@ -7835,8 +7699,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983332",
@@ -7852,8 +7716,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983333",
@@ -7869,8 +7733,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983334",
@@ -7886,8 +7750,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983335",
@@ -7903,8 +7767,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983336",
@@ -7920,8 +7784,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-11",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983417",
@@ -7937,8 +7801,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983418",
@@ -7954,8 +7818,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983419",
@@ -7971,8 +7835,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983420",
@@ -7988,8 +7852,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983421",
@@ -8005,8 +7869,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983422",
@@ -8022,8 +7886,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983423",
@@ -8039,8 +7903,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983424",
@@ -8056,8 +7920,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983425",
@@ -8073,8 +7937,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983426",
@@ -8090,8 +7954,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-12",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983460",
@@ -8107,8 +7971,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983463",
@@ -8124,8 +7988,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983464",
@@ -8141,8 +8005,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983465",
@@ -8150,7 +8014,7 @@
       "course": "Sycamore Creek Golf Course",
       "date": "2026-10-13",
       "time": "9:36 AM",
-      "availablePlayers": 4,
+      "availablePlayers": 1,
       "holes": 18,
       "allInPrice": 50,
       "priceIsExact": true,
@@ -8158,8 +8022,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983466",
@@ -8175,8 +8039,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983467",
@@ -8192,8 +8056,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983468",
@@ -8209,8 +8073,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983469",
@@ -8226,8 +8090,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983470",
@@ -8243,8 +8107,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983471",
@@ -8260,8 +8124,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983472",
@@ -8277,8 +8141,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983473",
@@ -8294,8 +8158,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983474",
@@ -8311,8 +8175,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983475",
@@ -8328,8 +8192,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983476",
@@ -8345,8 +8209,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983477",
@@ -8362,8 +8226,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983478",
@@ -8379,8 +8243,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983479",
@@ -8396,8 +8260,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983480",
@@ -8413,8 +8277,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983481",
@@ -8430,8 +8294,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983482",
@@ -8447,8 +8311,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983483",
@@ -8464,8 +8328,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983484",
@@ -8481,8 +8345,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983485",
@@ -8498,8 +8362,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983486",
@@ -8515,8 +8379,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983487",
@@ -8532,8 +8396,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983488",
@@ -8549,8 +8413,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983489",
@@ -8566,8 +8430,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983490",
@@ -8583,8 +8447,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983491",
@@ -8600,8 +8464,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983493",
@@ -8617,8 +8481,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983494",
@@ -8634,8 +8498,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983495",
@@ -8651,8 +8515,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983496",
@@ -8668,8 +8532,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983497",
@@ -8685,8 +8549,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983498",
@@ -8702,8 +8566,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983499",
@@ -8719,8 +8583,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983500",
@@ -8736,8 +8600,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983502",
@@ -8753,8 +8617,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983503",
@@ -8770,8 +8634,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983504",
@@ -8787,8 +8651,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983505",
@@ -8804,8 +8668,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983506",
@@ -8821,8 +8685,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983507",
@@ -8838,8 +8702,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983508",
@@ -8855,8 +8719,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983509",
@@ -8872,8 +8736,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983510",
@@ -8889,8 +8753,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983511",
@@ -8906,8 +8770,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983512",
@@ -8923,8 +8787,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983513",
@@ -8940,8 +8804,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983514",
@@ -8957,8 +8821,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983515",
@@ -8974,8 +8838,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983516",
@@ -8991,8 +8855,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983517",
@@ -9008,8 +8872,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-13",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983549",
@@ -9025,8 +8889,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983550",
@@ -9042,8 +8906,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983551",
@@ -9059,8 +8923,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983555",
@@ -9076,8 +8940,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983557",
@@ -9093,8 +8957,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983558",
@@ -9110,8 +8974,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983561",
@@ -9127,8 +8991,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983562",
@@ -9144,8 +9008,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983563",
@@ -9161,8 +9025,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983564",
@@ -9178,8 +9042,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983565",
@@ -9195,8 +9059,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983566",
@@ -9212,8 +9076,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983567",
@@ -9229,8 +9093,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983568",
@@ -9246,8 +9110,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983569",
@@ -9263,8 +9127,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983570",
@@ -9280,8 +9144,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983571",
@@ -9297,8 +9161,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983572",
@@ -9314,8 +9178,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983573",
@@ -9331,8 +9195,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983574",
@@ -9348,8 +9212,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983575",
@@ -9365,8 +9229,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983576",
@@ -9382,8 +9246,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983577",
@@ -9399,8 +9263,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983578",
@@ -9416,8 +9280,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983580",
@@ -9433,8 +9297,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983581",
@@ -9450,8 +9314,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983582",
@@ -9467,8 +9331,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983583",
@@ -9484,8 +9348,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983584",
@@ -9501,8 +9365,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983585",
@@ -9518,8 +9382,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983586",
@@ -9535,8 +9399,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983587",
@@ -9552,8 +9416,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983588",
@@ -9569,8 +9433,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983589",
@@ -9586,8 +9450,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983590",
@@ -9603,8 +9467,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983591",
@@ -9620,8 +9484,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983593",
@@ -9637,8 +9501,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983594",
@@ -9654,8 +9518,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983595",
@@ -9671,8 +9535,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983596",
@@ -9688,8 +9552,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983597",
@@ -9705,8 +9569,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983598",
@@ -9722,8 +9586,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983599",
@@ -9739,8 +9603,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983600",
@@ -9756,8 +9620,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983601",
@@ -9773,8 +9637,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983602",
@@ -9790,8 +9654,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983603",
@@ -9807,8 +9671,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983604",
@@ -9824,8 +9688,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983605",
@@ -9841,8 +9705,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983606",
@@ -9858,8 +9722,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983607",
@@ -9875,8 +9739,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "chronogolf-528983608",
@@ -9892,8 +9756,8 @@
       "rateName": "Public 18 Holes",
       "distanceMiles": 17,
       "url": "https://www.chronogolf.com/club/sycamore-creek-golf-course-virginia?date=2026-10-14",
-      "verifiedAt": "2026-10-08T14:15:03.413Z",
-      "cacheExpiresAt": "2026-10-09T14:15:03.413Z"
+      "verifiedAt": "2026-10-08T16:15:03.630Z",
+      "cacheExpiresAt": "2026-10-09T16:15:03.630Z"
     },
     {
       "id": "foreup-stonehouse-golf-club-2026-10-08-7-30-am",
