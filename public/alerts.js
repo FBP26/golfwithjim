@@ -55,21 +55,16 @@ function addRule(rule) {
   section.dataset.id = rule.id;
   section.innerHTML = `<div class="rule-head"><label><input data-field="enabled" type="checkbox"${rule.enabled ? " checked" : ""}>Enabled</label><button type="button" data-remove>Remove</button></div>
     <div class="rule-grid"><label class="course">Course<select data-field="course"><optgroup label="Course groups">${courseGroups.map(group => `<option value="${escapeHtml(group.value)}"${group.value === rule.course ? " selected" : ""}>${escapeHtml(group.label)}</option>`).join("")}</optgroup><optgroup label="Individual courses">${courses.map(course => `<option value="${escapeHtml(course)}"${course === rule.course ? " selected" : ""}>${escapeHtml(shortCourseName(course))}</option>`).join("")}</optgroup></select></label>
-    <label>From<input data-field="from" type="time" value="${rule.from}" required></label><label>Until<input data-field="until" type="time" value="${rule.until}" required></label>
-    <label>Price option<select data-field="priceOption">${priceOptionChoices(rule.priceOption ?? defaultAlertPriceOption)}</select></label>
-    <label>Minimum price ($)<input data-field="minPrice" type="number" min="0" max="2000" step="0.01" value="${rule.minPrice}" required></label><label>Maximum price ($)<input data-field="maxPrice" type="number" min="0" max="2000" step="0.01" value="${rule.maxPrice ?? ""}" placeholder="Any"></label>
-    <label>Golfers<select data-field="players">${[0, 1, 2, 3, 4].map(players => `<option value="${players}"${players === rule.players ? " selected" : ""}>${players || "Any available"}</option>`).join("")}</select></label></div>
-    <fieldset><legend>Days</legend><div class="days">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => `<label><input type="checkbox" data-day="${index}"${rule.days.includes(index) ? " checked" : ""}>${day}</label>`).join("")}</div></fieldset>
-    <div class="rule-footer"><label>First date<input data-field="startDate" type="date" value="${rule.startDate}"></label><label>Last date<input data-field="endDate" type="date" value="${rule.endDate}"></label></div>`;
+    <label>Price option<select data-field="priceOption">${priceOptionChoices(rule.priceOption ?? defaultAlertPriceOption)}</select></label></div>`;
   container.append(section);
 }
 
 function readRules() {
   return [...container.querySelectorAll(".rule")].map(section => {
     const field = name => section.querySelector(`[data-field="${name}"]`);
-    return { id: section.dataset.id, course: field("course").value, days: [...section.querySelectorAll("[data-day]:checked")].map(input => Number(input.dataset.day)),
-      from: field("from").value, until: field("until").value, minPrice: Number(field("minPrice").value), maxPrice: field("maxPrice").value === "" ? null : Number(field("maxPrice").value),
-      players: Number(field("players").value), priceOption: field("priceOption").value, enabled: field("enabled").checked, startDate: field("startDate").value, endDate: field("endDate").value };
+    return { id: section.dataset.id, course: field("course").value, days: [0, 1, 2, 3, 4, 5, 6],
+      from: "00:00", until: "23:59", minPrice: 0, maxPrice: null,
+      players: 0, priceOption: field("priceOption").value, enabled: field("enabled").checked, startDate: "", endDate: "" };
   });
 }
 
