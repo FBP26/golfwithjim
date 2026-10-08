@@ -2,6 +2,9 @@
   const key = "tee-times-color-theme";
   try { document.documentElement.dataset.theme = localStorage.getItem(key) === "dark" ? "dark" : "light"; } catch {}
   document.addEventListener("DOMContentLoaded", () => {
+    [...document.querySelectorAll(".toggle-row")]
+      .find(row => /Hot Deals only/i.test(row.textContent))
+      ?.remove();
     const toggle = document.getElementById("theme-toggle");
     toggle.checked = document.documentElement.dataset.theme === "dark";
     toggle.addEventListener("change", () => {
