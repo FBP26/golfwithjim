@@ -1,5 +1,5 @@
 import { isPublicRate, parseTimeMinutes } from "./analyze.js";
-import { LOCAL_COURSES } from "./dashboard.js";
+import { LOCAL_COURSES, priceOptionLabels } from "./dashboard.js";
 
 export const alertCourseGroups = [
   { value: "group:all", label: "All courses" },
@@ -7,11 +7,13 @@ export const alertCourseGroups = [
   { value: "group:regional", label: "Regional courses" },
 ];
 
+export const defaultAlertPriceOption = "";
+
 const easternFormatter = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 
 export const defaultAlerts = [
-  { id: "magnolia-saturday", course: "Magnolia Green Golf Club", days: [6], from: "00:00", until: "10:00", minPrice: 0, maxPrice: null, players: 0, enabled: true, startDate: "", endDate: "" },
-  { id: "spring-creek-price", course: "Spring Creek Golf Club", days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: 119.99, players: 0, enabled: true, startDate: "", endDate: "" },
+  { id: "magnolia-saturday", course: "Magnolia Green Golf Club", days: [6], from: "00:00", until: "10:00", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
+  { id: "spring-creek-price", course: "Spring Creek Golf Club", days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: 119.99, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
 ];
 
 export function validateAlerts(rules, courseNames) {
@@ -29,8 +31,9 @@ export function validateAlerts(rules, courseNames) {
       if (value !== "" && (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0, 10) !== value)) throw new Error("Enter a valid date.");
     }
     if (rule.startDate && rule.endDate && rule.startDate > rule.endDate) throw new Error("The last date must follow the first date.");
-    if (typeof rule.enabled !== "boolean") throw new Error("Invalid alert options.");
-    return { id: rule.id, course: rule.course, days: [...new Set(rule.days)].sort(), from: rule.from, until: rule.until, minPrice: rule.minPrice, maxPrice: rule.maxPrice, players: rule.players, enabled: rule.enabled, startDate: rule.startDate, endDate: rule.endDate };
+    const priceOption = rule.priceOption ?? defaultAlertPriceOption;
+    if (typeof rule.enabled !== "boolean" || typeof priceOption !== "string" || priceOption.length > 120) throw new Error("Invalid alert options.");
+    return { id: rule.id, course: rule.course, days: [...new Set(rule.days)].sort(), from: rule.from, until: rule.until, minPrice: rule.minPrice, maxPrice: rule.maxPrice, players: rule.players, priceOption, enabled: rule.enabled, startDate: rule.startDate, endDate: rule.endDate };
   });
 }
 
@@ -40,6 +43,8 @@ export function matchesAlert(teeTime, rule, now = new Date()) {
     || (rule.course === "group:regional" && !LOCAL_COURSES.has(teeTime.course));
   if (!rule.enabled || !courseMatches || teeTime.stale || teeTime.priceIsExact !== true || teeTime.holes !== 18 || !isPublicRate(teeTime.rateName)) return false;
   if (!Number.isFinite(teeTime.allInPrice) || teeTime.allInPrice <= 0 || teeTime.allInPrice < rule.minPrice || (rule.maxPrice !== null && teeTime.allInPrice > rule.maxPrice)) return false;
+  const priceOption = rule.priceOption ?? defaultAlertPriceOption;
+  if (priceOption && (priceOption === "__discounts" ? priceOptionLabels(teeTime).length === 0 : !priceOptionLabels(teeTime).includes(priceOption))) return false;
   const minutes = parseTimeMinutes(teeTime.time);
   const toMinutes = value => Number(value.slice(0, 2)) * 60 + Number(value.slice(3));
   if (!Number.isFinite(minutes) || minutes < toMinutes(rule.from) || minutes > toMinutes(rule.until)) return false;
@@ -57,5 +62,7 @@ export function alertSummary(rule) {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const price = rule.maxPrice === null ? (rule.minPrice ? `$${rule.minPrice.toFixed(2)}+` : "Any price") : `$${rule.minPrice.toFixed(2)}-$${rule.maxPrice.toFixed(2)}`;
   const course = alertCourseGroups.find(group => group.value === rule.course)?.label || rule.course;
-  return `${rule.enabled ? "Active" : "Paused"}: ${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
+  const priceOption = rule.priceOption ?? defaultAlertPriceOption;
+  const option = priceOption === "__discounts" ? "All deals & offers" : priceOption;
+  return `${rule.enabled ? "Active" : "Paused"}: ${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${option ? `; ${option}` : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
 }

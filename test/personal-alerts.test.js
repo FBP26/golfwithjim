@@ -50,6 +50,17 @@ test("rules validate editable fields and summaries include paused rules and limi
   assert.match(alertSummary({ ...defaultAlerts[0], enabled: false }), /Paused:.*Sat.*10:00.*Eastern.*18 holes/);
 });
 
+test("price options match the List page's deals and named offers", () => {
+  const courses = defaultAlerts.map(rule => rule.course);
+  const dealsRule = validateAlerts([{ ...defaultAlerts[0], priceOption: "__discounts" }], courses)[0];
+  assert.equal(matchesAlert({ ...teeTime, golfPassEligible: true }, dealsRule, now), true);
+  assert.equal(matchesAlert(teeTime, dealsRule, now), false);
+  const namedRule = validateAlerts([{ ...defaultAlerts[0], priceOption: "Online Rate" }], courses)[0];
+  assert.equal(matchesAlert({ ...teeTime, rateName: "Online Rate" }, namedRule, now), true);
+  assert.equal(matchesAlert({ ...teeTime, rateName: "Public 18 Holes" }, namedRule, now), false);
+  assert.match(alertSummary(dealsRule), /All deals & offers/);
+});
+
 test("feed checks reject stale observations and suppress already delivered matching starts", () => {
   const feed = { checkedAt: now.toISOString(), sourceChecks: [{ course: teeTime.course, checkedAt: now.toISOString() }], teeTimes: [teeTime, { ...teeTime, source: "Other provider" }] };
   const matches = selectMatches(feed, defaultAlerts, new Set(), now);
