@@ -43,8 +43,8 @@ label { display: flex; flex-direction: column; gap: 4px; min-width: 0; font-size
 .toolbar span { color: var(--muted); font-size: 12px; }
 .rule { margin: 14px 0; padding: 14px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
 .rule-head { margin-bottom: 8px; }
-.rule-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-.course { grid-column: 1 / -1; }
+.rule-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.rule-grid label:has([data-field="players"]) { grid-column: 1 / -1; }
 fieldset { padding: 0; border: 0; margin: 12px 0 0; }
 legend { font-size: 13px; color: var(--muted); }
 .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
