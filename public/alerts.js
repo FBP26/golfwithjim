@@ -1,5 +1,6 @@
 import { priceOptionLabels, shortCourseName } from "./src/dashboard.js?v=20260928-prices";
-import { defaultAlertPriceOption } from "./src/personal-alerts.js?v=20261008-price-options";
+
+const defaultAlertPriceOption = "";
 
 const endpoint = "https://golfwithjim-alerts.fbp-api-worker.workers.dev/preferences";
 try { sessionStorage.removeItem("golfwithjim-alert-access"); } catch {}
