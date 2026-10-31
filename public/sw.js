@@ -1,11 +1,10 @@
 self.addEventListener("install", event => { event.waitUntil(self.skipWaiting()); });
-self.addEventListener("activate", event => { event.waitUntil(self.clients.claim()); });
-
-async function setBadgeFromNotifications() {
-  if (!self.navigator || !("setAppBadge" in self.navigator)) return;
-  const notifications = await self.registration.getNotifications();
-  await self.navigator.setAppBadge(notifications.length);
-}
+self.addEventListener("activate", event => {
+  event.waitUntil((async () => {
+    await self.clients.claim();
+    await clearBadge();
+  })());
+});
 
 async function clearBadge() {
   if (self.navigator && "clearAppBadge" in self.navigator) await self.navigator.clearAppBadge();
@@ -21,7 +20,6 @@ self.addEventListener("push", event => {
       tag: message.tag || "golf-alert",
       data: { url: message.url || "./" },
     });
-    await setBadgeFromNotifications();
   })());
 });
 self.addEventListener("notificationclick", event => {
