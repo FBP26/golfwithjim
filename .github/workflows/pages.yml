@@ -56,13 +56,28 @@ jobs:
       - name: Save refreshed feed
         if: steps.timing.outputs.collect == 'true'
         shell: bash
+        env:
+          COLLECTION_COURSE: ${{ github.event.inputs.course || '' }}
+          CHRONOGOLF_PROXY_TOKEN: ${{ github.token }}
+          CHRONOGOLF_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/chronogolf
+          TEEITUP_PROXY_TOKEN: ${{ github.token }}
+          TEEITUP_PROXY_URL: https://golfwithjim-refresh.fbp-api-worker.workers.dev/teeitup
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add fixtures/live-current.json
-          git diff --cached --quiet || git commit -m "Refresh tee-time inventory [skip ci]"
-          git pull --rebase origin main
-          git push
+          publish_feed() {
+            git add fixtures/live-current.json
+            git diff --cached --quiet || git commit -m "Refresh tee-time inventory [skip ci]"
+            git pull --rebase origin main && git push
+          }
+          if ! publish_feed; then
+            if [ -d .git/rebase-merge ] || [ -d .git/rebase-apply ]; then git rebase --abort; fi
+            echo 'The tee-time feed changed during collection; rebuilding from the latest published feed and retrying.'
+            git fetch origin main
+            git reset --hard origin/main
+            node src/collect.js --base=fixtures/live-current.json --output=fixtures/live-current.json --course="$COLLECTION_COURSE"
+            publish_feed
+          fi
       - run: npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
