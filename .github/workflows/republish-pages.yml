@@ -9,7 +9,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: golfwithjim-pages-recovery
+  group: golfwithjim-pages
   cancel-in-progress: false
 
 jobs:
