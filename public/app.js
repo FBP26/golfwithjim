@@ -1,5 +1,6 @@
 import { filterTeeTimes, summarizeResults, groupTeeTimes, priceOptionLabels, shortCourseName, isMainCourse, haversineMiles, RICHMOND_CENTER, isInventoryUsable, isSelectableCourse, coursesInGroup } from "./src/dashboard.js?v=20260928-prices";
 import { applyPriceSnapshot } from "./src/price-history.js?v=20260928";
+import { isUpcoming } from "./src/analyze.js?v=20261117";
 
 const isGitHubPages = location.hostname.endsWith(".github.io");
 const staticFeedUrl = "./api/tee-times.json";
@@ -554,7 +555,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     if (notificationId && payload.notificationId !== notificationId) throw new Error("Saved notification results are unavailable.");
     if (liveRefresh && isGitHubPages && payload.checkedAt === state.checkedAt) throw new Error("Refresh is still running. Try again shortly.");
     state.checkedAt = payload.checkedAt;
-    state.teeTimes = notificationId ? payload.teeTimes : applyPriceSnapshot(payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true })), await pricing, payload.checkedAt, Date.now(), payload.sourceChecks || []);
+    state.teeTimes = notificationId ? payload.teeTimes : applyPriceSnapshot(payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }) && isUpcoming(teeTime)), await pricing, payload.checkedAt, Date.now(), payload.sourceChecks || []);
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
     renderPriceOptions();
@@ -713,7 +714,7 @@ elements.refresh.addEventListener("click", refreshInventory);
 
 function expireCachedInventory() {
   if (notificationId) return;
-  const current = state.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }));
+  const current = state.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }) && isUpcoming(teeTime));
   if (current.length === state.teeTimes.length) return;
   state.teeTimes = current;
   renderDirectory();
