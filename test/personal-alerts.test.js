@@ -163,3 +163,22 @@ test("alert dropdown labels use established short names while retaining canonica
   assert.deepEqual(options.map(option => option.label), ["Hanover", "Highlands", "Independence", "Mill Quarter", "Viniterra"]);
   assert.equal(options[1].value, "The Golf Club at The Highlands");
 });
+test("standout and deal alerts only match tee times with a big enough computed discount", () => {
+  const standout = { ...defaultAlerts[0], alertOn: "standout" };
+  const deals = { ...defaultAlerts[0], alertOn: "deals" };
+  assert.equal(matchesAlert(teeTime, standout, now), false);
+  assert.equal(matchesAlert({ ...teeTime, deal: { percent: 18, savings: 12 } }, standout, now), false);
+  assert.equal(matchesAlert({ ...teeTime, deal: { percent: 18, savings: 12 } }, deals, now), true);
+  assert.equal(matchesAlert({ ...teeTime, deal: { percent: 30, savings: 8 } }, standout, now), false);
+  assert.equal(matchesAlert({ ...teeTime, deal: { percent: 30, savings: 20 } }, standout, now), true);
+  assert.equal(validateAlerts([{ ...defaultAlerts[0], alertOn: undefined, priceDropOnly: 1 }], defaultAlerts.map(rule => rule.course))[0].alertOn, "standout");
+});
+
+test("each tee time alerts once unless its price falls at least $5 below the alerted price", () => {
+  const feed = { checkedAt: now.toISOString(), sourceChecks: [{ course: teeTime.course, checkedAt: now.toISOString() }], teeTimes: [teeTime] };
+  const [first] = selectMatches(feed, defaultAlerts, new Set(), now);
+  const seen = new Set([first.key]);
+  assert.equal(selectMatches({ ...feed, teeTimes: [{ ...teeTime, allInPrice: teeTime.allInPrice - 3 }] }, defaultAlerts, seen, now).length, 0);
+  assert.equal(selectMatches({ ...feed, teeTimes: [{ ...teeTime, allInPrice: teeTime.allInPrice - 6 }] }, defaultAlerts, seen, now).length, 1);
+  assert.equal(selectMatches({ ...feed, teeTimes: [teeTime, { ...teeTime, rateName: "Online Rate", allInPrice: teeTime.allInPrice + 4 }] }, defaultAlerts, new Set(), now).length, 1);
+});

@@ -48,16 +48,31 @@ export function selectMatches(feed, rules, seen, now = new Date()) {
   if (!Number.isFinite(checked) || now.getTime() - checked > maximumAge || checked > now.getTime() + 300000) return [];
   const matches = new Map();
   const supportedCourses = new Set(courseNames({ courses: feed.courses || [] }));
+  // One alert per tee time: a start that was already sent is only sent again if its price falls at least $5 more.
+  const alertedPrice = new Map();
+  for (const key of seen) {
+    try {
+      const [ruleId, course, date, time, price, players] = JSON.parse(key);
+      const base = JSON.stringify([ruleId, course, date, time, players]);
+      alertedPrice.set(base, Math.min(alertedPrice.get(base) ?? Infinity, Number(price)));
+    } catch {}
+  }
   for (const rule of rules) for (const teeTime of feed.teeTimes) {
     if (alertCourseGroups.some(group => group.value === rule.course) && !supportedCourses.has(teeTime.course)) continue;
     if (!matchesAlert(teeTime, rule, now)) continue;
     const checks = feed.sourceChecks.filter(source => source.course === teeTime.course && (!source.source || source.source === teeTime.source));
     if (!checks.some(check => !check.error && Number.isFinite(Date.parse(check.checkedAt)) && now.getTime() - Date.parse(check.checkedAt) <= maximumAge && Date.parse(check.checkedAt) <= now.getTime() + 300000)) continue;
     const key = JSON.stringify([rule.id, teeTime.course, teeTime.date, teeTime.time, teeTime.allInPrice, rule.players]);
-    if (seen.has(key) || matches.has(key)) continue;
+    const previousPrice = alertedPrice.get(JSON.stringify([rule.id, teeTime.course, teeTime.date, teeTime.time, rule.players]));
+    if (seen.has(key) || matches.has(key) || (previousPrice !== undefined && teeTime.allInPrice > previousPrice - 5)) continue;
     matches.set(key, { key, ruleId: rule.id, teeTime });
   }
-  return [...matches.values()].sort((left, right) => left.teeTime.date.localeCompare(right.teeTime.date) || left.teeTime.course.localeCompare(right.teeTime.course));
+  const cheapest = new Map();
+  for (const match of matches.values()) {
+    const base = JSON.stringify([match.ruleId, match.teeTime.course, match.teeTime.date, match.teeTime.time]);
+    if (!cheapest.has(base) || match.teeTime.allInPrice < cheapest.get(base).teeTime.allInPrice) cheapest.set(base, match);
+  }
+  return [...cheapest.values()].sort((left, right) => left.teeTime.date.localeCompare(right.teeTime.date) || left.teeTime.course.localeCompare(right.teeTime.course));
 }
 
 export function formatPersonalEmail(rules, matches, manageLink, checkedAt, welcome = false, paused = false) {

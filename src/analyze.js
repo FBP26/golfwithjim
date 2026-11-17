@@ -89,31 +89,3 @@ export function isEligible(teeTime, config) {
     && (isPublicRate(teeTime.rateName) || (teeTime.golfPassEligible && /\bgolfpass\b/i.test(teeTime.rateName)
       && !RESTRICTED_RATE_PATTERN.test(teeTime.rateName)));
 }
-
-function minutes(time) {
-  const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
-  if (!match) return Number.POSITIVE_INFINITY;
-  let hour = Number(match[1]) % 12;
-  if (match[3].toUpperCase() === "PM") hour += 12;
-  return hour * 60 + Number(match[2]);
-}
-
-export function findPriceBreaks(teeTimes, config) {
-  const comparable = teeTimes
-    .filter(teeTime => teeTime.holes === 18)
-    .toSorted((left, right) => minutes(left.time) - minutes(right.time));
-
-  return comparable.filter((teeTime, index) => {
-    if (teeTime.hotDeal) return true;
-    const neighbors = [comparable[index - 1], comparable[index + 1]].filter(Boolean);
-    if (!neighbors.length) return false;
-    const referencePrice = Math.min(...neighbors.map(neighbor => neighbor.allInPrice));
-    const savings = referencePrice - teeTime.allInPrice;
-    return savings >= config.minimumDropDollars
-      && savings / referencePrice >= config.minimumDropPercent;
-  });
-}
-
-export function newestAvailableDate(teeTimes) {
-  return teeTimes.map(teeTime => teeTime.date).sort().at(-1) || null;
-}

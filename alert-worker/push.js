@@ -64,13 +64,24 @@ export async function pushRequest(request, env, path) {
   return { ok: true, accepted: true };
 }
 
+// Push pacing: nothing overnight (9 PM - 7 AM Eastern) and at most one push per device every two hours.
+// Matches found while paused stay in the feed and go out together in the next allowed push if still available.
+export const pushPacing = { quietFrom: 21, quietUntil: 7, minimumGapMs: 2 * 60 * 60 * 1000 };
+export function inQuietHours(now = new Date()) {
+  const hour = Number(new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", hour: "2-digit", hourCycle: "h23" }).format(now));
+  return hour >= pushPacing.quietFrom || hour < pushPacing.quietUntil;
+}
+
 export async function checkPushAlerts(env, feed, selectMatches) {
   if (!pushConfigured(env)) return { sent: 0, failed: 0 };
+  if (inQuietHours()) return { sent: 0, failed: 0, quiet: true };
   let sent = 0;
   let failed = 0;
   const devices = (await env.DB.prepare("SELECT push_devices.*, subscribers.rules FROM push_devices JOIN subscribers ON subscribers.id = push_devices.subscriber_id WHERE subscribers.paused = 0").all()).results;
   for (const device of devices) {
     try {
+      const last = await env.DB.prepare("SELECT MAX(sent_at) AS sent_at FROM push_matches WHERE device_id = ?").bind(device.id).first();
+      if (last?.sent_at && Date.now() - last.sent_at < pushPacing.minimumGapMs) continue;
       const seen = new Set((await env.DB.prepare("SELECT match_key FROM push_matches WHERE device_id = ?").bind(device.id).all()).results.map(row => row.match_key));
       const rules = JSON.parse(device.rules);
       const matches = selectMatches(feed, rules, seen).slice(0, 100);

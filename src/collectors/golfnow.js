@@ -1,9 +1,16 @@
 import { isPublicRate } from "../analyze.js";
 
 const endpoint = "https://www.golfnow.com/api/tee-times/tee-time-search-results";
-let requestQueue = Promise.resolve();
+// GolfNow requests run in a few parallel lanes (each lane paced at ~350 ms between requests) instead of one
+// global queue. One lane made a full refresh take ~26 minutes; three lanes keep it around 9 while staying gentle.
+export const golfNowLanes = Number(process.env.GOLFNOW_LANES || 3);
+const lanes = Array.from({ length: Math.max(1, golfNowLanes) }, () => Promise.resolve());
+let nextLane = 0;
 
 function requestInventory(fetchImpl, body, facilityId) {
+  const lane = nextLane;
+  nextLane = (nextLane + 1) % lanes.length;
+  const requestQueue = lanes[lane];
   const pending = requestQueue.then(async () => {
     for (let attempt = 0; attempt < 4; attempt++) {
       const response = await fetchImpl(endpoint, {
@@ -32,7 +39,7 @@ function requestInventory(fetchImpl, body, facilityId) {
       return payload;
     }
   });
-  requestQueue = pending.catch(() => {});
+  lanes[lane] = pending.catch(() => {});
   return pending;
 }
 

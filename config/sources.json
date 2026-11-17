@@ -342,16 +342,6 @@
       "collector": "teeitup"
     },
     {
-      "source": "GolfNow Marketplace",
-      "course": "Mill Quarter Plantation Golf Club",
-      "distanceMiles": 26.8,
-      "collector": "golfnow",
-      "providerCourseId": "6014",
-      "latitude": 37.4963025,
-      "longitude": -77.920129,
-      "url": "https://www.golfnow.com/tee-times/facility/6014-mill-quarter-plantation-golf-course/search"
-    },
-    {
       "source": "GolfNow/TeeItUp",
       "course": "The Hollows Golf Club",
       "distanceMiles": 19.3,

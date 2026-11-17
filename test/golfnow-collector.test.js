@@ -4,7 +4,7 @@ import { extractGolfNowInventory, collectGolfNowDay } from "../src/collectors/go
 
 const money = value => ({ value });
 
-test("serializes course requests and honors a rate-limit retry", async () => {
+test("limits parallel course requests to the configured lanes and honors a rate-limit retry", async () => {
   let active = 0;
   let peak = 0;
   let calls = 0;
@@ -17,9 +17,9 @@ test("serializes course requests and honors a rate-limit retry", async () => {
     if (calls === 1) return { ok: false, status: 429, headers: new Headers({ "retry-after": "0.001" }) };
     return { ok: true, json: async () => ({ ttResults: { teeTimes: [] } }) };
   };
-  await Promise.all([1, 2].map(facilityId => collectGolfNowDay({ facilityId, date: "2026-09-26", course: "Test", distanceMiles: 20, fetchImpl })));
-  assert.equal(peak, 1);
-  assert.equal(calls, 9);
+  await Promise.all([1, 2, 3, 4, 5].map(facilityId => collectGolfNowDay({ facilityId, date: "2026-09-26", course: "Test", distanceMiles: 20, fetchImpl })));
+  assert.ok(peak <= 3);
+  assert.equal(calls, 21);
 });
 
 test("verifies party sizes instead of converting Any to four and retains public alternatives", async () => {

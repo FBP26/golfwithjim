@@ -9,11 +9,22 @@ export const alertCourseGroups = [
 
 export const defaultAlertPriceOption = "";
 
+// What a rule alerts on. "standout" = the price is well below what this course normally charges for a comparable start
+// (at least 25% and $10 under the reference used by the Deals page); "deals" = any computed deal (15%+);
+// "all" = every new matching tee time.
+export const alertOnOptions = [
+  { value: "standout", label: "Standout deals only (25%+ off)" },
+  { value: "deals", label: "Any deal (15%+ off)" },
+  { value: "all", label: "Every matching tee time" },
+];
+export const standoutDeal = { minimumPercent: 25, minimumSavings: 10 };
+const legacyAlertOn = rule => rule.alertOn ?? (rule.priceDropOnly ? "standout" : "all");
+
 const easternFormatter = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" });
 
 export const defaultAlerts = [
-  { id: "magnolia-saturday", name: "Magnolia Saturday", course: "Magnolia Green Golf Club", days: [6], from: "00:00", until: "10:00", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
-  { id: "spring-creek-price", name: "Spring Creek under $120", course: "Spring Creek Golf Club", days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: 119.99, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
+  { id: "magnolia-saturday", alertOn: "all", name: "Magnolia Saturday", course: "Magnolia Green Golf Club", days: [6], from: "00:00", until: "10:00", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
+  { id: "spring-creek-price", alertOn: "all", name: "Spring Creek under $120", course: "Spring Creek Golf Club", days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: 119.99, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" },
 ];
 
 export function validateAlerts(rules, courseNames) {
@@ -35,7 +46,9 @@ export function validateAlerts(rules, courseNames) {
     if (rule.startDate && rule.endDate && rule.startDate > rule.endDate) throw new Error("The last date must follow the first date.");
     const priceOption = rule.priceOption ?? defaultAlertPriceOption;
     if (typeof rule.enabled !== "boolean" || typeof priceOption !== "string" || priceOption.length > 120) throw new Error("Invalid alert options.");
-    return { id: rule.id, name: name.trim(), course: rule.course, days: [...new Set(rule.days)].sort(), from: rule.from, until: rule.until, minPrice: rule.minPrice, maxPrice: rule.maxPrice, players: rule.players, priceOption, enabled: rule.enabled, startDate: rule.startDate, endDate: rule.endDate };
+    const alertOn = legacyAlertOn(rule);
+    if (!alertOnOptions.some(option => option.value === alertOn)) throw new Error("Choose what to be alerted about.");
+    return { id: rule.id, alertOn, name: name.trim(), course: rule.course, days: [...new Set(rule.days)].sort(), from: rule.from, until: rule.until, minPrice: rule.minPrice, maxPrice: rule.maxPrice, players: rule.players, priceOption, enabled: rule.enabled, startDate: rule.startDate, endDate: rule.endDate };
   });
 }
 
@@ -45,6 +58,9 @@ export function matchesAlert(teeTime, rule, now = new Date()) {
     || (rule.course === "group:regional" && !LOCAL_COURSES.has(teeTime.course));
   if (!rule.enabled || !courseMatches || teeTime.stale || teeTime.priceIsExact !== true || teeTime.holes !== 18 || !isPublicRate(teeTime.rateName)) return false;
   if (!Number.isFinite(teeTime.allInPrice) || teeTime.allInPrice <= 0 || teeTime.allInPrice < rule.minPrice || (rule.maxPrice !== null && teeTime.allInPrice > rule.maxPrice)) return false;
+  const alertOn = legacyAlertOn(rule);
+  if (alertOn !== "all" && !teeTime.deal) return false;
+  if (alertOn === "standout" && !(teeTime.deal.percent >= standoutDeal.minimumPercent && teeTime.deal.savings >= standoutDeal.minimumSavings)) return false;
   const priceOption = rule.priceOption ?? defaultAlertPriceOption;
   if (priceOption && (priceOption === "__discounts" ? priceOptionLabels(teeTime).length === 0 : !priceOptionLabels(teeTime).includes(priceOption))) return false;
   const minutes = parseTimeMinutes(teeTime.time);
@@ -66,5 +82,6 @@ export function alertSummary(rule) {
   const course = alertCourseGroups.find(group => group.value === rule.course)?.label || rule.course;
   const priceOption = rule.priceOption ?? defaultAlertPriceOption;
   const option = priceOption === "__discounts" ? "All deals & offers" : priceOption;
-  return `${rule.enabled ? "Active" : "Paused"}: ${rule.name ? `${rule.name}; ` : ""}${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${option ? `; ${option}` : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
+  const alertOn = alertOnOptions.find(item => item.value === legacyAlertOn(rule))?.label || "";
+  return `${rule.enabled ? "Active" : "Paused"}: ${rule.name ? `${rule.name}; ` : ""}${alertOn}; ${course}; ${rule.days.length === 7 ? "Every day" : rule.days.map(day => days[day]).join(", ")}; ${rule.from}-${rule.until} Eastern; ${price} per golfer; ${rule.players || "Any available"} golfer${rule.players === 1 ? "" : "s"}; 18 holes${option ? `; ${option}` : ""}${rule.startDate ? `; from ${rule.startDate}` : ""}${rule.endDate ? `; through ${rule.endDate}` : ""}`;
 }
