@@ -19,7 +19,22 @@ function writeHash() {
   const p = new URLSearchParams(); for (const [k, v] of Object.entries(state)) if (v && !(k === "view" && v === "overview")) p.set(k, v);
   history.replaceState(null, "", `#${p}`);
 }
-const complexOf = course => D.courseInfo.get(course)?.complex || course;
+const complexOf = course => D.courseInfo.get(course)?.complex || course.split(" (")[0];
+// Nine-hole loops and repair-day holes are stored as separate pieces (Hollows Lake + Cottage, Pendleton 14 under repair).
+// Like the Tableau "complex" view, pieces played by the same golfer on the same day add up to one card.
+function cardsOf(rounds) {
+  const groups = new Map();
+  for (const r of rounds) { const k = `${r.date}|${r.player}|${r.roundNumber}|${complexOf(r.course)}`; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(r); }
+  return [...groups.values()].map(ps => {
+    if (ps.length === 1) return ps[0];
+    const holes = ps.flatMap(p => p.holes);
+    const score = holes.reduce((t, h) => t + h.score, 0), par = holes.reduce((t, h) => t + h.par, 0);
+    return { ...ps[0], id: ps[0].id, course: complexOf(ps[0].course), courses: ps.map(p => p.course), tees: [...new Set(ps.map(p => p.tees))].join(" / "), holes, score, par, count: holes.length, full: holes.length === 18, pieces: ps };
+  });
+}
+const fullCards = rounds => cardsOf(rounds).filter(c => c.full);
+const cardById = new Map();
+const rid = r => { if (!r.pieces) return r.id; cardById.set(`${r.id}*`, r); return `${r.id}*`; };
 function filteredRounds({ ignorePlayer = false, ignoreCourse = false } = {}) {
   const cutoff = state.window ? new Date(Date.now() - Number(state.window) * 86400000).toISOString().slice(0, 10) : "";
   return D.rounds.filter(r => (ignorePlayer || !state.player || r.player === state.player) && (!state.year || String(r.year) === state.year) && (ignoreCourse || !state.course || r.course === state.course || complexOf(r.course) === state.course) && (!cutoff || r.date >= cutoff));
@@ -47,6 +62,7 @@ function accuracy(holes) {
   return { fir: fh.filter(h => h.fir).length, firN: fh.length, gir: gh.filter(h => h.green !== "miss").length, sgir: gh.filter(h => h.green === "sgir").length, girN: gh.length };
 }
 function scorecard(r) {
+  if (r.pieces) return `<div><b>${fmtDate(r.date)}</b> · ${esc(r.player)} · ${r.score} (${toPar(r.score - r.par)}) over ${r.pieces.length} parts</div>` + r.pieces.map(p => scorecard({ ...p, pieces: undefined })).join("");
   const cells = (hs, f) => hs.map(f).join("");
   const front = r.holes.filter(h => h.hole <= 9), back = r.holes.filter(h => h.hole >= 10);
   const sum = (hs, k) => hs.reduce((s, h) => s + (h[k] || 0), 0);
@@ -115,7 +131,7 @@ const legend = keys => `<div class="legend">${keys.map(k => `<span><i style="bac
 
 // ---------- views ----------
 function overview() {
-  const rounds = filteredRounds(), holes = holesOf(rounds), full = rounds.filter(r => r.full);
+  const rounds = filteredRounds(), holes = holesOf(rounds), full = fullCards(rounds);
   const best = full.reduce((b, r) => (!b || r.score < b.score ? r : b), null);
   const acc = accuracy(holes);
   const byPar = [3, 4, 5].map(p => { const hs = holes.filter(h => h.par === p); return { label: `Par ${p}s`, v: avg(hs.map(h => h.score)), n: hs.length, over: avg(hs.map(h => h.diff)) }; });
@@ -123,7 +139,7 @@ function overview() {
   const now = Date.now();
   const windows = [["Forever", 0], ["This year", -1], ["Last 6 months", 182], ["Last 30 days", 30]].map(([label, days]) => {
     const rs = rounds.filter(r => days === 0 || (days === -1 ? r.year === new Date().getFullYear() : r.date >= new Date(now - days * 86400000).toISOString().slice(0, 10)));
-    const hs = holesOf(rs), fr = rs.filter(r => r.full), a = accuracy(hs);
+    const hs = holesOf(rs), fr = fullCards(rs), a = accuracy(hs);
     return `<tr><td>${label}</td><td class="n">${rs.length}</td><td class="n">${fmt(avg(fr.map(r => r.score)))}</td><td class="n">${fr.length ? Math.min(...fr.map(r => r.score)) : "–"}</td><td class="n">${fmt(avg(hs.map(h => h.diff)), 2)}</td><td class="n">${pct(a.fir, a.firN)}</td><td class="n">${pct(a.gir, a.girN)}</td></tr>`;
   }).join("");
   const pts = full.map(r => ({ y: r.score, date: r.date, color: "var(--birdie)", tip: scorecard(r) }));
@@ -164,28 +180,28 @@ function mostBirdied(holes) {
 let roundSort = "date";
 function roundsView() {
   const rounds = filteredRounds().slice().sort((a, b) => roundSort === "score" ? (b.full - a.full) || a.score - b.score : b.date.localeCompare(a.date) || a.score - b.score);
-  const recent = rounds.filter(r => r.full).slice(0, 16).reverse();
+  const recent = fullCards(rounds).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 16).reverse();
   return `${card("Results by round", "The latest 16 full rounds for these filters, split by result. Hover for the card.", legend(RESULTS) + stackedBars(recent.map(r => ({ label: `${r.player} ${fmtDate(r.date)}`, short: r.date.slice(5), values: resultCounts(r.holes), tip: `${esc(r.course)} · ${r.score}` })), RESULTS, COLORS, { labels: LABEL }))}
     ${card("Scores by date", `${rounds.length} rounds. Click a row for the scorecard, fairways/greens and who played that day.`, `<div class="row seg" style="margin-bottom:8px"><button type="button" data-sort="date" aria-pressed="${roundSort === "date"}">Newest first</button><button type="button" data-sort="score" aria-pressed="${roundSort === "score"}">Lowest score</button></div>
       <div class="scroll"><table class="data"><thead><tr><th>Date</th><th>Golfer</th><th>Course</th><th>Tees</th><th class="n">Holes</th><th class="n">Score</th><th class="n">Par</th><th class="n">+/-</th>${RESULTS.map(k => `<th class="n">${LABEL[k]}</th>`).join("")}</tr></thead><tbody>
-      ${rounds.slice(0, 600).map(r => { const c = resultCounts(r.holes); return `<tr class="clickable" data-round="${r.id}"><td>${r.date}</td><td>${esc(r.player)}</td><td>${esc(r.course)}</td><td>${esc(r.tees)}</td><td class="n">${r.count}</td><td class="n"><b>${r.score}</b></td><td class="n">${r.par}</td><td class="n">${toPar(r.score - r.par)}</td>${RESULTS.map(k => `<td class="n">${c[k] || ""}</td>`).join("")}</tr>`; }).join("")}
+      ${rounds.slice(0, 600).map(r => { const c = resultCounts(r.holes); return `<tr class="clickable" data-round="${rid(r)}"><td>${r.date}</td><td>${esc(r.player)}</td><td>${esc(r.course)}</td><td>${esc(r.tees)}</td><td class="n">${r.count}</td><td class="n"><b>${r.score}</b></td><td class="n">${r.par}</td><td class="n">${toPar(r.score - r.par)}</td>${RESULTS.map(k => `<td class="n">${c[k] || ""}</td>`).join("")}</tr>`; }).join("")}
       </tbody></table></div>${rounds.length > 600 ? `<p class="muted">Showing 600 of ${rounds.length}. Narrow the filters to see more.</p>` : ""}`)}`;
 }
 document.addEventListener("click", e => {
   const s = e.target.closest("[data-sort]"); if (s) { roundSort = s.dataset.sort; render(); return; }
   const row = e.target.closest("tr[data-round]"); if (!row) return;
   if (row.nextElementSibling?.classList.contains("expand")) { row.nextElementSibling.remove(); return; }
-  const r = D.rounds.find(x => x.id === row.dataset.round);
+  const r = cardById.get(row.dataset.round) || D.rounds.find(x => x.id === row.dataset.round);
   row.insertAdjacentHTML("afterend", `<tr class="expand"><td colspan="20">${scorecard(r)}</td></tr>`);
 });
 
 function bestView() {
-  const full = filteredRounds().filter(r => r.full).sort((a, b) => a.score - b.score || a.date.localeCompare(b.date)).slice(0, 100);
+  const full = fullCards(filteredRounds()).sort((a, b) => a.score - b.score || a.date.localeCompare(b.date)).slice(0, 100);
   const nines = filteredRounds().filter(r => r.count === 9).sort((a, b) => a.score - b.score).slice(0, 25);
-  const table = rs => `<div class="scroll"><table class="data"><thead><tr><th class="n">Score</th><th class="n">Par</th><th>Golfer</th><th>Date</th><th>Course</th><th>Tees</th><th>How</th></tr></thead><tbody>${rs.map(r => `<tr class="clickable" data-round="${r.id}" ${tipAttr(scorecard(r))}><td class="n"><b>${r.score}</b></td><td class="n">${r.par}</td><td>${esc(r.player)}</td><td>${r.date}</td><td>${esc(r.course)}</td><td>${esc(r.tees)}</td><td>${esc(summaryText(r))}</td></tr>`).join("")}</tbody></table></div>`;
-  const perPlayer = new Map(); for (const r of filteredRounds().filter(r => r.full)) { const b = perPlayer.get(r.player); if (!b || r.score < b.score) perPlayer.set(r.player, r); }
+  const table = rs => `<div class="scroll"><table class="data"><thead><tr><th class="n">Score</th><th class="n">Par</th><th>Golfer</th><th>Date</th><th>Course</th><th>Tees</th><th>How</th></tr></thead><tbody>${rs.map(r => `<tr class="clickable" data-round="${rid(r)}" ${tipAttr(scorecard(r))}><td class="n"><b>${r.score}</b></td><td class="n">${r.par}</td><td>${esc(r.player)}</td><td>${r.date}</td><td>${esc(r.course)}</td><td>${esc(r.tees)}</td><td>${esc(summaryText(r))}</td></tr>`).join("")}</tbody></table></div>`;
+  const perPlayer = new Map(); for (const r of fullCards(filteredRounds())) { const b = perPlayer.get(r.player); if (!b || r.score < b.score) perPlayer.set(r.player, r); }
   return `${card("Best 18-hole scores", "Lowest full rounds. Hover for the scorecard; click to open it.", table(full))}
-    <div class="two">${card("Personal bests", "Each golfer's lowest 18.", `<div class="scroll"><table class="data"><tbody>${[...perPlayer.values()].sort((a, b) => a.score - b.score).map(r => `<tr class="clickable" data-round="${r.id}"><td>${esc(r.player)}</td><td class="n"><b>${r.score}</b></td><td>${r.date}</td><td>${esc(r.course)}</td></tr>`).join("")}</tbody></table></div>`)}
+    <div class="two">${card("Personal bests", "Each golfer's lowest 18.", `<div class="scroll"><table class="data"><tbody>${[...perPlayer.values()].sort((a, b) => a.score - b.score).map(r => `<tr class="clickable" data-round="${rid(r)}"><td>${esc(r.player)}</td><td class="n"><b>${r.score}</b></td><td>${r.date}</td><td>${esc(r.course)}</td></tr>`).join("")}</tbody></table></div>`)}
     ${card("Best 9-hole rounds", "Rounds of exactly 9 holes.", table(nines))}</div>`;
 }
 
@@ -207,7 +223,7 @@ function courseView() {
       ${card("Hole difficulty", "Average strokes over par on each hole, hardest first.", hbars(ranked.map(r => ({ label: `#${r.hole} (par ${r.par})`, v: Math.max(0, r.over), note: `+${fmt(r.over, 2)}`, color: r.over > 1.2 ? COLORS.double : r.over > .8 ? COLORS.bogey : "#7f9c8a" }))))}
       ${card("Who plays it best", "Lowest strokes over par per hole here (2+ rounds).", `<table class="data"><thead><tr><th>Golfer</th><th class="n">Rounds</th><th class="n">Over/hole</th><th class="n">Best 18</th></tr></thead><tbody>${who.map(w => `<tr><td>${esc(w.p)}</td><td class="n">${w.n}</td><td class="n">${fmt(w.over, 2)}</td><td class="n">${Number.isFinite(w.best) ? w.best : "–"}</td></tr>`).join("")}</tbody></table>`)}
     </div>
-    ${card("Every visit", "Dates and tees played here. Click for the card.", `<div class="scroll" style="max-height:320px"><table class="data"><tbody>${dates.map(r => `<tr class="clickable" data-round="${r.id}"><td>${r.date}</td><td>${esc(r.player)}</td><td>${esc(r.tees)}</td><td class="n">${r.score}${r.count < 18 ? ` (${r.count})` : ""}</td></tr>`).join("")}</tbody></table></div>`)}
+    ${card("Every visit", "Dates and tees played here. Click for the card.", `<div class="scroll" style="max-height:320px"><table class="data"><tbody>${dates.map(r => `<tr class="clickable" data-round="${rid(r)}"><td>${r.date}</td><td>${esc(r.player)}</td><td>${esc(r.tees)}</td><td class="n">${r.score}${r.count < 18 ? ` (${r.count})` : ""}</td></tr>`).join("")}</tbody></table></div>`)}
     ${card("Course comparison", "Strokes over par per hole at every course (18+ holes). Easiest first.", `<div class="scroll"><table class="data"><thead><tr><th>Course</th><th class="n">Rounds</th><th class="n">Holes</th><th class="n">Over/hole</th><th class="n">FIR</th><th class="n">GIR</th></tr></thead><tbody>${compare.map(x => `<tr><td>${esc(x.c)}</td><td class="n">${x.rounds}</td><td class="n">${x.n}</td><td class="n">${fmt(x.over, 2)}</td><td class="n">${pct(x.acc.fir, x.acc.firN)}</td><td class="n">${pct(x.acc.gir, x.acc.girN)}</td></tr>`).join("")}</tbody></table></div>`)}
     ${notebook()}`;
 }
@@ -231,7 +247,7 @@ function holesView() {
 function yearsView() {
   const rounds = filteredRounds(), years = [...new Set(rounds.map(r => r.year))].sort();
   const series = years.map(y => ({ label: String(y), values: resultCounts(holesOf(rounds.filter(r => r.year === y))) }));
-  const table = [...new Set(rounds.map(r => r.player))].flatMap(p => years.map(y => { const rs = rounds.filter(r => r.player === p && r.year === y); if (!rs.length) return null; const hs = holesOf(rs), c = resultCounts(hs), full = rs.filter(r => r.full); return { p, y, hs: hs.length, days: new Set(rs.map(r => r.date)).size, rounds: rs.length, per18: hs.length / 18, miles: hs.reduce((s, h) => s + (h.yards || 0), 0) / 1760, avg: avg(full.map(r => r.score)), c, sum: hs.reduce((s, h) => s + h.score, 0) }; }).filter(Boolean)).sort((a, b) => b.hs - a.hs || b.y - a.y);
+  const table = [...new Set(rounds.map(r => r.player))].flatMap(p => years.map(y => { const rs = rounds.filter(r => r.player === p && r.year === y); if (!rs.length) return null; const hs = holesOf(rs), c = resultCounts(hs), full = fullCards(rs); return { p, y, hs: hs.length, days: new Set(rs.map(r => r.date)).size, rounds: rs.length, per18: hs.length / 18, miles: hs.reduce((s, h) => s + (h.yards || 0), 0) / 1760, avg: avg(full.map(r => r.score)), c, sum: hs.reduce((s, h) => s + h.score, 0) }; }).filter(Boolean)).sort((a, b) => b.hs - a.hs || b.y - a.y);
   const months = new Map();
   for (const r of rounds) { const m = r.date.slice(0, 7); if (!months.has(m)) months.set(m, {}); const v = months.get(m); v[r.player] = (v[r.player] || 0) + r.count; }
   const topPlayers = [...new Set(rounds.map(r => r.player))].map(p => [p, rounds.filter(r => r.player === p).length]).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([p]) => p);
