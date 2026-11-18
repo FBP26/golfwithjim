@@ -1,4 +1,4 @@
-import { API, loadData, cachedData, expand, resultName, toPar, esc } from "./golf-data.js?v=20261118";
+import { API, loadData, cachedData, expand, resultName, toPar, esc } from "./golf-data.js?v=20261118b";
 
 const DRAFT_KEY = "golfEntryDraft.v1";
 const KEY_KEY = "golfEntryKey";
@@ -30,7 +30,12 @@ function planHoles(golfer) {
   if (outing.plan === "back") return holes.filter(h => h >= 10);
   return holes;
 }
-function holeMeta(golfer, hole) { return layout(outing.course, golfer?.tees || outing.tees).find(h => h.hole === hole) || { hole, par: 4 }; }
+function holeTees(golfer, hole) { return golfer?.holeTees?.[hole] || golfer?.tees || outing.tees; }
+function baseMeta(golfer, hole) { return layout(outing.course, holeTees(golfer, hole)).find(h => h.hole === hole) || layout(outing.course, golfer?.tees || outing.tees).find(h => h.hole === hole) || { hole, par: 4 }; }
+function holeMeta(golfer, hole) {
+  const base = baseMeta(golfer, hole), c = golfer?.cond?.[hole];
+  return c ? { ...base, par: c.par ?? base.par, yards: c.yards === undefined ? base.yards : c.yards } : base;
+}
 function allHoles() { const set = new Set(); for (const g of outing.golfers.length ? outing.golfers : [null]) for (const h of planHoles(g)) set.add(h); return [...set].sort((a, b) => a - b); }
 function entry(g, hole) { return g.scores[hole] || (g.scores[hole] = {}); }
 function cls(score, par) { return score ? `r-${resultName(score - par)}` : "r-blank"; }
@@ -276,10 +281,52 @@ function modeE() {
     <div class="gridwrap">${cardGrid(true)}</div>`;
 }
 
+function modeF() {
+  const gi = Math.min(cursor.golfer, outing.golfers.length - 1), g = outing.golfers[gi];
+  const tees = teesFor(outing.course);
+  const holes = planHoles(g);
+  const side = (hs, label) => {
+    if (!hs.length) return "";
+    const par = hs.reduce((t, h) => t + holeMeta(g, h).par, 0), yds = hs.reduce((t, h) => t + (holeMeta(g, h).yards || 0), 0);
+    const scored = hs.filter(h => g.scores[h]?.s), total = scored.reduce((t, h) => t + g.scores[h].s, 0), spar = scored.reduce((t, h) => t + holeMeta(g, h).par, 0);
+    return `<section class="classic-nine"><div class="nine-head"><b>${label}</b><span class="muted">Par ${par} · ${yds.toLocaleString()} yd</span></div>
+      <table class="classic"><thead><tr><th>Hole</th><th>Par</th><th>Yds</th><th>Score</th>${g.track ? "<th>FIR</th><th>GIR</th><th>SGIR</th>" : ""}${g.mixed ? "<th>Tees</th>" : ""}</tr></thead><tbody>
+      ${hs.map(h => { const m = holeMeta(g, h), e = g.scores[h] || {}; return `<tr class="${g.cond?.[h] ? "cond" : ""}"><td><b>${h}</b></td><td>${m.par}</td><td class="muted">${m.yards ?? "--"}</td>
+        <td><input class="classic-score ${cls(e.s, m.par)}" data-cg="${gi}" data-hole="${h}" data-col="0" value="${e.s ?? ""}" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Hole ${h} score"></td>
+        ${g.track ? `<td><input type="checkbox" data-cg="${gi}" data-hole="${h}" data-col="1" data-stat="f" ${e.f ? "checked" : ""} ${m.par === 3 ? "disabled" : ""} aria-label="Hole ${h} fairway"></td><td><input type="checkbox" data-cg="${gi}" data-hole="${h}" data-col="2" data-stat="g" ${e.g === "gir" || e.g === "sgir" ? "checked" : ""} aria-label="Hole ${h} green in regulation" title="Putting for birdie"></td><td><input type="checkbox" data-cg="${gi}" data-hole="${h}" data-col="3" data-stat="sg" ${e.g === "sgir" ? "checked" : ""} aria-label="Hole ${h} super green" title="Putting for eagle"></td>` : ""}
+        ${g.mixed ? `<td><select data-cg="${gi}" data-hole-tees="${h}" aria-label="Hole ${h} tees">${tees.map(t => `<option ${t === holeTees(g, h) ? "selected" : ""}>${esc(t)}</option>`).join("")}</select></td>` : ""}</tr>`; }).join("")}
+      </tbody></table><div class="nine-total"><b>${label.startsWith("OUT") ? "OUT" : "IN"} ${scored.length ? total : "--"}</b> <span class="muted">${scored.length ? toPar(total - spar) : "--"} · ${scored.length} of ${hs.length} holes</span></div></section>`;
+  };
+  const t = totals(g);
+  return `<div class="card classic-head">
+      <label class="field">Golfer<select data-act="pickgolfer">${outing.golfers.map((x, i) => `<option value="${i}" ${i === gi ? "selected" : ""}>${esc(x.name)}</option>`).join("")}</select></label>
+      <div class="classic-total"><b>${t.n ? t.s : "--"}</b> <span>${t.n ? toPar(t.s - t.p) : "E"}</span><small class="muted">${t.n} holes recorded / ${holes.length}</small></div>
+      <label class="check"><input type="checkbox" data-classic="track" ${g.track ? "checked" : ""}> Track FIR / GIR</label>
+      <label class="check"><input type="checkbox" data-classic="mixed" ${g.mixed ? "checked" : ""}> Mixed tees</label>
+    </div>
+    <p class="muted keys">Type a score and it jumps to the next hole. <b>Enter</b> / <b>↓</b> next hole · <b>↑</b> previous · <b>←</b> <b>→</b> across score, FIR, GIR, SGIR · <b>Space</b> ticks a box · <b>Backspace</b> on an empty box goes back.</p>
+    <div class="classic-wrap">${side(holes.filter(h => h <= 9), "OUT / Front nine")}${side(holes.filter(h => h >= 10), "IN / Back nine")}</div>
+    <details class="card"><summary>Temporary tees / played par and yardage</summary>
+      <p class="muted">For a hole played differently today (repairs, forward tee). Leave the normal layout alone.</p>
+      <div class="cond-grid">${holes.map(h => { const b = baseMeta(g, h), c = g.cond?.[h] || {}; return `<div class="cond-row"><b>${h}</b><label>Par<input type="number" min="3" max="6" data-cond="par" data-cg="${gi}" data-hole="${h}" value="${c.par ?? b.par}"></label><label>Yards<input type="number" min="1" max="1000" data-cond="yards" data-cg="${gi}" data-hole="${h}" value="${c.yards === undefined ? b.yards ?? "" : c.yards ?? ""}"></label><label class="grow">Reason<input maxlength="300" data-cond="note" data-cg="${gi}" data-hole="${h}" value="${esc(c.note || "")}"></label></div>`; }).join("")}</div>
+    </details>
+    <label class="field card">Notes for ${esc(g.name)}<textarea data-classic="notes" rows="2" maxlength="2000">${esc(g.notes || "")}</textarea></label>
+    ${g.savedAt ? `<div class="notice">Saved. <button type="button" class="btn" data-act="another">Add another golfer to this outing</button></div>` : ""}`;
+}
+function classicInputs() { return [...document.querySelectorAll("#mode [data-col]")]; }
+function classicMove(from, rowStep, colStep) {
+  const all = classicInputs(); const hole = Number(from.dataset.hole), col = Number(from.dataset.col);
+  const holes = [...new Set(all.map(i => Number(i.dataset.hole)))];
+  let target;
+  if (rowStep) { const h = holes[holes.indexOf(hole) + rowStep]; target = all.find(i => Number(i.dataset.hole) === h && Number(i.dataset.col) === col && !i.disabled) || all.find(i => Number(i.dataset.hole) === h && i.dataset.col === "0"); }
+  else { const row = all.filter(i => Number(i.dataset.hole) === hole && !i.disabled); target = row[row.indexOf(from) + colStep]; }
+  if (target) { target.focus(); target.select?.(); }
+  return target;
+}
 function renderMode() {
   document.querySelectorAll(".mode-tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.mode === mode)));
   const blocker = needSetup();
-  $("#mode").innerHTML = blocker || { A: modeA, B: modeB, C: modeC, D: modeD, E: modeE }[mode]();
+  $("#mode").innerHTML = blocker || { A: modeA, B: modeB, C: modeC, D: modeD, E: modeE, F: modeF }[mode]();
   renderSummary();
 }
 function renderSummary() {
@@ -446,9 +493,11 @@ function buildRounds() {
   return outing.golfers.map(g => {
     const holes = planHoles(g).filter(h => g.scores[h]?.s).map(h => {
       const e = g.scores[h], par = holeMeta(g, h).par;
-      return { hole: h, tees: g.tees || outing.tees, score: e.s, fir: g.track && par !== 3 ? Boolean(e.f) : null, green: g.track ? (e.g || "miss") : null };
+      const c = g.cond?.[h], base = baseMeta(g, h);
+      const extra = c && (c.par !== base.par || c.yards !== base.yards) ? { par: c.par, length: c.yards ?? null, condition_note: c.note || "" } : {};
+      return { hole: h, tees: holeTees(g, h), score: e.s, fir: g.track && par !== 3 ? Boolean(e.f) : null, green: g.track ? (e.g || "miss") : null, ...extra };
     });
-    return { golfer: g, payload: { id: g.id, revision: g.revision, played_on: outing.date, player: g.name, course: outing.course, round_number: g.round, notes: "", holes } };
+    return { golfer: g, payload: { id: g.id, revision: g.revision, played_on: outing.date, player: g.name, course: outing.course, round_number: g.round, notes: g.notes || "", holes } };
   }).filter(r => r.payload.holes.length);
 }
 $("#save").addEventListener("click", async () => {
@@ -512,3 +561,62 @@ function fillLists() {
   try { data = await loadData(); fillLists(); renderSetup(); renderMode(); if (data.offline) $("#status").textContent = "Offline: using the last downloaded course list."; }
   catch { $("#status").textContent = "Couldn't reach the golf database. Check your connection."; }
 })();
+
+// ---------- F · Classic scorecard events ----------
+function rerenderFocus(gi, hole, col) {
+  renderMode();
+  const el = document.querySelector(`#mode [data-cg="${gi}"][data-hole="${hole}"][data-col="${col}"]`);
+  if (el) { el.focus(); el.select?.(); }
+}
+$("#mode").addEventListener("input", event => {
+  const el = event.target; if (mode !== "F") return;
+  const g = outing.golfers[Number(el.dataset.cg)], hole = Number(el.dataset.hole);
+  if (el.classList.contains("classic-score")) {
+    const v = el.value.trim();
+    if (!v) { delete g.scores[hole]?.s; g.savedAt = null; saveDraft(); el.className = "classic-score r-blank"; renderSummary(); return; }
+    if (!/^[1-9]$/.test(v)) { el.value = ""; return; }
+    if (!setScore(g, hole, Number(v))) { el.value = ""; return; }
+    const holes = planHoles(g), next = holes[holes.indexOf(hole) + 1];
+    rerenderFocus(Number(el.dataset.cg), next ?? hole, 0);
+  }
+  if (el.dataset.classic === "notes") { g.notes = el.value; saveDraft(); }
+  if (el.dataset.cond) {
+    const base = baseMeta(g, hole); g.cond = g.cond || {}; const c = g.cond[hole] = g.cond[hole] || {};
+    if (el.dataset.cond === "par") c.par = Number(el.value) || base.par;
+    if (el.dataset.cond === "yards") c.yards = el.value ? Number(el.value) : null;
+    if (el.dataset.cond === "note") c.note = el.value;
+    if ((c.par ?? base.par) === base.par && (c.yards === undefined || c.yards === base.yards) && !c.note) delete g.cond[hole];
+    saveDraft();
+  }
+});
+$("#mode").addEventListener("change", event => {
+  const el = event.target; if (mode !== "F") return;
+  const gi = Number(el.dataset.cg), g = outing.golfers[gi ?? cursor.golfer], hole = Number(el.dataset.hole);
+  if (el.dataset.stat) {
+    const e = entry(g, hole);
+    if (el.dataset.stat === "f") e.f = el.checked;
+    if (el.dataset.stat === "g") e.g = el.checked ? (e.g === "sgir" ? "sgir" : "gir") : "miss";
+    if (el.dataset.stat === "sg") e.g = el.checked ? "sgir" : "gir";
+    g.savedAt = null; saveDraft(); rerenderFocus(gi, hole, Number(el.dataset.col));
+  }
+  if (el.dataset.holeTees) { g.holeTees = g.holeTees || {}; if (el.value === (g.tees || outing.tees)) delete g.holeTees[hole]; else g.holeTees[hole] = el.value; g.savedAt = null; saveDraft(); renderMode(); }
+  if (el.dataset.cond) renderMode();
+  const golfer = outing.golfers[cursor.golfer];
+  if (el.dataset.classic === "track") { if (!el.checked && Object.values(golfer.scores).some(e => e.f || (e.g && e.g !== "miss")) && !confirm("Clear fairway and green marks for this golfer? Scores stay.")) { el.checked = true; return; } golfer.track = el.checked; if (!el.checked) for (const e of Object.values(golfer.scores)) { e.f = false; e.g = null; } saveDraft(); renderSetup(); renderMode(); }
+  if (el.dataset.classic === "mixed") { golfer.mixed = el.checked; if (!el.checked) golfer.holeTees = {}; saveDraft(); renderMode(); }
+});
+$("#mode").addEventListener("keydown", event => {
+  const el = event.target; if (mode !== "F" || !el.dataset.col) return;
+  const isText = el.classList.contains("classic-score");
+  if (event.key === "Enter" || event.key === "ArrowDown") { event.preventDefault(); classicMove(el, 1, 0); }
+  else if (event.key === "ArrowUp") { event.preventDefault(); classicMove(el, -1, 0); }
+  else if (event.key === "ArrowRight" && (!isText || el.selectionEnd === el.value.length)) { event.preventDefault(); classicMove(el, 0, 1); }
+  else if (event.key === "ArrowLeft" && (!isText || el.selectionStart === 0)) { event.preventDefault(); classicMove(el, 0, -1); }
+  else if (event.key === "Backspace" && isText && !el.value) { event.preventDefault(); const prev = classicMove(el, -1, 0); if (prev) prev.select(); }
+});
+$("#mode").addEventListener("focusin", event => { if (mode === "F" && event.target.classList?.contains("classic-score")) event.target.select(); });
+document.addEventListener("click", event => {
+  if (!event.target.closest('[data-act="another"]')) return;
+  outing.setupOpen = true; saveDraft(); renderSetup(); $("#golfer-input").focus();
+  toast("Add the next golfer, then pick them in the Golfer box.");
+});

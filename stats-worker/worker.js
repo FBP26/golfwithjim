@@ -22,7 +22,6 @@ export default {
       if (url.pathname === "/scan") return json(await scanCard(env, body), 200, cors);
       return json({ error: "Not found." }, 404, cors);
     } catch (error) {
-      if (env.DEBUG) console.error(error.stack);
       return json({ error: error.message || "Something went wrong.", details: error.details }, error.status || 400, cors);
     }
   },
@@ -77,7 +76,7 @@ async function data(request, env, cors) {
       env.DB.prepare("SELECT id, played_on, player, course, round_number, notes, revision FROM rounds ORDER BY played_on, player, round_number").all(),
       env.DB.prepare("SELECT round_id, hole, tees, score, par, length, handicap, fir, green FROM hole_scores").all(),
       env.DB.prepare("SELECT round_id, hole, note FROM hole_conditions").all(),
-      env.DB.prepare("SELECT name, payload FROM reference_data").all(),
+      env.DB.prepare("SELECT name, payload FROM reference_data WHERE name IN ('majors', 'course_rank', 'ideas')").all(),
       env.DB.prepare("SELECT course, tees, gender, rating, slope, par, yards, source FROM course_ratings").all(),
       env.DB.prepare("SELECT player, category FROM player_rating_categories").all(),
     ]);

@@ -69,3 +69,26 @@ dialog::backdrop { background: rgba(0,0,0,.45); }
 @media (max-width: 640px) { .hole-head h2 { font-size: 28px; } }
 
 .desk input.r-blank { background: var(--card); color: var(--ink); }
+.classic-head { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.classic-head .field { min-width: 180px; }
+.classic-total { display: flex; gap: 8px; align-items: baseline; }
+.classic-total b { font-size: 28px; }
+.check { display: inline-flex; gap: 6px; align-items: center; min-height: 44px; font-size: 14px; }
+.check input { width: 20px; height: 20px; }
+.keys { font-size: 13px; margin: 0; }
+.classic-wrap { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 12px; }
+.classic-nine { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 12px; }
+.nine-head, .nine-total { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 2px; }
+table.classic { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.classic th { font-size: 11px; color: var(--muted); font-weight: 600; text-align: center; padding: 4px; }
+table.classic td { text-align: center; padding: 3px 4px; border-top: 1px solid var(--line); }
+table.classic tr.cond td { background: var(--brand-soft); }
+.classic-score { width: 52px; height: 40px; text-align: center; font-size: 19px; font-weight: 700; border: 1px solid var(--line2); border-radius: 8px; }
+.classic-score.r-blank { background: var(--card); color: var(--ink); }
+table.classic input[type=checkbox] { width: 22px; height: 22px; }
+table.classic select { min-height: 36px; border-radius: 8px; border: 1px solid var(--line2); background: var(--card); }
+.cond-grid { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.cond-row { display: flex; gap: 8px; align-items: flex-end; flex-wrap: wrap; }
+.cond-row label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); }
+.cond-row input { width: 80px; min-height: 36px; border: 1px solid var(--line2); border-radius: 8px; padding: 4px 8px; background: var(--card); }
+.cond-row .grow { flex: 1 1 200px; } .cond-row .grow input { width: 100%; }

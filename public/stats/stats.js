@@ -1,4 +1,4 @@
-import { loadData, cachedData, expand, resultName, RESULTS, toPar, esc, fmtDate } from "./golf-data.js?v=20261118";
+import { loadData, cachedData, expand, resultName, RESULTS, toPar, esc, fmtDate } from "./golf-data.js?v=20261118b";
 
 const $ = s => document.querySelector(s);
 const COLORS = { eagle: "var(--eagle)", birdie: "var(--birdie)", par: "#7f9c8a", bogey: "#e9b679", double: "var(--double)", triple: "var(--triple)" };
