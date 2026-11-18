@@ -6,6 +6,7 @@ const ruleAlertOn = rule => rule.alertOn ?? (rule.priceDropOnly ? "standout" : "
 
 const endpoint = "https://golfwithjim-alerts.fbp-api-worker.workers.dev/preferences";
 try { sessionStorage.removeItem("golfwithjim-alert-access"); } catch {}
+let pendingCourse = new URLSearchParams(location.search).get("add");
 history.replaceState(null, "", location.pathname);
 const status = document.getElementById("status");
 const form = document.getElementById("preferences");
@@ -139,6 +140,13 @@ async function load({ refresh = false } = {}) {
     form.hidden = false;
     form.querySelector(".actions").prepend(status);
     message(data.savedAt ? `Last saved ${savedTime(data.savedAt)}. ${data.rules.length} alerts loaded.` : `${data.rules.length} saved alerts loaded.`);
+    if (pendingCourse && courses.includes(pendingCourse) && container.children.length < 20) {
+      addRule({ id: crypto.randomUUID(), alertOn: "standout", name: `${shortCourseName(pendingCourse)} deals`, course: pendingCourse, days: [0, 1, 2, 3, 4, 5, 6], from: "00:00", until: "23:59", minPrice: 0, maxPrice: null, players: 0, priceOption: defaultAlertPriceOption, enabled: true, startDate: "", endDate: "" });
+      container.lastElementChild.scrollIntoView({ block: "center" });
+      dirty = true;
+      message(`Added a standout-deal alert for ${shortCourseName(pendingCourse)}. Adjust it if you like, then tap Save changes.`);
+    }
+    pendingCourse = null;
     if (refresh) showRefresh("Alerts refreshed", { settled: true });
   } catch (error) {
     message(`Unable to ${refresh ? "refresh" : "load"} alerts. ${refresh ? "Current entries were kept. Pull down to retry." : "Pull down to try again."} ${error.message}`, true);

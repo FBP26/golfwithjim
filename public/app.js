@@ -226,20 +226,48 @@ function trackedCoursesHtml(filtered) {
   return `<section class="tracked-group"><div><p class="eyebrow">Also tracked</p><h3>Courses with no tee times</h3></div>${rows}</section>`;
 }
 
+// Standout deals: at least 25% and $10 under the course's comparable price (same rule as push alerts),
+// plus tee times whose own price just fell by $10 and 15% or more.
+const isStandout = teeTime => (teeTime.deal && teeTime.deal.percent >= 25 && teeTime.deal.savings >= 10)
+  || (teeTime.previousPrice - teeTime.allInPrice >= 10 && (teeTime.previousPrice - teeTime.allInPrice) / teeTime.previousPrice >= 0.15);
+
+function bestDealsHtml(filtered) {
+  const best = new Map();
+  for (const teeTime of filtered.filter(isStandout)) {
+    const key = `${teeTime.course}|${teeTime.date}|${teeTime.time}`;
+    if (!best.has(key) || teeTime.allInPrice < best.get(key).allInPrice) best.set(key, teeTime);
+  }
+  const savingsPercent = teeTime => teeTime.deal?.percent ?? Math.round((teeTime.previousPrice - teeTime.allInPrice) / teeTime.previousPrice * 100);
+  const deals = [...best.values()].toSorted((left, right) => savingsPercent(right) - savingsPercent(left) || left.date.localeCompare(right.date) || timeValue(left.time) - timeValue(right.time));
+  if (!deals.length) return "";
+  const rows = deals.slice(0, 8).map(teeTime => {
+    const usual = teeTime.deal ? `usually ${money(teeTime.deal.referencePrice)} · ${teeTime.deal.percent}% off` : `was ${exactMoney(teeTime.previousPrice)} · ${savingsPercent(teeTime)}% off`;
+    return `<a class="best-deal" href="${escapeHtml(dateUrl(teeTime.url, teeTime.date))}" target="_blank" rel="noopener"><span><strong>${escapeHtml(shortCourseName(teeTime.course))}</strong><small>${escapeHtml(shortDate(teeTime.date))} · ${escapeHtml(teeTime.time)} · ${teeTime.availablePlayers} spot${teeTime.availablePlayers === 1 ? "" : "s"}</small></span><span class="best-deal-price"><b>${exactMoney(teeTime.allInPrice)}</b><small>${escapeHtml(usual)}</small></span></a>`;
+  }).join("");
+  return `<details class="best-deals" open><summary><span>Best deals${state.date ? "" : " this week"}</span><small>${deals.length} standout tee time${deals.length === 1 ? "" : "s"}${deals.length > 8 ? " · top 8 shown" : ""}</small></summary>${rows}</details>`;
+}
+
+function staleCoursesHtml() {
+  if (!state.staleCourses?.length) return "";
+  const since = value => value ? new Date(value).toLocaleDateString([], { month: "short", day: "numeric" }) : "a while";
+  return `<p class="stale-courses" role="status">Not updating: ${state.staleCourses.map(item => `${escapeHtml(shortCourseName(item.course))} (since ${since(item.lastSuccessfulAt)})`).join(", ")}. Prices shown for these may be out of date.</p>`;
+}
+
 function renderResults() {
   let filtered = notificationId ? state.teeTimes : filterTeeTimes(state.teeTimes, state);
   if (!notificationId && state.course) filtered = filtered.filter(teeTime => teeTime.course.toLowerCase().includes(state.course));
   if (!notificationId && state.exactPrice != null) filtered = filtered.filter(teeTime => Math.abs(teeTime.allInPrice - state.exactPrice) < 0.001);
   elements.metrics.innerHTML = metricsHtml(summarizeResults(filtered));
+  const extras = notificationId ? "" : staleCoursesHtml() + bestDealsHtml(filtered);
   if (notificationId) elements.metrics.querySelectorAll("button").forEach(button => { button.disabled = true; });
   if (!filtered.length) {
-    elements.results.innerHTML = `<div class="empty">${notificationId ? "No tee times were saved with this notification." : "No tee times match these filters."}</div>${notificationId ? "" : trackedCoursesHtml(filtered)}`;
+    elements.results.innerHTML = `${extras}<div class="empty">${notificationId ? "No tee times were saved with this notification." : "No tee times match these filters."}</div>${notificationId ? "" : trackedCoursesHtml(filtered)}`;
     updateMapView();
     return;
   }
 
   const byDate = Map.groupBy(filtered, teeTime => teeTime.date);
-  elements.results.innerHTML = [...byDate].map(([date, dateTimes], dateIndex) => {
+  elements.results.innerHTML = extras + [...byDate].map(([date, dateTimes], dateIndex) => {
     const byCourse = Map.groupBy(dateTimes, teeTime => teeTime.course);
     const courseRows = sortCourseGroups(byCourse).map(([course, courseTimes]) => {
       const ordered = sortResults(courseTimes);
@@ -252,11 +280,11 @@ function renderResults() {
       const tiles = starts.map(start => `<div class="tee-time">${start.offers.map(teeTime => {
         const details = `${sourceDisplayLabel(teeTime.source)} · ${rateDisplayLabel(teeTime.rateName)}${teeTime.hotDeal ? " · Hot Deal" : ""}`;
         const badge = offerBadge(teeTime);
-        return `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener" title="${escapeHtml(details)}" aria-label="${escapeHtml(`${teeTime.time}, ${exactMoney(teeTime.allInPrice)}, ${teeTime.availablePlayers} spots. ${details}`)}"><strong>${escapeHtml(teeTime.time)}</strong><span class="tee-offer-price"><b>${golfPassPriceMarkup(teeTime)}</b></span><span class="tee-offer-spots">${teeTime.availablePlayers} spots</span>${badge ? `<span class="tee-offer-badge">${badge}</span>` : ""}</a>`;
+        return `<a class="tee-offer${teeTime.hotDeal ? " hot" : ""}" href="${escapeHtml(dateUrl(teeTime.url, date))}" target="_blank" rel="noopener" title="${escapeHtml(details)}" aria-label="${escapeHtml(`${teeTime.time}, ${exactMoney(teeTime.allInPrice)}, ${teeTime.availablePlayers} spots. ${details}`)}"><strong>${escapeHtml(teeTime.time)}</strong><span class="tee-offer-price"><b>${golfPassPriceMarkup(teeTime)}</b>${teeTime.previousPrice > teeTime.allInPrice ? `<s class="tee-offer-was" title="Price dropped">was ${exactMoney(teeTime.previousPrice)}</s>` : ""}</span><span class="tee-offer-spots">${teeTime.availablePlayers} spots</span>${badge ? `<span class="tee-offer-badge">${badge}</span>` : ""}</a>`;
       }).join("")}</div>`).join("");
       const inventorySummary = `${escapeHtml(starts.length === 1 ? starts[0].time : timeRange)} · ${starts.length} tee time${starts.length === 1 ? "" : "s"}`;
       const priceRange = lowestPrice === highestPrice ? money(lowestPrice) : `${money(lowestPrice)}–${money(highestPrice)}`;
-      return `<details class="course-row"${notificationId ? " open" : ""}><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div></div></details>`;
+      return `<details class="course-row"${notificationId ? " open" : ""}><summary><span class="course-name">${escapeHtml(shortCourseName(course))}</span><span class="course-distance">${first.distanceMiles} mi</span><strong class="course-price">${priceRange}</strong><small class="course-window">${inventorySummary}</small></summary><div class="course-times"><a class="booking-link" href="${escapeHtml(dateUrl(bestBookingTeeTime(courseTimes).url, date))}" target="_blank" rel="noopener">${escapeHtml(course)}</a>${verificationStatus(courseTimes) ? `<p class="map-popup-meta">${escapeHtml(verificationStatus(courseTimes))}</p>` : ""}<div class="tee-list">${tiles}</div>${notificationId ? "" : `<a class="course-alert-link" href="alerts.html?add=${encodeURIComponent(course)}">🔔 Alert me about deals at ${escapeHtml(shortCourseName(course))}</a>`}</div></details>`;
     }).join("");
     const count = groupTeeTimes(dateTimes).length;
     return `<details class="date-group"${notificationId || dateIndex === 0 ? " open" : ""}><summary class="date-heading"><span><strong>${escapeHtml(dateLabel(date))}</strong></span><span class="date-counts"><small>${byCourse.size} course${byCourse.size === 1 ? "" : "s"}</small><em>${count} tee time${count === 1 ? "" : "s"}</em></span></summary><div class="date-courses">${courseRows}</div></details>`;
@@ -558,6 +586,7 @@ async function loadInventory({ liveRefresh = false } = {}) {
     state.teeTimes = notificationId ? payload.teeTimes : applyPriceSnapshot(payload.teeTimes.filter(teeTime => isInventoryUsable(teeTime, { allowCached: true }) && isUpcoming(teeTime)), await pricing, payload.checkedAt, Date.now(), payload.sourceChecks || []);
     state.courses = payload.courses;
     state.sourceChecks = payload.sourceChecks;
+    state.staleCourses = payload.staleCourses || [];
     renderPriceOptions();
     resetFilters();
     renderDates();

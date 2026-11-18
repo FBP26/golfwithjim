@@ -1,5 +1,5 @@
 import { defaultAlerts, validateAlerts, matchesAlert, alertSummary, alertCourseGroups } from "../src/personal-alerts.js";
-import { pushConfigured, pushRequest, checkPushAlerts } from "./push.js";
+import { pushConfigured, pushRequest, checkPushAlerts, sendPush, inQuietHours } from "./push.js";
 import { signupEmailConfigured, flushSignupEmails } from "./signup-notifications.js";
 import { recordPrices, priceRequest } from "./prices.js";
 import { qualifyDeals } from "../src/price-history.js";
@@ -131,6 +131,23 @@ async function enqueue(env, subscriber, matches, checkedAt, welcome = false) {
   return deliverBatch(env, subscriber, batch);
 }
 
+// Tells the owner's devices when a course has not updated for over 24 hours (the site build lists these in
+// feed.staleCourses). Sent at most once a day for the same set of courses, never during quiet hours.
+export async function notifyStaleCourses(env, feed, now = new Date()) {
+  const stale = (feed.staleCourses || []).map(item => item.course).sort();
+  if (!stale.length || !pushConfigured(env) || inQuietHours(now)) return false;
+  await env.DB.prepare("CREATE TABLE IF NOT EXISTS ops_notices (key TEXT PRIMARY KEY, value TEXT NOT NULL, sent_at INTEGER NOT NULL)").run();
+  const previous = await env.DB.prepare("SELECT value, sent_at FROM ops_notices WHERE key = 'stale-courses'").first();
+  if (previous && previous.value === JSON.stringify(stale) && now.getTime() - previous.sent_at < 86400000) return false;
+  const devices = (await env.DB.prepare("SELECT push_devices.* FROM push_devices JOIN subscribers ON subscribers.id = push_devices.subscriber_id WHERE subscribers.email = ?").bind(env.PUBLIC_EDITOR_EMAIL || "").all()).results;
+  if (!devices.length) return false;
+  const names = stale.map(course => course.replace(/ (Golf|Country) (Club|Course).*$/, "")).join(", ");
+  const notice = { title: "Golf With Jim: courses not updating", body: `${names} ${stale.length === 1 ? "has" : "have"} not updated for over a day. Their prices may be out of date.`, tag: "golf-stale-courses", url: "./" };
+  for (const device of devices) await sendPush(env, JSON.parse(device.subscription), notice).catch(() => null);
+  await env.DB.prepare("INSERT INTO ops_notices (key, value, sent_at) VALUES ('stale-courses', ?, ?) ON CONFLICT(key) DO UPDATE SET value=excluded.value, sent_at=excluded.sent_at").bind(JSON.stringify(stale), now.getTime()).run();
+  return true;
+}
+
 export async function checkAlerts(env) {
   await flushSignupEmails(env);
   const emailEnabled = env.EMAIL_DELIVERY_ENABLED !== "false" && env.EMAIL_RELAY_SECRET && env.EMAIL_RELAY_URL;
@@ -163,7 +180,8 @@ export async function checkAlerts(env) {
     await env.DB.prepare("DELETE FROM link_requests WHERE created_at < ?").bind(Date.now() - 2 * 86400000).run();
     await env.DB.prepare("DELETE FROM sent_matches WHERE sent_at < ?").bind(Date.now() - 90 * 86400000).run();
     const push = await checkPushAlerts(env, feed, selectMatches);
-    return { configured: true, sent, pushSent: push.sent, pushFailed: push.failed };
+    const staleNotice = await notifyStaleCourses(env, feed).catch(error => { console.error("Stale-course notice failed", error.message); return false; });
+    return { configured: true, sent, pushSent: push.sent, pushFailed: push.failed, staleNotice };
   } finally {
     await env.DB.prepare("DELETE FROM job_lock WHERE id = 1 AND owner = ?").bind(owner).run();
   }

@@ -34,6 +34,8 @@ The generated feed records `checkedAt` plus a `sourceChecks` entry for every col
 
 The public Refresh button runs the same workflow on demand.
 
+The published `api/tee-times.json` is compacted by `src/compact.js` (default-valued fields dropped), lists `staleCourses` (courses whose checks have failed for over 24 hours, shown as a notice on the site and pushed to the owner once a day), and carries `previousPrice` on tee times that got cheaper since the previous refresh (kept 48 hours). The list view opens with **Best deals**: standout deals (25%+ and $10 off) and big price drops ($10 and 15%+). Each course row links to the alerts page with a prefilled standout-deal alert for that course. Chronogolf (Sycamore) quotes the first and last start of each hour and reuses the price for the starts in between when they match.
+
 ## Notifications
 
 Each alert rule chooses what it fires on: **Standout deals only** (the computed deal is at least 25% and $10 below the course's comparable price), **Any deal** (15%+), or **Every matching tee time**. Older rules saved with `priceDropOnly` are treated as Standout. Push pacing: no pushes 9 PM–7 AM Eastern, at most one push per device every two hours (matches wait and are bundled), and each tee time is pushed once unless its price falls at least $5 below the price already pushed.

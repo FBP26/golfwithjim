@@ -157,6 +157,30 @@ function replaceCoursesInPlace(existingItems, replacementItems, replacedCourses,
   return result;
 }
 
+// Remembers when a tee time got cheaper: if the same start (course, date, time, source, rate) was listed
+// at a higher price in the previous feed, keep that price as previousPrice. A drop stays visible for
+// 48 hours unless the price changes again; a price that rises back clears it.
+const priceKey = teeTime => JSON.stringify([teeTime.course, teeTime.date, teeTime.time, teeTime.source, teeTime.rateName]);
+export function trackPriceDrops(baseTeeTimes, collectedTeeTimes, checkedAt) {
+  const previous = new Map();
+  for (const teeTime of baseTeeTimes) {
+    const key = priceKey(teeTime);
+    if (!previous.has(key) || teeTime.allInPrice < previous.get(key).allInPrice) previous.set(key, teeTime);
+  }
+  const checked = Date.parse(checkedAt);
+  return collectedTeeTimes.map(teeTime => {
+    const { previousPrice, priceDroppedAt, ...current } = teeTime;
+    const before = previous.get(priceKey(teeTime));
+    if (!before || !(before.allInPrice > 0)) return current;
+    if (before.allInPrice - current.allInPrice >= 1) return { ...current, previousPrice: before.allInPrice, priceDroppedAt: checkedAt };
+    const recent = Date.parse(before.priceDroppedAt);
+    if (before.allInPrice === current.allInPrice && before.previousPrice > current.allInPrice && checked - recent < 48 * 60 * 60_000) {
+      return { ...current, previousPrice: before.previousPrice, priceDroppedAt: before.priceDroppedAt };
+    }
+    return current;
+  });
+}
+
 export function mergeCollectedInventory(baseFeed, collected, { partial = false } = {}) {
   const baseTeeTimes = Array.isArray(baseFeed) ? baseFeed : baseFeed.teeTimes || [];
   const replacedCourses = new Set(collected.sources);
@@ -180,7 +204,7 @@ export function mergeCollectedInventory(baseFeed, collected, { partial = false }
     const verifiedAt = teeTime.verifiedAt || previous?.lastSuccessfulAt || (!previous?.error ? previous?.checkedAt : undefined);
     return stamp({ ...teeTime, stale: true }, verifiedAt);
   });
-  const collectedTeeTimes = collected.teeTimes.map(teeTime => stamp(teeTime, collected.checkedAt));
+  const collectedTeeTimes = trackPriceDrops(baseTeeTimes, collected.teeTimes, collected.checkedAt).map(teeTime => stamp(teeTime, collected.checkedAt));
   return {
     checkedAt: collected.checkedAt,
     collection: "saved coverage with complete starts from configured live collectors",

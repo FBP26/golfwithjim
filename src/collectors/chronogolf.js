@@ -126,17 +126,33 @@ function displayTime(value) {
 export async function collectChronogolfDay({ courseUuid, affiliationTypeId, date, course, distanceMiles, url, fetchImpl = fetch }) {
   const listed = (await listTeeTimes({ courseUuid, date, fetchImpl }))
     .filter(teeTime => Number(teeTime.max_player_size) >= 1 && teeTime.course?.bookable_holes?.includes(18));
+  // Quoting every start is slow (one reservation-options POST each). Within an hour, starts with the same
+  // party size almost always share a price, so quote the first and last start of each hour block; when they
+  // match, reuse that price for the starts in between, otherwise quote every start in the block.
   const quoted = [];
   const quoteErrors = [];
-  for (let index = 0; index < listed.length; index += 2) {
-    quoted.push(...await Promise.all(listed.slice(index, index + 2).map(async teeTime => ({
-      teeTime,
-      quote: await quoteTeeTime(teeTime, affiliationTypeId, fetchImpl).catch(error => {
-        quoteErrors.push(error);
-        return null;
-      }),
-    }))));
+  const quote = teeTime => quoteTeeTime(teeTime, affiliationTypeId, fetchImpl).catch(error => { quoteErrors.push(error); return null; });
+  const blocks = Map.groupBy(listed, teeTime => `${String(teeTime.start_time).slice(0, 2)}|${Math.min(2, Number(teeTime.max_player_size))}`);
+  for (const block of blocks.values()) {
+    if (block.length <= 2 || !affiliationTypeId) {
+      for (let index = 0; index < block.length; index += 2) {
+        quoted.push(...await Promise.all(block.slice(index, index + 2).map(async teeTime => ({ teeTime, quote: await quote(teeTime) }))));
+      }
+      continue;
+    }
+    const [first, last] = await Promise.all([quote(block[0]), quote(block.at(-1))]);
+    if (first && last && first.price === last.price) {
+      quoted.push({ teeTime: block[0], quote: first }, ...block.slice(1, -1).map(teeTime => ({ teeTime, quote: { detail: teeTime, price: first.price } })), { teeTime: block.at(-1), quote: last });
+      continue;
+    }
+    quoted.push({ teeTime: block[0], quote: first });
+    const middle = block.slice(1, -1);
+    for (let index = 0; index < middle.length; index += 2) {
+      quoted.push(...await Promise.all(middle.slice(index, index + 2).map(async teeTime => ({ teeTime, quote: await quote(teeTime) }))));
+    }
+    quoted.push({ teeTime: block.at(-1), quote: last });
   }
+  quoted.sort((left, right) => String(left.teeTime.start_time).localeCompare(String(right.teeTime.start_time)));
   if (quoteErrors.length && !quoted.some(item => item.quote)) throw quoteErrors[0];
   return quoted.filter(item => item.quote).map(({ teeTime, quote }) => ({
     id: `chronogolf-${teeTime.id}`,

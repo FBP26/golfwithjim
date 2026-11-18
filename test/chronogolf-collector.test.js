@@ -139,3 +139,21 @@ test("keeps successful Chronogolf quotes when another quote is blocked", async (
   assert.equal(result[0].id, "chronogolf-2");
   assert.equal(result[0].allInPrice, 45);
 });
+test("reuses an hour's price when the first and last starts quote the same, and quotes everything when they differ", async () => {
+  const run = async prices => {
+    let quotes = 0;
+    const times = ["08:00", "08:10", "08:20", "08:30"].map((start_time, index) => ({ id: index + 1, uuid: `u${index}`, start_time, max_player_size: 4, course: { bookable_holes: [18] } }));
+    const fetchImpl = async (url, options = {}) => {
+      if (String(url).includes("reservations/options")) {
+        const id = Number(JSON.parse(options.body).teetime_id);
+        quotes++;
+        return response([{ holes: 18, invoice: { total: prices[id - 1] * 2 } }]);
+      }
+      return response({ teetimes: times }, { total: "4" });
+    };
+    const result = await collectChronogolfDay({ courseUuid: "c", affiliationTypeId: "1", date: "2026-11-21", course: "Test", distanceMiles: 1, url: "https://example.com", fetchImpl });
+    return { quotes, prices: result.map(item => item.allInPrice) };
+  };
+  assert.deepEqual(await run([50, 50, 50, 50]), { quotes: 2, prices: [50, 50, 50, 50] });
+  assert.deepEqual(await run([50, 45, 45, 40]), { quotes: 4, prices: [50, 45, 45, 40] });
+});
