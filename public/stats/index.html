@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Golf Stats</title>
+<meta name="description" content="Scores, courses and records for Jim's golf group since 2017.">
+<meta name="theme-color" content="#15392a">
+<link rel="icon" href="../golf-icon.svg">
+<link rel="stylesheet" href="golf.css?v=20261118">
+<link rel="stylesheet" href="stats.css?v=20261118">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+</head>
+<body>
+<header class="top">
+  <h1>Golf Stats</h1>
+  <nav aria-label="Golf Stats"><a href="./" aria-current="page">Stats</a><a href="enter.html">Enter scores</a><a href="../">Tee times</a></nav>
+</header>
+<main>
+  <section class="filters card" aria-label="Filters">
+    <label class="field">Golfer<select id="f-player"></select></label>
+    <label class="field">Year<select id="f-year"></select></label>
+    <label class="field">Course<select id="f-course"></select></label>
+    <label class="field">Last<select id="f-window"><option value="">All time</option><option value="30">30 days</option><option value="182">6 months</option><option value="365">12 months</option></select></label>
+    <p id="data-note" class="muted"></p>
+  </section>
+  <div class="tabs view-tabs" role="tablist" aria-label="Views"></div>
+  <section id="view" aria-live="polite"><p class="muted">Loading every round since 2017…</p></section>
+</main>
+<div id="tip" class="tip" role="tooltip" hidden></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script type="module" src="stats.js?v=20261118"></script>
+</body>
+</html>

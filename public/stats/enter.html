@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Enter Scores · Golf Stats</title>
+<meta name="theme-color" content="#15392a">
+<link rel="icon" href="../golf-icon.svg">
+<link rel="stylesheet" href="golf.css?v=20261118">
+<link rel="stylesheet" href="enter.css?v=20261118">
+</head>
+<body>
+<header class="top">
+  <h1>Enter scores</h1>
+  <nav aria-label="Golf Stats"><a href="./">Stats</a><a href="enter.html" aria-current="page">Enter scores</a><a href="../">Tee times</a></nav>
+</header>
+<main>
+  <section class="card setup-summary" id="setup-summary" hidden>
+    <div><b id="setup-line"></b><div class="muted" id="setup-sub"></div></div>
+    <button class="btn" id="edit-setup" type="button">Edit</button>
+  </section>
+  <section class="card setup" id="setup" aria-labelledby="setup-title">
+    <h2 id="setup-title" class="sr">Round details</h2>
+    <div class="setup-grid">
+      <label class="field">Date<input id="date" type="date"></label>
+      <label class="field">Course<input id="course" list="course-list" autocomplete="off" placeholder="Start typing a course"></label>
+      <label class="field">Tees<select id="tees"></select></label>
+      <label class="field">Holes<select id="plan"><option value="18">All 18</option><option value="front">Front 9</option><option value="back">Back 9</option></select></label>
+    </div>
+    <datalist id="course-list"></datalist>
+    <datalist id="player-list"></datalist>
+    <div class="golfer-add">
+      <label class="field grow">Golfers<input id="golfer-input" list="player-list" autocomplete="off" placeholder="Type a name, press Enter (or paste several, comma separated)"></label>
+      <button class="btn" id="add-golfer" type="button">Add</button>
+      <button class="btn" id="add-usual" type="button" title="Adds the golfers you played with most in the last year">Usual group</button>
+    </div>
+    <div id="golfers" class="golfer-list" aria-live="polite"></div>
+    <div class="row setup-actions"><button class="btn primary" id="done-setup" type="button">Done — start entering</button><button class="btn" id="new-outing" type="button">Start a new outing</button></div>
+  </section>
+
+  <div class="tabs mode-tabs" role="tablist" aria-label="How to enter">
+    <button role="tab" data-mode="A" type="button">A · One golfer</button>
+    <button role="tab" data-mode="B" type="button">B · Group by hole</button>
+    <button role="tab" data-mode="C" type="button">C · Phone card</button>
+    <button role="tab" data-mode="D" type="button">D · Big day: scan or type</button>
+    <button role="tab" data-mode="E" type="button">E · Computer grid</button>
+  </div>
+
+  <section id="mode" class="mode" aria-live="polite"></section>
+
+  <section class="save-bar">
+    <div id="summary" class="summary"></div>
+    <button class="btn primary" id="save" type="button">Save</button>
+  </section>
+  <p id="status" class="muted" role="status"></p>
+
+  <details class="card more">
+    <summary>Add a course or new tees</summary>
+    <form id="course-form" class="course-form">
+      <div class="setup-grid">
+        <label class="field">Course name<input name="course" required></label>
+        <label class="field">Tees<input name="tees" required placeholder="White"></label>
+        <label class="field">Holes<select name="count"><option>18</option><option>9</option></select></label>
+      </div>
+      <p class="muted">One line per hole: <b>par yards handicap</b>, for example <code>4 356 9</code>. Yards and handicap are optional.</p>
+      <textarea name="holes" rows="9" placeholder="4 340 15&#10;4 354 7&#10;3 137 17"></textarea>
+      <div class="row"><button class="btn primary" type="submit">Save course</button><span id="course-status" class="muted" role="status"></span></div>
+    </form>
+  </details>
+</main>
+
+<dialog id="key-dialog">
+  <form method="dialog" class="key-form">
+    <h2>Score-entry passcode</h2>
+    <p class="muted">Only you can save scores. Enter the passcode once on this device.</p>
+    <label class="field">Passcode<input id="key-input" type="password" autocomplete="current-password" required></label>
+    <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
+  </form>
+</dialog>
+<script type="module" src="enter.js?v=20261118"></script>
+</body>
+</html>

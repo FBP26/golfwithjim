@@ -1,0 +1,14 @@
+name = "golf-stats"
+main = "worker.js"
+compatibility_date = "2026-09-26"
+
+[vars]
+ALLOWED_ORIGINS = "https://fbp26.github.io,http://localhost:8787,http://127.0.0.1:8787"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "golf-stats"
+database_id = "ec6a7e1f-4e5c-4a84-993a-bad599ca45ff"
+
+[ai]
+binding = "AI"
