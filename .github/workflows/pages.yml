@@ -88,6 +88,17 @@ jobs:
         run: sleep 60
       - name: Deploy GitHub Pages
         id: deployment
+        # GitHub Pages occasionally answers "Deployment failed, try again later"; one retry below
+        # covers that instead of emailing a failed run.
+        continue-on-error: true
         uses: actions/deploy-pages@v4
         with:
-          timeout: 1200000
+          timeout: 600000
+      - name: Wait before retrying Pages deployment
+        if: ${{ steps.deployment.outcome == 'failure' }}
+        run: sleep 90
+      - name: Retry GitHub Pages deployment
+        if: ${{ steps.deployment.outcome == 'failure' }}
+        uses: actions/deploy-pages@v4
+        with:
+          timeout: 600000
