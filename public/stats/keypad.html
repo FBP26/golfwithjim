@@ -6,19 +6,25 @@
 <title>Score Keypad · Golf Stats</title>
 <meta name="theme-color" content="#15392a">
 <link rel="icon" href="../golf-icon.svg">
-<link rel="stylesheet" href="golf.css?v=20261120n">
-<link rel="stylesheet" href="keypad.css?v=20261120n">
+<link rel="stylesheet" href="golf.css?v=20261120p">
+<link rel="stylesheet" href="keypad.css?v=20261120p">
 </head>
 <body>
 <div class="kp" id="app">
   <section id="setup" class="screen" aria-labelledby="setup-title" hidden>
-    <header class="kp-top">
-      <h1 id="setup-title" class="sr">New scorecard</h1>
-      <nav aria-label="Golf Stats"><a href="./">Stats</a><a href="enter.html">Other entry modes</a></nav>
-    </header>
+    <h1 id="setup-title" class="sr">New scorecard</h1>
     <div class="kp-body">
-      <label class="lab" for="date">Date</label>
-      <input id="date" type="date" class="inp date">
+      <div class="toprow">
+        <div>
+          <span class="lab" id="date-lab">Date</span>
+          <label class="datebtn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+            <span id="date-text"></span>
+            <input id="date" type="date" aria-labelledby="date-lab">
+          </label>
+        </div>
+        <a class="homelink" href="../">← Golf With Jim</a>
+      </div>
 
       <label class="lab" for="course-more">Course</label>
       <select id="course-more" class="inp"></select>
@@ -34,7 +40,6 @@
         <input id="player-add" class="inp" placeholder="Add a player" autocomplete="off" autocorrect="off" spellcheck="false" autocapitalize="words" aria-describedby="player-sugg">
         <button type="button" class="btn" id="player-add-btn">Add</button>
       </div>
-      <p class="hint">No need to pick 9 or 18. Start on any hole and enter what each player played; holes left blank count as not played. Scores save as you go.</p>
       <p class="hint" id="setup-note"></p>
     </div>
     <footer class="kp-foot"><button type="button" class="btn primary big" id="start">Start</button></footer>
@@ -80,6 +85,6 @@
     <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
   </form>
 </dialog>
-<script type="module" src="keypad.js?v=20261120n"></script>
+<script type="module" src="keypad.js?v=20261120p"></script>
 </body>
 </html>

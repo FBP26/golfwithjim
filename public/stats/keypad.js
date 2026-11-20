@@ -43,13 +43,14 @@ function defaultTees(course) {
   const mine = (data?.rounds || []).filter((r) => r.course === course && r.player === "Jim").at(-1)?.holes[0]?.tees;
   return tees.includes(mine) ? mine : tees.includes("White") ? "White" : tees[0] || "";
 }
+// Top 20 players by holes played over the last 3 years, most holes first.
 function usualPlayers() {
   if (!data) return ["Jim"];
-  const cutoff = new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10);
-  const days = new Set(data.rounds.filter((r) => r.player === "Jim" && r.date >= cutoff).map((r) => r.date + "|" + r.course));
+  const c = new Date(); c.setFullYear(c.getFullYear() - 3); const cutoff = c.toISOString().slice(0, 10);
   const counts = new Map();
-  for (const r of data.rounds) if (r.player !== "Jim" && days.has(r.date + "|" + r.course)) counts.set(r.player, (counts.get(r.player) || 0) + 1);
-  return ["Jim", ...[...counts].sort((a, b) => b[1] - a[1]).slice(0, 9).map(([p]) => p)];
+  for (const r of data.rounds) if (r.date >= cutoff) counts.set(r.player, (counts.get(r.player) || 0) + (r.holes?.length || 0));
+  const top = [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 20).map(([p]) => p);
+  return top.length ? top : ["Jim"];
 }
 
 // ---------- current golfer / round ----------
@@ -70,6 +71,7 @@ function loadToggles() { const e = round()?.scores[d.cur.hole]; ui.f = !!(e && e
 function renderSetup() {
   $("#setup").hidden = false; $("#card").hidden = true;
   $("#date").value = d.date; $("#date").max = todayIso();
+  $("#date-text").textContent = new Date(d.date + "T12:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
   const courses = recentCourses();
   $("#course-more").innerHTML = (d.course ? "" : `<option value="">Pick a course…</option>`) + courses.slice().sort((a, b) => a.localeCompare(b)).map((c) => `<option value="${esc(c)}" ${c === d.course ? "selected" : ""}>${esc(c)}</option>`).join("");
   const tees = teesFor(d.course).sort((a, b) => teeYards(d.course, b) - teeYards(d.course, a) || a.localeCompare(b));
