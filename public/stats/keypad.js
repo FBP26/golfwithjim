@@ -14,25 +14,20 @@ const uuid = () => (crypto.randomUUID ? crypto.randomUUID() : "10000000-1000-400
 const todayIso = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York" }).format(new Date());
 const NAMES = { "-3": "Albatross", "-2": "Eagle", "-1": "Birdie", 0: "Par", 1: "Bogey", 2: "Double", 3: "Triple" };
 const RCLASS = (d) => (d <= -2 ? "r-eagle" : d === -1 ? "r-birdie" : d === 0 ? "r-par" : d === 1 ? "r-bogey" : d === 2 ? "r-double" : "r-triple");
-const PLANS = [{ id: "18", label: "18 holes" }, { id: "front", label: "Front 9" }, { id: "back", label: "Back 9" }];
 
 let data = null;
 let d = freshDraft();
 const ui = { f: false, g: 0, toast: "", toastOk: false };
 
-function freshDraft() { return { date: todayIso(), course: "", tees: "", plan: "18", players: ["Jim"], started: false, cur: { p: 0, r: 0, hole: 1 }, golfers: {} }; }
+function freshDraft() { return { date: todayIso(), course: "", tees: "", players: ["Jim"], started: false, cur: { p: 0, r: 0, hole: 1 }, golfers: {} }; }
 function persist() { store.set(DRAFT_KEY, JSON.stringify(d)); }
 
 // ---------- course data ----------
 const layout = (course = d.course, tees = d.tees) => (data?.layouts.get(course)?.get(tees) || []).slice().sort((a, b) => a.hole - b.hole);
 const teesFor = (course) => [...(data?.layouts.get(course)?.keys() || [])];
 const meta = (hole) => layout().find((h) => h.hole === hole) || { hole, par: 4 };
-const planHoles = (plan) => {
-  const all = layout().map((h) => h.hole);
-  if (plan === "front") return all.filter((h) => h <= 9);
-  if (plan === "back") return all.filter((h) => h >= 10);
-  return all;
-};
+const allHoles = () => layout().map((h) => h.hole);
+const teeYards = (course, t) => layout(course, t).reduce((a, h) => a + (h.yards || 0), 0);
 function rating(course, tees, player) {
   const gender = data?.ratingCategories?.[player] === "W" ? "W" : "M";
   const list = data?.ratings || [];
@@ -76,37 +71,49 @@ function renderSetup() {
   $("#setup").hidden = false; $("#card").hidden = true;
   $("#date").value = d.date; $("#date").max = todayIso();
   const courses = recentCourses();
-  const top = courses.slice(0, 6);
-  if (d.course && !top.includes(d.course)) top.unshift(d.course);
-  $("#course-chips").innerHTML = top.map((c) => `<button type="button" data-course="${esc(c)}" aria-pressed="${c === d.course}">${esc(c)}</button>`).join("");
-  $("#course-more").innerHTML = `<option value="">Another course…</option>` + courses.slice().sort((a, b) => a.localeCompare(b)).map((c) => `<option value="${esc(c)}" ${c === d.course ? "selected" : ""}>${esc(c)}</option>`).join("");
-  const tees = teesFor(d.course);
+  $("#course-more").innerHTML = (d.course ? "" : `<option value="">Pick a course…</option>`) + courses.slice().sort((a, b) => a.localeCompare(b)).map((c) => `<option value="${esc(c)}" ${c === d.course ? "selected" : ""}>${esc(c)}</option>`).join("");
+  const tees = teesFor(d.course).sort((a, b) => teeYards(d.course, b) - teeYards(d.course, a) || a.localeCompare(b));
   $("#tee-chips").innerHTML = tees.length ? tees.map((t) => {
-    const holes = layout(d.course, t); const yds = holes.reduce((a, h) => a + (h.yards || 0), 0); const rt = rating(d.course, t, "Jim");
+    const holes = layout(d.course, t); const yds = teeYards(d.course, t); const rt = rating(d.course, t, "Jim");
     return `<button type="button" data-tee="${esc(t)}" aria-pressed="${t === d.tees}"><b>${esc(t)}</b><small>${yds ? yds.toLocaleString("en-US") + " yds" : holes.length + " holes"}</small><small>${rt ? rt.rating + " / " + rt.slope : "no rating"}</small></button>`;
   }).join("") : `<p class="hint">Pick a course first.</p>`;
   const usual = usualPlayers();
   const chips = [...new Set([...usual, ...d.players])];
   $("#player-chips").innerHTML = chips.map((p) => `<button type="button" data-player="${esc(p)}" aria-pressed="${d.players.includes(p)}">${d.players.includes(p) ? "✓ " : ""}${esc(p)}</button>`).join("");
   $("#player-count").textContent = `(${d.players.length})`;
-  $("#player-list").innerHTML = (data?.players || []).map((p) => `<option value="${esc(p)}">`).join("");
-  const n = planHoles("18").length;
-  $("#holes-chips").innerHTML = PLANS.filter((p) => n > 9 || p.id !== "back").map((p) => `<button type="button" data-plan="${p.id}" aria-pressed="${p.id === d.plan}">${p.label}</button>`).join("");
-  const ready = d.course && d.tees && d.players.length && planHoles(d.plan).length;
+  renderSugg();
+  const ready = d.course && d.tees && d.players.length && allHoles().length;
   $("#start").disabled = !ready;
   $("#start").textContent = ready ? `Start · ${d.players.length} player${d.players.length === 1 ? "" : "s"} · ${d.course}` : !d.course ? "Pick a course" : !d.players.length ? "Add a player" : "Pick tees";
   $("#setup-note").textContent = d.date > todayIso() ? "That date is in the future." : "";
 }
 $("#date").addEventListener("change", (e) => { d.date = e.target.value || todayIso(); persist(); renderSetup(); });
-$("#course-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-course]"); if (!b) return; setCourse(b.dataset.course); });
 $("#course-more").addEventListener("change", (e) => { if (e.target.value) setCourse(e.target.value); });
-function setCourse(c) { d.course = c; d.tees = defaultTees(c); if (!planHoles(d.plan).length) d.plan = "18"; persist(); renderSetup(); }
+function setCourse(c) { d.course = c; d.tees = defaultTees(c); persist(); renderSetup(); }
 $("#tee-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-tee]"); if (!b) return; d.tees = b.dataset.tee; persist(); renderSetup(); });
 $("#player-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-player]"); if (!b) return; const p = b.dataset.player; d.players = d.players.includes(p) ? d.players.filter((x) => x !== p) : [...d.players, p]; persist(); renderSetup(); });
-$("#holes-chips").addEventListener("click", (e) => { const b = e.target.closest("[data-plan]"); if (!b) return; d.plan = b.dataset.plan; persist(); renderSetup(); });
+// Suggestions while typing a name: known players who start with (then contain) what's typed, not already on the card.
+function suggestions() {
+  const q = $("#player-add").value.trim().toLowerCase().replace(/\s+/g, " ");
+  if (!q) return [];
+  const pool = (data?.players || []).filter((p) => !d.players.some((x) => x.toLowerCase() === p.toLowerCase()));
+  const starts = pool.filter((p) => p.toLowerCase().startsWith(q) || p.toLowerCase().split(" ").some((w) => w.startsWith(q)));
+  const has = pool.filter((p) => !starts.includes(p) && p.toLowerCase().includes(q));
+  return [...starts.sort((a, b) => a.localeCompare(b)), ...has].slice(0, 6);
+}
+function renderSugg() {
+  const q = $("#player-add").value.trim();
+  const list = suggestions();
+  const hi = (p) => { const i = p.toLowerCase().indexOf(q.toLowerCase()); return i < 0 ? esc(p) : esc(p.slice(0, i)) + "<b>" + esc(p.slice(i, i + q.length)) + "</b>" + esc(p.slice(i + q.length)); };
+  $("#player-sugg").innerHTML = list.map((p) => `<button type="button" data-sugg="${esc(p)}">+ ${hi(p)}</button>`).join("");
+}
+$("#player-add").addEventListener("input", renderSugg);
+$("#player-sugg").addEventListener("click", (e) => { const b = e.target.closest("[data-sugg]"); if (!b) return; $("#player-add").value = b.dataset.sugg; addPlayer(); $("#player-add").focus(); });
 function addPlayer() {
-  const raw = $("#player-add").value.trim().replace(/\s+/g, " ");
+  let raw = $("#player-add").value.trim().replace(/\s+/g, " ");
   if (!raw) return;
+  const s = suggestions();
+  if (s.length === 1 && !(data?.players || []).some((p) => p.toLowerCase() === raw.toLowerCase())) raw = s[0];
   const known = (data?.players || []).find((p) => p.toLowerCase() === raw.toLowerCase());
   const name = known || raw;
   if (!d.players.some((p) => p.toLowerCase() === name.toLowerCase())) d.players.push(name);
@@ -116,7 +123,7 @@ $("#player-add-btn").addEventListener("click", addPlayer);
 $("#player-add").addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); addPlayer(); } });
 function existingRounds(name) { return (data?.rounds || []).filter((r) => r.date === d.date && r.course === d.course && r.player.toLowerCase() === name.toLowerCase()).map((r) => r.roundNumber); }
 $("#start").addEventListener("click", () => {
-  const holes = planHoles(d.plan);
+  const holes = allHoles();
   for (const name of d.players) {
     if (d.golfers[name]?.rounds?.length) continue;
     const base = Math.max(0, ...existingRounds(name));
@@ -149,7 +156,7 @@ function render() {
   }).join("");
   renderNines(r);
   const tl = $("#toast-line"); tl.textContent = ui.toast || "Light up Fairway, Green or GG (optional), then tap the score."; tl.classList.toggle("ok", ui.toastOk);
-  const done = isDone(r) && !ui.editing;
+  const done = (r.finished || isDone(r)) && !ui.editing;
   $("#keys").hidden = done; $("#review").hidden = !done;
   if (done) renderReview(r); else renderKeys(r);
 }
@@ -163,8 +170,8 @@ function renderNines(r) {
     let sub = 0, any = false, miss = false;
     const cells = pad(holes.map((h) => {
       const e = r.scores[h], par = meta(h).par, live = r.holes.includes(h);
-      const cur = h === d.cur.hole && !(isDone(r) && !ui.editing);
-      if (live && !e) miss = true;
+      const cur = h === d.cur.hole && !((r.finished || isDone(r)) && !ui.editing);
+      if (live && !e && r.holes.some((x) => holes.includes(x) && x !== h && r.scores[x] && !r.scores[x].skip)) miss = true;
       if (e?.skip) { miss = true; return `<button type="button" class="s skip ${cur ? "cur" : ""}" data-hole="${h}" aria-label="Hole ${h}, skipped"><b>–</b><small>skip</small></button>`; }
       if (e) { sub += e.v; any = true; return `<button type="button" class="s ${RCLASS(e.v - par)} ${cur ? "cur" : ""}" data-hole="${h}" aria-label="Hole ${h}, ${e.v}"><b>${e.v}</b><small>${marks(e)}</small></button>`; }
       return `<button type="button" class="s ${live ? "" : "off"} ${cur ? "cur" : ""}" data-hole="${live ? h : ""}" aria-label="Hole ${h}" ${live ? "" : "disabled"}><b></b><small></small></button>`;
@@ -207,7 +214,11 @@ function renderKeys(r) {
   $("#albatross").textContent = alb >= 1 ? `${alb === 1 ? "Ace" : "Albatross"} ${alb}` : "—";
   $("#albatross").dataset.score = alb >= 1 ? alb : "";
   $("#back").disabled = r.holes.indexOf(hole) <= 0;
+  const n = Object.values(r.scores).filter((e) => e && !e.skip).length;
+  $("#finish").disabled = !n;
+  $("#finish").textContent = r.finished ? "Review" : "Finish";
 }
+$("#finish").addEventListener("click", () => { const r = round(); r.finished = true; ui.editing = false; ui.toast = ""; persist(); render(); scrollTo(0, 0); });
 $("#toggles").addEventListener("click", (e) => {
   const b = e.target.closest("[data-tog]"); if (!b || b.disabled) return;
   const k = b.dataset.tog;
@@ -218,7 +229,9 @@ $("#toggles").addEventListener("click", (e) => {
 });
 function saveHole(rec) {
   const r = round(), hole = d.cur.hole, par = meta(hole).par;
+  const wasEmpty = !r.scores[hole];
   r.scores[hole] = rec; r.saved = false;
+  if (wasEmpty) { ui.editing = false; r.finished = false; } // a new hole means still playing: keep moving forward
   ui.toastOk = true;
   ui.toast = rec.skip ? `Hole ${hole} skipped.` : `Hole ${hole}: ${(rec.v === 1 ? "Ace" : NAMES[rec.v - par]) || rec.v} ${rec.v}${marks(rec) ? " · " + marks(rec) : ""}. Tap it above to change.`;
   const nx = ui.editing ? null : nextOpen(r, hole);
@@ -226,7 +239,7 @@ function saveHole(rec) {
   if (nx != null) d.cur.hole = nx; else if (!isDone(r)) d.cur.hole = r.holes.find((h) => !r.scores[h]);
   ui.f = false; ui.g = 0;
   persist(); loadToggles(); render();
-  if (isDone(r)) scrollTo(0, 0);
+  if (isDone(r) || r.finished) scrollTo(0, 0);
 }
 $("#results").addEventListener("click", (e) => { const b = e.target.closest("[data-score]"); if (!b) return; saveHole({ v: Number(b.dataset.score), f: meta(d.cur.hole).par === 3 ? false : ui.f, g: ui.g }); });
 $("#albatross").addEventListener("click", (e) => { const v = Number(e.target.closest("button").dataset.score); if (v) saveHole({ v, f: ui.f, g: ui.g }); });
@@ -248,7 +261,13 @@ function checksFor(r) {
   const out = [];
   for (const h of r.holes) {
     const e = r.scores[h], p = meta(h).par;
-    if (!e) { out.push({ h, text: `Hole ${h}: no score` }); continue; }
+    if (!e) {
+      const nine = r.holes.filter((x) => (x <= 9) === (h <= 9));
+      const playedNine = nine.filter((x) => r.scores[x] && !r.scores[x].skip);
+      const gap = playedNine.some((x) => x < h) && playedNine.some((x) => x > h);
+      if (gap || playedNine.length >= 6) out.push({ h, text: `Hole ${h}: no score, but you played holes around it` });
+      continue;
+    }
     if (e.skip) { out.push({ h, text: `Hole ${h}: skipped (won't be saved)` }); continue; }
     const putts = e.g === 2 ? e.v - (p - 3) : e.g === 1 ? e.v - (p - 2) : null;
     if (putts != null && putts >= 5) out.push({ h, text: `Hole ${h}: ${e.g === 2 ? "GG" : "Green"} then ${e.v} on a par ${p} means ${putts} putts. Right?` });
@@ -260,7 +279,7 @@ function renderReview(r) {
   const t = roundTotals(r);
   let fir = 0, firOf = 0, gir = 0, gg = 0;
   for (const h of r.holes) { const e = r.scores[h]; if (!e || e.skip) continue; if (meta(h).par !== 3) { firOf++; if (e.f) fir++; } if (e.g) gir++; if (e.g === 2) gg++; }
-  $("#sum").innerHTML = [[t.s, "Score"], [t.n ? toPar(t.s - t.p) : "–", "To par"], [fir + "/" + firOf, "Fairways"], [gir + (gg ? " · " + gg + "GG" : ""), "Greens"]].map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("");
+  $("#sum").innerHTML = [[t.s, t.n === r.holes.length ? "Score" : `Score · ${t.n} holes`], [t.n ? toPar(t.s - t.p) : "–", "To par"], [fir + "/" + firOf, "Fairways"], [gir + (gg ? " · " + gg + "GG" : ""), "Greens"]].map(([v, l]) => `<div><b>${v}</b><span>${l}</span></div>`).join("");
   const ch = checksFor(r);
   $("#check-count").textContent = `(${ch.length})`;
   $("#checks").innerHTML = ch.length ? ch.map((c) => `<button type="button" data-hole="${c.h}">${esc(c.text)}</button>`).join("") : `<p class="none">Nothing odd.</p>`;
@@ -270,18 +289,16 @@ function renderReview(r) {
   $("#save-state").textContent = r.saved ? `Saved${r.number > 1 ? " as round " + r.number : ""}. Changing a hole and saving again updates it.` : "";
 }
 $("#checks").addEventListener("click", (e) => { const b = e.target.closest("[data-hole]"); if (!b) return; d.cur.hole = Number(b.dataset.hole); ui.editing = true; ui.toast = `Changing hole ${d.cur.hole}.`; loadToggles(); persist(); render(); });
-$("#edit-holes").addEventListener("click", () => { const r = round(); d.cur.hole = r.holes[0]; ui.editing = true; ui.toast = "Tap any hole above, or change this one."; loadToggles(); persist(); render(); });
-function addMore(n) {
-  const g = golfer(); const all = layout().map((h) => h.hole);
-  const holes = n === 9 ? all.filter((h) => h <= 9) : all;
+$("#edit-holes").addEventListener("click", () => { const r = round(); d.cur.hole = r.holes.find((h) => r.scores[h]) ?? r.holes[0]; ui.editing = true; ui.toast = "Tap any hole above, or change this one."; loadToggles(); persist(); render(); });
+function addMore() {
+  const g = golfer(); const holes = allHoles();
   const number = Math.max(...g.rounds.map((x) => x.number), ...existingRounds(golferName())) + 1;
   g.rounds.push({ id: uuid(), number, holes, scores: {}, revision: null, saved: false });
   d.cur.r = g.rounds.length - 1; d.cur.hole = holes[0]; ui.editing = false;
-  ui.toastOk = true; ui.toast = `Round ${number} at ${d.course}: ${holes.length} more holes.`;
+  ui.toastOk = true; ui.toast = `Round ${number} at ${d.course}. Start on any hole; tap Finish when you're done.`;
   persist(); loadToggles(); render(); scrollTo(0, 0);
 }
-$("#more9").addEventListener("click", () => addMore(9));
-$("#more18").addEventListener("click", () => addMore(18));
+$("#more").addEventListener("click", addMore);
 
 function getKey() {
   const saved = store.get(KEY_KEY); if (saved) return Promise.resolve(saved);

@@ -92,3 +92,20 @@ button:focus-visible { outline: 3px solid var(--brand2); outline-offset: 2px; }
 .results > button.r-triple { background: var(--triple); color: var(--on-triple); }
 .keys { gap: 7px; }
 @media (min-height: 800px) { .results > button { min-height: 76px; } .row3 > button { min-height: 50px; } .nine .s, .nine .nm, .nine .t { height: 42px; } }
+
+/* setup tweaks: date only as wide as "Dec 28, 2008", suggestions under Add a player */
+.inp.date { width: 10em; max-width: 100%; min-width: 0; -webkit-appearance: none; appearance: none; text-align: left; display: block; }
+.inp.date::-webkit-date-and-time-value { text-align: left; margin: 0; }
+.sugg:empty { display: none; }
+.sugg button { border-style: dashed; }
+.sugg button b { font-weight: 800; }
+.kp-top nav { font-size: 15px; }
+
+/* bottom row: Back · Albatross/Ace · Skip · Finish */
+.row4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.row4 > button { min-height: 42px; font-size: 14px; font-weight: 600; padding: 0 6px; border-radius: 12px; }
+.row4 > button:disabled { opacity: .45; }
+#more { width: 100%; min-height: 48px; }
+@media (min-height: 800px) { .row4 > button { min-height: 46px; } }
+.kp-body > * { flex-shrink: 0; }
+.kp-foot { position: static; }
