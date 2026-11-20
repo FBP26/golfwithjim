@@ -109,3 +109,11 @@ button:focus-visible { outline: 3px solid var(--brand2); outline-offset: 2px; }
 @media (min-height: 800px) { .row4 > button { min-height: 46px; } }
 .kp-body > * { flex-shrink: 0; }
 .kp-foot { position: static; }
+
+/* autosave status + bottom links */
+.whorow { display: flex; align-items: center; gap: 8px; }
+.whorow .who { flex: 1; min-width: 0; }
+.sync { flex: none; font-size: 12px; font-weight: 600; opacity: .9; white-space: nowrap; }
+.sync.warn { color: #ffd27a; opacity: 1; }
+.links { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+.toast-line.warn { color: #b4540a; font-weight: 600; }

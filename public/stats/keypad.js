@@ -17,7 +17,7 @@ const RCLASS = (d) => (d <= -2 ? "r-eagle" : d === -1 ? "r-birdie" : d === 0 ? "
 
 let data = null;
 let d = freshDraft();
-const ui = { f: false, g: 0, toast: "", toastOk: false };
+const ui = { f: false, g: 0, toast: "", toastOk: false, toastWarn: false, sync: "", syncWarn: false };
 
 function freshDraft() { return { date: todayIso(), course: "", tees: "", players: ["Jim"], started: false, cur: { p: 0, r: 0, hole: 1 }, golfers: {} }; }
 function persist() { store.set(DRAFT_KEY, JSON.stringify(d)); }
@@ -151,12 +151,13 @@ function render() {
   $("#topar-line").textContent = `${name}${t.n ? ` ${t.s} (${toPar(t.s - t.p)}) thru ${t.n}` : ""}`;
   $("#who").innerHTML = d.players.map((p, i) => {
     const g = golfer(p); const rs = g?.rounds || []; const n = rs.reduce((a, x) => a + Object.keys(x.scores).length, 0);
-    const allSaved = rs.length && rs.every((x) => x.saved);
+    const withScores = rs.filter(hasScores); const allSaved = withScores.length && withScores.every((x) => x.saved);
     return `<button type="button" data-p="${i}" aria-pressed="${i === d.cur.p}">${esc(p)}${allSaved ? " ✓" : n ? " · " + n : ""}</button>`;
   }).join("");
   renderNines(r);
-  const tl = $("#toast-line"); tl.textContent = ui.toast || "Light up Fairway, Green or GG (optional), then tap the score."; tl.classList.toggle("ok", ui.toastOk);
-  const done = (r.finished || isDone(r)) && !ui.editing;
+  const tl = $("#toast-line"); tl.textContent = ui.toast || "Light up Fairway, Green or GG (optional), then tap the score."; const warnOn = !!ui.toast && (ui.toast === ui.warnText || ui.toast.startsWith("Not saved")); tl.classList.toggle("ok", ui.toastOk && !warnOn); tl.classList.toggle("warn", warnOn);
+  const sy = $("#sync"); sy.textContent = ui.sync; sy.classList.toggle("warn", ui.syncWarn);
+  const done = isDone(r) && !ui.editing;
   $("#keys").hidden = done; $("#review").hidden = !done;
   if (done) renderReview(r); else renderKeys(r);
 }
@@ -170,7 +171,7 @@ function renderNines(r) {
     let sub = 0, any = false, miss = false;
     const cells = pad(holes.map((h) => {
       const e = r.scores[h], par = meta(h).par, live = r.holes.includes(h);
-      const cur = h === d.cur.hole && !((r.finished || isDone(r)) && !ui.editing);
+      const cur = h === d.cur.hole && !(isDone(r) && !ui.editing);
       if (live && !e && r.holes.some((x) => holes.includes(x) && x !== h && r.scores[x] && !r.scores[x].skip)) miss = true;
       if (e?.skip) { miss = true; return `<button type="button" class="s skip ${cur ? "cur" : ""}" data-hole="${h}" aria-label="Hole ${h}, skipped"><b>–</b><small>skip</small></button>`; }
       if (e) { sub += e.v; any = true; return `<button type="button" class="s ${RCLASS(e.v - par)} ${cur ? "cur" : ""}" data-hole="${h}" aria-label="Hole ${h}, ${e.v}"><b>${e.v}</b><small>${marks(e)}</small></button>`; }
@@ -214,11 +215,7 @@ function renderKeys(r) {
   $("#albatross").textContent = alb >= 1 ? `${alb === 1 ? "Ace" : "Albatross"} ${alb}` : "—";
   $("#albatross").dataset.score = alb >= 1 ? alb : "";
   $("#back").disabled = r.holes.indexOf(hole) <= 0;
-  const n = Object.values(r.scores).filter((e) => e && !e.skip).length;
-  $("#finish").disabled = !n;
-  $("#finish").textContent = r.finished ? "Review" : "Finish";
 }
-$("#finish").addEventListener("click", () => { const r = round(); r.finished = true; ui.editing = false; ui.toast = ""; persist(); render(); scrollTo(0, 0); });
 $("#toggles").addEventListener("click", (e) => {
   const b = e.target.closest("[data-tog]"); if (!b || b.disabled) return;
   const k = b.dataset.tog;
@@ -231,15 +228,19 @@ function saveHole(rec) {
   const r = round(), hole = d.cur.hole, par = meta(hole).par;
   const wasEmpty = !r.scores[hole];
   r.scores[hole] = rec; r.saved = false;
-  if (wasEmpty) { ui.editing = false; r.finished = false; } // a new hole means still playing: keep moving forward
+  r.ver = (r.ver || 0) + 1;
+  if (wasEmpty) ui.editing = false; // a new hole means still playing: keep moving forward
   ui.toastOk = true;
-  ui.toast = rec.skip ? `Hole ${hole} skipped.` : `Hole ${hole}: ${(rec.v === 1 ? "Ace" : NAMES[rec.v - par]) || rec.v} ${rec.v}${marks(rec) ? " · " + marks(rec) : ""}. Tap it above to change.`;
+  const warn = rec.skip ? null : checksFor(r).find((c) => c.h === hole && !c.gap);
+  ui.warnText = warn ? warn.text : "";
+  ui.toast = warn ? warn.text : rec.skip ? `Hole ${hole} skipped.` : `Hole ${hole}: ${(rec.v === 1 ? "Ace" : NAMES[rec.v - par]) || rec.v} ${rec.v}${marks(rec) ? " · " + marks(rec) : ""}. Tap it above to change.`;
   const nx = ui.editing ? null : nextOpen(r, hole);
   ui.editing = false;
   if (nx != null) d.cur.hole = nx; else if (!isDone(r)) d.cur.hole = r.holes.find((h) => !r.scores[h]);
   ui.f = false; ui.g = 0;
   persist(); loadToggles(); render();
-  if (isDone(r) || r.finished) scrollTo(0, 0);
+  if (isDone(r)) scrollTo(0, 0);
+  queueSave();
 }
 $("#results").addEventListener("click", (e) => { const b = e.target.closest("[data-score]"); if (!b) return; saveHole({ v: Number(b.dataset.score), f: meta(d.cur.hole).par === 3 ? false : ui.f, g: ui.g }); });
 $("#albatross").addEventListener("click", (e) => { const v = Number(e.target.closest("button").dataset.score); if (v) saveHole({ v, f: ui.f, g: ui.g }); });
@@ -265,7 +266,7 @@ function checksFor(r) {
       const nine = r.holes.filter((x) => (x <= 9) === (h <= 9));
       const playedNine = nine.filter((x) => r.scores[x] && !r.scores[x].skip);
       const gap = playedNine.some((x) => x < h) && playedNine.some((x) => x > h);
-      if (gap || playedNine.length >= 6) out.push({ h, text: `Hole ${h}: no score, but you played holes around it` });
+      if (gap || playedNine.length >= 6) out.push({ h, gap: true, text: `Hole ${h}: no score, but you played holes around it` });
       continue;
     }
     if (e.skip) { out.push({ h, text: `Hole ${h}: skipped (won't be saved)` }); continue; }
@@ -283,10 +284,10 @@ function renderReview(r) {
   const ch = checksFor(r);
   $("#check-count").textContent = `(${ch.length})`;
   $("#checks").innerHTML = ch.length ? ch.map((c) => `<button type="button" data-hole="${c.h}">${esc(c.text)}</button>`).join("") : `<p class="none">Nothing odd.</p>`;
-  const g = golfer(); const unsaved = g.rounds.filter((x) => !x.saved && Object.values(x.scores).some((e) => e && !e.skip));
   const last = d.cur.p >= d.players.length - 1;
-  $("#save-next").textContent = unsaved.length ? `Save${last ? "" : " · next: " + d.players[d.cur.p + 1]}` : last ? "All saved ✓" : `Next: ${d.players[d.cur.p + 1]}`;
-  $("#save-state").textContent = r.saved ? `Saved${r.number > 1 ? " as round " + r.number : ""}. Changing a hole and saving again updates it.` : "";
+  $("#save-next").hidden = last;
+  $("#save-next").textContent = last ? "" : `Next: ${d.players[d.cur.p + 1]}`;
+  $("#save-state").textContent = r.saved ? `Saved${r.number > 1 ? " as round " + r.number : ""}. Changes save automatically.` : "Saves automatically.";
 }
 $("#checks").addEventListener("click", (e) => { const b = e.target.closest("[data-hole]"); if (!b) return; d.cur.hole = Number(b.dataset.hole); ui.editing = true; ui.toast = `Changing hole ${d.cur.hole}.`; loadToggles(); persist(); render(); });
 $("#edit-holes").addEventListener("click", () => { const r = round(); d.cur.hole = r.holes.find((h) => r.scores[h]) ?? r.holes[0]; ui.editing = true; ui.toast = "Tap any hole above, or change this one."; loadToggles(); persist(); render(); });
@@ -317,38 +318,56 @@ function payloadFor(name, r) {
     holes: scored.map((h) => { const e = r.scores[h], par = meta(h).par; return { hole: h, tees: d.tees, score: e.v, fir: track && par !== 3 ? Boolean(e.f) : null, green: track ? ["miss", "gir", "sgir"][e.g || 0] : null }; }),
   };
 }
-async function saveGolfer() {
-  const name = golferName(), g = golfer();
-  const todo = g.rounds.filter((r) => !r.saved && r.holes.some((h) => r.scores[h] && !r.scores[h].skip));
-  if (!todo.length) return true;
-  const key = await getKey(); if (!key) { $("#save-state").textContent = "Not saved: no passcode."; return false; }
-  $("#save-next").disabled = true; $("#save-state").textContent = "Saving…";
+// ---------- autosave: every change is sent shortly after it's made; retried when signal comes back ----------
+const hasScores = (r) => r.holes.some((h) => r.scores[h] && !r.scores[h].skip);
+const dirtyRounds = () => d.players.flatMap((name) => (golfer(name)?.rounds || []).filter((r) => !r.saved && hasScores(r)).map((r) => [name, r]));
+let saveTimer = null, saving = false, keyAsked = false;
+function setSync(text, warn = false) { ui.sync = text; ui.syncWarn = warn; const sy = $("#sync"); if (sy) { sy.textContent = text; sy.classList.toggle("warn", warn); } }
+function queueSave(delay = 1200) { clearTimeout(saveTimer); setSync(dirtyRounds().length ? "Saving…" : ui.sync); saveTimer = setTimeout(flushSave, delay); }
+async function flushSave() {
+  clearTimeout(saveTimer);
+  if (saving) { saveTimer = setTimeout(flushSave, 800); return; }
+  const todo = dirtyRounds();
+  if (!todo.length) { if (d.started && Object.keys(d.golfers).length) setSync(anySaved() ? "Saved ✓" : ""); return; }
+  let key = store.get(KEY_KEY);
+  if (!key) { if (keyAsked) { setSync("Not saved · passcode", true); return; } keyAsked = true; key = await getKey(); if (!key) { setSync("Not saved · passcode", true); return; } }
+  if (!navigator.onLine) { setSync("Not saved yet · no signal", true); return; }
+  saving = true; setSync("Saving…");
+  const sent = todo.map(([name, r]) => ({ r, ver: r.ver || 0 }));
   try {
-    const res = await fetch(`${API}/rounds`, { method: "POST", headers: { "Content-Type": "application/json", "X-Golf-Key": key }, body: JSON.stringify({ rounds: todo.map((r) => payloadFor(name, r)) }) });
+    const res = await fetch(`${API}/rounds`, { method: "POST", headers: { "Content-Type": "application/json", "X-Golf-Key": key }, body: JSON.stringify({ rounds: todo.map(([name, r]) => payloadFor(name, r)) }) });
     const body = await res.json().catch(() => ({}));
-    if (res.status === 401) { store.del(KEY_KEY); throw new Error("Wrong passcode. Tap Save to try again."); }
+    if (res.status === 401) { store.del(KEY_KEY); keyAsked = false; throw new Error("wrong passcode"); }
     if (!res.ok) throw new Error(body.details?.length ? body.details.map((x) => x.error).join(" · ") : body.error || `HTTP ${res.status}`);
-    for (const s of body.saved) { const r = g.rounds.find((x) => x.id === s.id); if (r) { r.revision = s.revision; r.saved = true; } }
-    persist();
+    for (const s of body.saved) { const x = sent.find((y) => y.r.id === s.id); if (x) { x.r.revision = s.revision; x.r.saved = (x.r.ver || 0) === x.ver; } }
+    persist(); ui.saveError = "";
+    if (ui.toast.startsWith("Not saved")) ui.toast = "";
+    setSync(dirtyRounds().length ? "Saving…" : "Saved ✓");
     loadData({ fresh: true }).then((x) => { data = x; }).catch(() => {});
-    return true;
   } catch (err) {
-    $("#save-state").textContent = navigator.onLine ? `Not saved: ${err.message}` : "No signal. The card is kept on this phone; tap Save again when you have signal.";
-    return false;
-  } finally { $("#save-next").disabled = false; }
+    setSync(navigator.onLine ? "Not saved · tap to retry" : "Not saved yet · no signal", true);
+    ui.saveError = String(err.message || err);
+  } finally {
+    saving = false;
+    render();
+    if (dirtyRounds().length && !ui.syncWarn) saveTimer = setTimeout(flushSave, 800);
+  }
 }
-$("#save-next").addEventListener("click", async () => {
-  const ok = await saveGolfer(); if (!ok) return;
-  if (d.cur.p < d.players.length - 1) {
-    const name = golferName();
-    d.cur.p++; d.cur.r = 0; const r = round(); d.cur.hole = r.holes.find((h) => !r.scores[h]) ?? r.holes[0];
-    ui.editing = false; ui.toastOk = true; ui.toast = `${name} saved.`;
-  } else { ui.toastOk = true; ui.toast = "All rounds saved."; }
-  loadToggles(); persist(); render(); scrollTo(0, 0);
+const anySaved = () => d.players.some((n) => golfer(n)?.rounds.some((r) => r.saved));
+$("#sync").addEventListener("click", () => { if (ui.syncWarn) { if (ui.saveError) { ui.toast = "Not saved: " + ui.saveError; render(); } flushSave(); } });
+addEventListener("online", () => flushSave());
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushSave(); else if (dirtyRounds().length) flushSave(); });
+setInterval(() => { if (dirtyRounds().length && !saving) flushSave(); }, 30000);
+$("#save-next").addEventListener("click", () => {
+  if (d.cur.p >= d.players.length - 1) return;
+  const name = golferName();
+  d.cur.p++; d.cur.r = 0; const r = round(); d.cur.hole = r.holes.find((h) => !r.scores[h]) ?? r.holes[0];
+  ui.editing = false; ui.toastOk = true; ui.toast = `${name} done.`;
+  loadToggles(); persist(); render(); scrollTo(0, 0); flushSave();
 });
 $("#new-card").addEventListener("click", () => {
-  const unsaved = d.players.filter((p) => golfer(p)?.rounds.some((r) => !r.saved && Object.keys(r.scores).length));
-  if (unsaved.length && !confirm(`Not saved yet for ${unsaved.join(", ")}. Start a new card anyway?`)) return;
+  const unsaved = [...new Set(dirtyRounds().map(([n]) => n))];
+  if (unsaved.length && !confirm(`Not saved yet for ${unsaved.join(", ")} (no signal?). Start a new card anyway? Those scores will be lost.`)) return;
   const keep = { course: d.course, tees: d.tees, players: d.players };
   d = { ...freshDraft(), ...keep }; ui.toast = ""; persist(); render();
 });
@@ -362,4 +381,5 @@ $("#new-card").addEventListener("click", () => {
   if (!d.course) { const c = recentCourses()[0]; if (c) { d.course = c; d.tees = defaultTees(c); } }
   if (d.course && !teesFor(d.course).includes(d.tees)) d.tees = defaultTees(d.course);
   loadToggles(); render();
+  if (dirtyRounds().length) flushSave(); else if (anySaved()) setSync("Saved ✓");
 })();
