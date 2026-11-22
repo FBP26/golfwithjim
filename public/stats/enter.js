@@ -72,7 +72,11 @@ function renderSetup() {
   $("#setup-sub").textContent = `${new Date(`${outing.date}T12:00`).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })} · ${outing.golfers.map(g => g.name).join(", ")}`;
   $("#done-setup").disabled = !ready;
   $("#date").value = outing.date;
-  $("#course").value = outing.course;
+  const courses = (data?.courses || []).map(c => c.name).sort((a, b) => a.localeCompare(b));
+  $("#course").innerHTML = (outing.course && courses.includes(outing.course) ? "" : `<option value="">Pick a course…</option>`) + courses.map(n => `<option ${n === outing.course ? "selected" : ""}>${esc(n)}</option>`).join("");
+  const picks = [...new Set([...topPlayers(), ...outing.golfers.map(g => g.name)])];
+  const on = (p) => outing.golfers.some(g => g.name.toLowerCase() === p.toLowerCase());
+  $("#golfer-picks").innerHTML = picks.map(p => `<button type="button" data-pick="${esc(p)}" aria-pressed="${on(p)}">${on(p) ? "✓ " : ""}${esc(p)}</button>`).join("");
   const tees = teesFor(outing.course);
   $("#tees").innerHTML = tees.length ? tees.map(t => `<option ${t === outing.tees ? "selected" : ""}>${esc(t)}</option>`).join("") : `<option value="">Pick a course first</option>`;
   $("#plan").value = outing.plan;
@@ -95,6 +99,14 @@ function addGolfers(text) {
   }
   saveDraft(); renderSetup(); renderMode();
 }
+// Top 20 golfers by holes played in the last 3 years, most first.
+function topPlayers() {
+  if (!data) return ["Jim"];
+  const c = new Date(); c.setFullYear(c.getFullYear() - 3); const cutoff = c.toISOString().slice(0, 10);
+  const counts = new Map();
+  for (const r of data.rounds) if (r.date >= cutoff) counts.set(r.player, (counts.get(r.player) || 0) + (r.holes?.length || 0));
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 20).map(([p]) => p);
+}
 function usualGroup() {
   if (!data) return [];
   const cutoff = new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10);
@@ -106,7 +118,7 @@ function usualGroup() {
 
 // ---------- modes ----------
 function needSetup() {
-  if (!outing.course || !layout(outing.course, outing.tees).length) return `<div class="card empty"><p><b>Pick a course and tees</b> to start.</p><p class="muted">Not listed? Use “Add a course or new tees” at the bottom.</p></div>`;
+  if (!outing.course || !layout(outing.course, outing.tees).length) return `<div class="card empty"><p><b>Pick a course and tees</b> to start.</p><p class="muted">Not listed? <a href="course.html">Add a course or new tees</a>.</p></div>`;
   if (!outing.golfers.length) return `<div class="card empty"><p><b>Add golfers</b> above to start entering scores.</p></div>`;
   return "";
 }
@@ -468,7 +480,14 @@ $("#tees").addEventListener("change", e => { outing.tees = e.target.value; saveD
 $("#plan").addEventListener("change", e => { outing.plan = e.target.value; cursor.hole = null; saveDraft(); renderMode(); });
 $("#golfer-input").addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); addGolfers(e.target.value); e.target.value = ""; } });
 $("#add-golfer").addEventListener("click", () => { addGolfers($("#golfer-input").value); $("#golfer-input").value = ""; });
-$("#add-usual").addEventListener("click", () => addGolfers(usualGroup().join(",")));
+$("#golfer-picks").addEventListener("click", e => {
+  const b = e.target.closest("[data-pick]"); if (!b) return;
+  const name = b.dataset.pick, i = outing.golfers.findIndex(g => g.name.toLowerCase() === name.toLowerCase());
+  if (i < 0) return addGolfers(name);
+  const g = outing.golfers[i];
+  if (Object.keys(g.scores || {}).length && !confirm(`Remove ${g.name} and their entered scores from this outing?`)) return;
+  outing.golfers.splice(i, 1); saveDraft(); renderSetup(); renderMode();
+});
 $("#edit-setup").addEventListener("click", () => { outing.setupOpen = true; saveDraft(); renderSetup(); });
 $("#done-setup").addEventListener("click", () => { outing.setupOpen = false; saveDraft(); renderSetup(); scrollTo({ top: 0, behavior: "smooth" }); });
 $("#new-outing").addEventListener("click", () => {
@@ -526,90 +545,12 @@ $("#save").addEventListener("click", async () => {
   } finally { $("#save").disabled = false; }
 });
 
-// Add a course: one card row at a time (pars, then handicaps, then yards), with OUT/IN/TOT totals and checks to compare to the card.
-const cf = $("#course-form");
-const cfHoles = () => { const v = cf.elements.count.value; return v === "front" ? [1,2,3,4,5,6,7,8,9] : v === "back" ? [10,11,12,13,14,15,16,17,18] : Array.from({ length: 18 }, (_, i) => i + 1); };
-function cfNums(name) {
-  const v = cf.elements[name].value.trim();
-  if (name === "pars" && /^\d+$/.test(v)) return [...v].map(Number); // typed straight through
-  return v ? v.split(/[\s.,]+/).filter(Boolean).map(Number) : [];
-}
-for (const name of ["pars", "hcps", "yards"]) {
-  const el = cf.elements[name];
-  el.addEventListener("input", () => {
-    const c = el.selectionStart, before = el.value;
-    const after = before.replace(/[.,]/g, " ").replace(/ {2,}/g, " ").replace(/^ /, "");
-    if (after !== before) { el.value = after; const d = before.length - after.length; el.setSelectionRange(Math.max(0, c - d), Math.max(0, c - d)); }
-    cfRender();
-  });
-}
-cf.elements.count.addEventListener("change", cfRender);
-function cfCheck() {
-  const holes = cfHoles(), n = holes.length, pars = cfNums("pars"), hcps = cfNums("hcps"), yards = cfNums("yards");
-  const errs = [], warns = [], oks = [];
-  if (pars.length !== n) errs.push(`Pars: ${pars.length} of ${n} entered.`);
-  pars.forEach((p, i) => { if (!(p >= 3 && p <= 6)) errs.push(`Hole ${holes[i] ?? "?"}: par ${p} doesn't look right.`); else if (p === 6) warns.push(`Hole ${holes[i]}: par 6? Very rare (Meadows Farms' Longest Hole nine has one).`); });
-  if (hcps.length && hcps.length !== n) errs.push(`Handicaps: ${hcps.length} of ${n} entered (leave it empty, or enter all ${n}).`);
-  if (yards.length && yards.length !== n) errs.push(`Yards: ${yards.length} of ${n} entered (leave it empty, or enter all ${n}).`);
-  yards.forEach((y, i) => { if (!(y >= 40 && y <= (pars[i] === 6 ? 950 : 750))) warns.push(`Hole ${holes[i] ?? "?"}: ${y} yards?`); });
-  if (hcps.length === n) {
-    const bad = hcps.filter((h) => !(Number.isInteger(h) && h >= 1 && h <= 18));
-    const dup = [...new Set(hcps.filter((h, i) => hcps.indexOf(h) !== i))];
-    if (bad.length) errs.push(`Handicaps must be 1–18 (${bad.join(", ")}).`);
-    if (dup.length) errs.push(`Handicap ${dup.join(", ")} is used twice.`);
-    if (n === 18 && !bad.length && !dup.length) {
-      const f = hcps.slice(0, 9), b = hcps.slice(9);
-      const allOdd = (a) => a.every((h) => h % 2), allEven = (a) => a.every((h) => h % 2 === 0);
-      if ((allOdd(f) && allEven(b)) || (allEven(f) && allOdd(b))) oks.push(`Handicaps: front 9 all ${allOdd(f) ? "odd" : "even"}, back 9 all ${allOdd(b) ? "odd" : "even"} ✓`);
-      else {
-        const off = (a, start) => { const odd = a.filter((h) => h % 2).length >= 5; return a.map((h, i) => ((h % 2 === 1) !== odd ? start + i : null)).filter(Boolean); };
-        warns.push(`Handicaps aren't odds on one nine and evens on the other. Check holes ${[...off(f, 1), ...off(b, 10)].join(", ")} against the card (some courses do mix them).`);
-      }
-    }
-  }
-  if (pars.length === n && !errs.length) oks.push(`Par ${pars.reduce((a, b) => a + b, 0)}: matches the card?`);
-  return { holes, pars, hcps, yards, errs, warns, oks };
-}
-function cfRender() {
-  const { holes, pars, hcps, yards, errs, warns, oks } = cfCheck();
-  const nines = [holes.filter((h) => h <= 9), holes.filter((h) => h >= 10)].filter((x) => x.length);
-  const sum = (arr) => arr.reduce((a, b) => a + b, 0);
-  const any = pars.length || hcps.length || yards.length;
-  const tot = { p: 0, y: 0 };
-  const tables = nines.map((nine) => {
-    const idx = nine.map((h) => holes.indexOf(h));
-    const row = (label, arr, total) => `<tr><th>${label}</th>${idx.map((i) => `<td>${arr[i] ?? ""}</td>`).join("")}<td class="t">${total ?? ""}</td></tr>`;
-    const p = idx.map((i) => pars[i]), y = idx.map((i) => yards[i]);
-    const ps = p.every(Number.isFinite) ? sum(p) : null, ys = y.every(Number.isFinite) ? sum(y) : null;
-    if (ps != null) tot.p += ps; if (ys != null) tot.y += ys;
-    return `<table><tr><th>Hole</th>${nine.map((h) => `<td class="h">${h}</td>`).join("")}<td class="h t">${nine[0] <= 9 ? "OUT" : "IN"}</td></tr>${row("Par", pars, ps)}${row("Hcp", hcps, "")}${row("Yds", yards, ys)}</table>`;
-  });
-  $("#cf-preview").innerHTML = any ? tables.join("") + (nines.length === 2 ? `<p class="cf-tot">Total: par <b>${tot.p || "–"}</b>${tot.y ? ` · <b>${tot.y.toLocaleString("en-US")}</b> yds` : ""}</p>` : "") : "";
-  $("#cf-checks").innerHTML = any ? [...errs.map((t) => `<li class="err">${esc(t)}</li>`), ...warns.map((t) => `<li class="warn">${esc(t)}</li>`), ...oks.map((t) => `<li class="ok">${esc(t)}</li>`)].join("") : "";
-}
-
-cf.addEventListener("submit", async event => {
-  event.preventDefault();
-  const statusEl = $("#course-status");
-  const { holes, pars, hcps, yards, errs, warns } = cfCheck();
-  if (errs.length) { statusEl.textContent = "Fix the red items first."; cfRender(); return; }
-  if (warns.length && !confirm(warns.join("\n\n") + "\n\nSave anyway?")) return;
-  const rows = holes.map((hole, i) => ({ hole, par: pars[i], length: yards[i] || null, handicap: hcps[i] || null }));
-  const key = await getKey(); if (!key) return;
-  const res = await fetch(`${API}/courses`, { method: "POST", headers: { "Content-Type": "application/json", "X-Golf-Key": key }, body: JSON.stringify({ course: cf.elements.course.value, tees: cf.elements.tees.value, holes: rows }) });
-  const body = await res.json().catch(() => ({}));
-  if (res.status === 401) store.del(KEY_KEY);
-  statusEl.textContent = res.ok ? "Saved. Pick it in the Course box above." : body.error || `HTTP ${res.status}`;
-  if (res.ok) { data = await loadData({ fresh: true }); fillLists(); }
-});
-
 let toastTimer;
 function toast(message) {
   let el = document.querySelector(".toast"); if (!el) { el = document.createElement("div"); el.className = "toast"; el.setAttribute("role", "status"); document.body.append(el); }
   el.textContent = message; clearTimeout(toastTimer); toastTimer = setTimeout(() => el.remove(), 2600);
 }
 function fillLists() {
-  $("#course-list").innerHTML = data.courses.map(c => `<option value="${esc(c.name)}">`).join("");
   $("#player-list").innerHTML = data.players.map(p => `<option value="${esc(p)}">`).join("");
 }
 
