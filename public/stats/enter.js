@@ -526,52 +526,77 @@ $("#save").addEventListener("click", async () => {
   } finally { $("#save").disabled = false; }
 });
 
-// Course holes box on a phone: number pad only. "." (or space/comma) separates numbers; after the 3rd number on a line,
-// or when tapped twice, it starts the next hole's line. A live list underneath shows what each hole reads as.
-const holesBox = $("#course-form textarea[name=holes]");
-function holeSep(e) {
-  if (e.inputType !== "insertText" || !/^[.,\s]$/.test(e.data || "")) return;
-  e.preventDefault();
-  const pos = holesBox.selectionStart, end = holesBox.selectionEnd, v = holesBox.value;
-  let before = v.slice(0, pos);
-  const line = before.slice(before.lastIndexOf("\n") + 1);
-  const nums = line.trim().split(/\s+/).filter(Boolean);
-  let ins;
-  if (!line.trim()) ins = "";
-  else if (/\s$/.test(line) || nums.length >= 3) { before = before.replace(/[ \t]+$/, ""); ins = "\n"; }
-  else ins = " ";
-  holesBox.value = before + ins + v.slice(end);
-  const c = before.length + ins.length; holesBox.setSelectionRange(c, c);
-  showHolePreview();
+// Add a course: one card row at a time (pars, then handicaps, then yards), with OUT/IN/TOT totals and checks to compare to the card.
+const cf = $("#course-form");
+const cfHoles = () => { const v = cf.elements.count.value; return v === "front" ? [1,2,3,4,5,6,7,8,9] : v === "back" ? [10,11,12,13,14,15,16,17,18] : Array.from({ length: 18 }, (_, i) => i + 1); };
+function cfNums(name) {
+  const v = cf.elements[name].value.trim();
+  if (name === "pars" && /^\d+$/.test(v)) return [...v].map(Number); // typed straight through
+  return v ? v.split(/[\s.,]+/).filter(Boolean).map(Number) : [];
 }
-holesBox.addEventListener("beforeinput", holeSep);
-holesBox.addEventListener("input", () => {
-  // fallback for browsers that ignore beforeinput: turn any typed "." or "," into a space
-  if (/[.,]/.test(holesBox.value)) { const c = holesBox.selectionStart; holesBox.value = holesBox.value.replace(/[.,]/g, " "); holesBox.setSelectionRange(c, c); }
-  showHolePreview();
-});
-$("#course-form select[name=count]").addEventListener("change", showHolePreview);
-function showHolePreview() {
-  const count = Number($("#course-form select[name=count]").value);
-  const lines = holesBox.value.split("\n").map(l => l.trim()).filter(Boolean);
-  $("#hole-preview").innerHTML = lines.map((l, i) => {
-    const [par, yds, hcp] = l.split(/\s+/).map(Number);
-    const bad = !(par >= 3 && par <= 6) || (hcp && (hcp < 1 || hcp > 18));
-    return `<li class="${bad ? "bad" : ""}"><b>${i + 1}</b> Par ${par || "?"}${yds ? ` · ${yds} yds` : ""}${hcp ? ` · hcp ${hcp}` : ""}</li>`;
-  }).join("") + (lines.length ? `<li class="count">${lines.length} of ${count} holes</li>` : "");
+for (const name of ["pars", "hcps", "yards"]) {
+  const el = cf.elements[name];
+  el.addEventListener("input", () => {
+    const c = el.selectionStart, before = el.value;
+    const after = before.replace(/[.,]/g, " ").replace(/ {2,}/g, " ").replace(/^ /, "");
+    if (after !== before) { el.value = after; const d = before.length - after.length; el.setSelectionRange(Math.max(0, c - d), Math.max(0, c - d)); }
+    cfRender();
+  });
+}
+cf.elements.count.addEventListener("change", cfRender);
+function cfCheck() {
+  const holes = cfHoles(), n = holes.length, pars = cfNums("pars"), hcps = cfNums("hcps"), yards = cfNums("yards");
+  const errs = [], warns = [], oks = [];
+  if (pars.length !== n) errs.push(`Pars: ${pars.length} of ${n} entered.`);
+  pars.forEach((p, i) => { if (!(p >= 3 && p <= 6)) errs.push(`Hole ${holes[i] ?? "?"}: par ${p} doesn't look right.`); });
+  if (hcps.length && hcps.length !== n) errs.push(`Handicaps: ${hcps.length} of ${n} entered (leave it empty, or enter all ${n}).`);
+  if (yards.length && yards.length !== n) errs.push(`Yards: ${yards.length} of ${n} entered (leave it empty, or enter all ${n}).`);
+  yards.forEach((y, i) => { if (!(y >= 40 && y <= 750)) warns.push(`Hole ${holes[i] ?? "?"}: ${y} yards?`); });
+  if (hcps.length === n) {
+    const bad = hcps.filter((h) => !(Number.isInteger(h) && h >= 1 && h <= 18));
+    const dup = [...new Set(hcps.filter((h, i) => hcps.indexOf(h) !== i))];
+    if (bad.length) errs.push(`Handicaps must be 1–18 (${bad.join(", ")}).`);
+    if (dup.length) errs.push(`Handicap ${dup.join(", ")} is used twice.`);
+    if (n === 18 && !bad.length && !dup.length) {
+      const f = hcps.slice(0, 9), b = hcps.slice(9);
+      const allOdd = (a) => a.every((h) => h % 2), allEven = (a) => a.every((h) => h % 2 === 0);
+      if ((allOdd(f) && allEven(b)) || (allEven(f) && allOdd(b))) oks.push(`Handicaps: front 9 all ${allOdd(f) ? "odd" : "even"}, back 9 all ${allOdd(b) ? "odd" : "even"} ✓`);
+      else {
+        const off = (a, start) => { const odd = a.filter((h) => h % 2).length >= 5; return a.map((h, i) => ((h % 2 === 1) !== odd ? start + i : null)).filter(Boolean); };
+        warns.push(`Handicaps aren't odds on one nine and evens on the other. Check holes ${[...off(f, 1), ...off(b, 10)].join(", ")} against the card (some courses do mix them).`);
+      }
+    }
+  }
+  if (pars.length === n && !errs.length) oks.push(`Par ${pars.reduce((a, b) => a + b, 0)}: matches the card?`);
+  return { holes, pars, hcps, yards, errs, warns, oks };
+}
+function cfRender() {
+  const { holes, pars, hcps, yards, errs, warns, oks } = cfCheck();
+  const nines = [holes.filter((h) => h <= 9), holes.filter((h) => h >= 10)].filter((x) => x.length);
+  const sum = (arr) => arr.reduce((a, b) => a + b, 0);
+  const any = pars.length || hcps.length || yards.length;
+  const tot = { p: 0, y: 0 };
+  const tables = nines.map((nine) => {
+    const idx = nine.map((h) => holes.indexOf(h));
+    const row = (label, arr, total) => `<tr><th>${label}</th>${idx.map((i) => `<td>${arr[i] ?? ""}</td>`).join("")}<td class="t">${total ?? ""}</td></tr>`;
+    const p = idx.map((i) => pars[i]), y = idx.map((i) => yards[i]);
+    const ps = p.every(Number.isFinite) ? sum(p) : null, ys = y.every(Number.isFinite) ? sum(y) : null;
+    if (ps != null) tot.p += ps; if (ys != null) tot.y += ys;
+    return `<table><tr><th>Hole</th>${nine.map((h) => `<td class="h">${h}</td>`).join("")}<td class="h t">${nine[0] <= 9 ? "OUT" : "IN"}</td></tr>${row("Par", pars, ps)}${row("Hcp", hcps, "")}${row("Yds", yards, ys)}</table>`;
+  });
+  $("#cf-preview").innerHTML = any ? tables.join("") + (nines.length === 2 ? `<p class="cf-tot">Total: par <b>${tot.p || "–"}</b>${tot.y ? ` · <b>${tot.y.toLocaleString("en-US")}</b> yds` : ""}</p>` : "") : "";
+  $("#cf-checks").innerHTML = any ? [...errs.map((t) => `<li class="err">${esc(t)}</li>`), ...warns.map((t) => `<li class="warn">${esc(t)}</li>`), ...oks.map((t) => `<li class="ok">${esc(t)}</li>`)].join("") : "";
 }
 
-$("#course-form").addEventListener("submit", async event => {
+cf.addEventListener("submit", async event => {
   event.preventDefault();
-  const form = new FormData(event.target);
-  const count = Number(form.get("count"));
-  const lines = String(form.get("holes")).split("\n").map(l => l.trim()).filter(Boolean);
   const statusEl = $("#course-status");
-  if (lines.length !== count) { statusEl.textContent = `Enter ${count} lines (one per hole). You have ${lines.length}.`; return; }
-  const start = count === 9 && confirm("Is this the back nine (holes 10–18)? Cancel = front nine.") ? 10 : 1;
-  const holes = lines.map((l, i) => { const [par, length, handicap] = l.split(/[\s,]+/).map(Number); return { hole: start + i, par, length: length || null, handicap: handicap || null }; });
+  const { holes, pars, hcps, yards, errs, warns } = cfCheck();
+  if (errs.length) { statusEl.textContent = "Fix the red items first."; cfRender(); return; }
+  if (warns.length && !confirm(warns.join("\n\n") + "\n\nSave anyway?")) return;
+  const rows = holes.map((hole, i) => ({ hole, par: pars[i], length: yards[i] || null, handicap: hcps[i] || null }));
   const key = await getKey(); if (!key) return;
-  const res = await fetch(`${API}/courses`, { method: "POST", headers: { "Content-Type": "application/json", "X-Golf-Key": key }, body: JSON.stringify({ course: form.get("course"), tees: form.get("tees"), holes }) });
+  const res = await fetch(`${API}/courses`, { method: "POST", headers: { "Content-Type": "application/json", "X-Golf-Key": key }, body: JSON.stringify({ course: cf.elements.course.value, tees: cf.elements.tees.value, holes: rows }) });
   const body = await res.json().catch(() => ({}));
   if (res.status === 401) store.del(KEY_KEY);
   statusEl.textContent = res.ok ? "Saved. Pick it in the Course box above." : body.error || `HTTP ${res.status}`;

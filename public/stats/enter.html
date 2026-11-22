@@ -6,8 +6,8 @@
 <title>Enter Scores · Golf Stats</title>
 <meta name="theme-color" content="#15392a">
 <link rel="icon" href="../golf-icon.svg">
-<link rel="stylesheet" href="golf.css?v=20261122a">
-<link rel="stylesheet" href="enter.css?v=20261122a">
+<link rel="stylesheet" href="golf.css?v=20261122b">
+<link rel="stylesheet" href="enter.css?v=20261122b">
 </head>
 <body>
 <header class="top">
@@ -61,11 +61,16 @@
       <div class="setup-grid">
         <label class="field">Course name<input name="course" required></label>
         <label class="field">Tees<input name="tees" required placeholder="White"></label>
-        <label class="field">Holes<select name="count"><option>18</option><option>9</option></select></label>
+        <label class="field">Holes<select name="count"><option value="18">18</option><option value="front">Front 9</option><option value="back">Back 9</option></select></label>
       </div>
-      <p class="muted">Each hole: <b>par yards handicap</b>, e.g. <code>4 356 9</code>. The number pad's <b>.</b> works as the space, and after the third number it starts the next hole. Missing yards or handicap? Tap <b>.</b> twice to jump to the next hole.</p>
-      <textarea name="holes" rows="9" inputmode="decimal" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="4 340 15&#10;4 354 7&#10;3 137 17"></textarea>
-      <ol class="hole-preview" id="hole-preview" aria-live="polite"></ol>
+      <p class="muted">Type one row of the card at a time, in hole order. Use the number pad's <b>.</b> (or a space) between numbers. Pars can be typed straight through, like <code>443545434</code>.</p>
+      <div class="cf-rows">
+        <label class="field">Pars<input name="pars" inputmode="decimal" autocomplete="off" placeholder="4 4 3 5 4 5 4 3 4"></label>
+        <label class="field">Handicaps <span class="opt">(optional)</span><input name="hcps" inputmode="decimal" autocomplete="off" placeholder="7 1 15 3 11 9 5 17 13"></label>
+        <label class="field">Yards <span class="opt">(optional)</span><input name="yards" inputmode="decimal" autocomplete="off" placeholder="295 410 135 520 358"></label>
+      </div>
+      <div class="cf-preview" id="cf-preview"></div>
+      <ul class="cf-checks" id="cf-checks"></ul>
       <div class="row"><button class="btn primary" type="submit">Save course</button><span id="course-status" class="muted" role="status"></span></div>
     </form>
   </details>
@@ -79,6 +84,6 @@
     <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
   </form>
 </dialog>
-<script type="module" src="enter.js?v=20261122a"></script>
+<script type="module" src="enter.js?v=20261122b"></script>
 </body>
 </html>
