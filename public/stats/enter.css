@@ -92,3 +92,9 @@ table.classic select { min-height: 36px; border-radius: 8px; border: 1px solid v
 .cond-row label { display: flex; flex-direction: column; font-size: 12px; color: var(--muted); }
 .cond-row input { width: 80px; min-height: 36px; border: 1px solid var(--line2); border-radius: 8px; padding: 4px 8px; background: var(--card); }
 .cond-row .grow { flex: 1 1 200px; } .cond-row .grow input { width: 100%; }
+
+.hole-preview { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px 12px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.hole-preview:empty { display: none; }
+.hole-preview li b { display: inline-block; min-width: 22px; color: var(--muted); }
+.hole-preview li.bad { color: #b4540a; font-weight: 600; }
+.hole-preview li.count { grid-column: 1 / -1; color: var(--muted); }

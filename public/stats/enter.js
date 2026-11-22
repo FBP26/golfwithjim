@@ -526,6 +526,41 @@ $("#save").addEventListener("click", async () => {
   } finally { $("#save").disabled = false; }
 });
 
+// Course holes box on a phone: number pad only. "." (or space/comma) separates numbers; after the 3rd number on a line,
+// or when tapped twice, it starts the next hole's line. A live list underneath shows what each hole reads as.
+const holesBox = $("#course-form textarea[name=holes]");
+function holeSep(e) {
+  if (e.inputType !== "insertText" || !/^[.,\s]$/.test(e.data || "")) return;
+  e.preventDefault();
+  const pos = holesBox.selectionStart, end = holesBox.selectionEnd, v = holesBox.value;
+  let before = v.slice(0, pos);
+  const line = before.slice(before.lastIndexOf("\n") + 1);
+  const nums = line.trim().split(/\s+/).filter(Boolean);
+  let ins;
+  if (!line.trim()) ins = "";
+  else if (/\s$/.test(line) || nums.length >= 3) { before = before.replace(/[ \t]+$/, ""); ins = "\n"; }
+  else ins = " ";
+  holesBox.value = before + ins + v.slice(end);
+  const c = before.length + ins.length; holesBox.setSelectionRange(c, c);
+  showHolePreview();
+}
+holesBox.addEventListener("beforeinput", holeSep);
+holesBox.addEventListener("input", () => {
+  // fallback for browsers that ignore beforeinput: turn any typed "." or "," into a space
+  if (/[.,]/.test(holesBox.value)) { const c = holesBox.selectionStart; holesBox.value = holesBox.value.replace(/[.,]/g, " "); holesBox.setSelectionRange(c, c); }
+  showHolePreview();
+});
+$("#course-form select[name=count]").addEventListener("change", showHolePreview);
+function showHolePreview() {
+  const count = Number($("#course-form select[name=count]").value);
+  const lines = holesBox.value.split("\n").map(l => l.trim()).filter(Boolean);
+  $("#hole-preview").innerHTML = lines.map((l, i) => {
+    const [par, yds, hcp] = l.split(/\s+/).map(Number);
+    const bad = !(par >= 3 && par <= 6) || (hcp && (hcp < 1 || hcp > 18));
+    return `<li class="${bad ? "bad" : ""}"><b>${i + 1}</b> Par ${par || "?"}${yds ? ` · ${yds} yds` : ""}${hcp ? ` · hcp ${hcp}` : ""}</li>`;
+  }).join("") + (lines.length ? `<li class="count">${lines.length} of ${count} holes</li>` : "");
+}
+
 $("#course-form").addEventListener("submit", async event => {
   event.preventDefault();
   const form = new FormData(event.target);
