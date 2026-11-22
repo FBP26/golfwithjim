@@ -93,8 +93,19 @@ table.classic select { min-height: 36px; border-radius: 8px; border: 1px solid v
 .cond-row input { width: 80px; min-height: 36px; border: 1px solid var(--line2); border-radius: 8px; padding: 4px 8px; background: var(--card); }
 .cond-row .grow { flex: 1 1 200px; } .cond-row .grow input { width: 100%; }
 
-.hole-preview { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 4px 12px; font-size: 13px; font-variant-numeric: tabular-nums; }
-.hole-preview:empty { display: none; }
-.hole-preview li b { display: inline-block; min-width: 22px; color: var(--muted); }
-.hole-preview li.bad { color: #b4540a; font-weight: 600; }
-.hole-preview li.count { grid-column: 1 / -1; color: var(--muted); }
+.cf-rows { display: grid; gap: 10px; margin-top: 8px; }
+.cf-rows .opt { font-weight: 400; }
+.cf-rows input { font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.cf-preview { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; overflow-x: auto; }
+.cf-preview:empty { display: none; }
+.cf-preview table { border-collapse: collapse; width: 100%; min-width: 320px; font-size: 13px; font-variant-numeric: tabular-nums; table-layout: fixed; }
+.cf-preview th { text-align: left; font-size: 11px; color: var(--muted); font-weight: 700; width: 40px; padding: 3px 2px; }
+.cf-preview td { text-align: center; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.cf-preview td.h { font-weight: 700; color: var(--muted); }
+.cf-preview td.t { font-weight: 800; width: 46px; background: var(--bg); }
+.cf-tot { margin: 0; font-size: 14px; }
+.cf-checks { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+.cf-checks:empty { display: none; }
+.cf-checks .err { color: #b3261e; font-weight: 600; }
+.cf-checks .warn { color: #b4540a; font-weight: 600; }
+.cf-checks .ok { color: var(--brand2); font-weight: 600; }
