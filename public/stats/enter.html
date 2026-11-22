@@ -6,13 +6,13 @@
 <title>Enter Scores · Golf Stats</title>
 <meta name="theme-color" content="#15392a">
 <link rel="icon" href="../golf-icon.svg">
-<link rel="stylesheet" href="golf.css?v=20261122b">
-<link rel="stylesheet" href="enter.css?v=20261122b">
+<link rel="stylesheet" href="golf.css?v=20261122d">
+<link rel="stylesheet" href="enter.css?v=20261122d">
 </head>
 <body>
 <header class="top">
   <h1>Enter scores</h1>
-  <nav aria-label="Golf Stats"><a href="./">Stats</a><a href="enter.html" aria-current="page">Enter scores</a><a href="keypad.html">Phone keypad</a><a href="../">Tee times</a></nav>
+  <nav aria-label="Golf Stats"><a href="./">Stats</a><a href="enter.html" aria-current="page">Enter scores</a><a href="course.html">Add a course</a><a href="../">Tee times</a></nav>
 </header>
 <main>
   <section class="card setup-summary" id="setup-summary" hidden>
@@ -23,22 +23,24 @@
     <h2 id="setup-title" class="sr">Round details</h2>
     <div class="setup-grid">
       <label class="field">Date<input id="date" type="date"></label>
-      <label class="field">Course<input id="course" list="course-list" autocomplete="off" placeholder="Start typing a course"></label>
+      <label class="field">Course<select id="course"></select></label>
       <label class="field">Tees<select id="tees"></select></label>
       <label class="field">Holes<select id="plan"><option value="18">All 18</option><option value="front">Front 9</option><option value="back">Back 9</option></select></label>
     </div>
     <datalist id="course-list"></datalist>
     <datalist id="player-list"></datalist>
+    <span class="field-lab">Golfers</span>
+    <div class="chips pick" id="golfer-picks" role="group" aria-label="Golfers"></div>
     <div class="golfer-add">
-      <label class="field grow">Golfers<input id="golfer-input" list="player-list" autocomplete="off" placeholder="Type a name, press Enter (or paste several, comma separated)"></label>
+      <label class="field grow"><span class="sr">Add a golfer</span><input id="golfer-input" list="player-list" autocomplete="off" placeholder="Someone else? Type a name"></label>
       <button class="btn" id="add-golfer" type="button">Add</button>
-      <button class="btn" id="add-usual" type="button" title="Adds the golfers you played with most in the last year">Usual group</button>
     </div>
     <div id="golfers" class="golfer-list" aria-live="polite"></div>
     <div class="row setup-actions"><button class="btn primary" id="done-setup" type="button">Done — start entering</button><button class="btn" id="new-outing" type="button">Start a new outing</button></div>
   </section>
 
   <div class="tabs mode-tabs" role="tablist" aria-label="How to enter">
+    <a class="tablink" href="keypad.html">Phone keypad</a>
     <button role="tab" data-mode="A" type="button">A · One golfer</button>
     <button role="tab" data-mode="B" type="button">B · Group by hole</button>
     <button role="tab" data-mode="C" type="button">C · Phone card</button>
@@ -55,25 +57,6 @@
   </section>
   <p id="status" class="muted" role="status"></p>
 
-  <details class="card more">
-    <summary>Add a course or new tees</summary>
-    <form id="course-form" class="course-form">
-      <div class="setup-grid">
-        <label class="field">Course name<input name="course" required></label>
-        <label class="field">Tees<input name="tees" required placeholder="White"></label>
-        <label class="field">Holes<select name="count"><option value="18">18</option><option value="front">Front 9</option><option value="back">Back 9</option></select></label>
-      </div>
-      <p class="muted">Type one row of the card at a time, in hole order. Use the number pad's <b>.</b> (or a space) between numbers. Pars can be typed straight through, like <code>443545434</code>.</p>
-      <div class="cf-rows">
-        <label class="field">Pars<input name="pars" inputmode="decimal" autocomplete="off" placeholder="4 4 3 5 4 5 4 3 4"></label>
-        <label class="field">Handicaps <span class="opt">(optional)</span><input name="hcps" inputmode="decimal" autocomplete="off" placeholder="7 1 15 3 11 9 5 17 13"></label>
-        <label class="field">Yards <span class="opt">(optional)</span><input name="yards" inputmode="decimal" autocomplete="off" placeholder="295 410 135 520 358"></label>
-      </div>
-      <div class="cf-preview" id="cf-preview"></div>
-      <ul class="cf-checks" id="cf-checks"></ul>
-      <div class="row"><button class="btn primary" type="submit">Save course</button><span id="course-status" class="muted" role="status"></span></div>
-    </form>
-  </details>
 </main>
 
 <dialog id="key-dialog">
@@ -84,6 +67,6 @@
     <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
   </form>
 </dialog>
-<script type="module" src="enter.js?v=20261122c"></script>
+<script type="module" src="enter.js?v=20261122d"></script>
 </body>
 </html>

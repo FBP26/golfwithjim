@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Add a Course · Golf Stats</title>
+<meta name="theme-color" content="#15392a">
+<link rel="icon" href="../golf-icon.svg">
+<link rel="stylesheet" href="golf.css?v=20261122d">
+<link rel="stylesheet" href="enter.css?v=20261122d">
+</head>
+<body>
+<header class="top">
+  <h1>Add a course or new tees</h1>
+  <nav aria-label="Golf Stats"><a href="./">Stats</a><a href="enter.html">Enter scores</a><a href="course.html" aria-current="page">Add a course</a><a href="../">Tee times</a></nav>
+</header>
+<main>
+  <section class="card">
+    <form id="course-form" class="course-form">
+      <div class="setup-grid">
+        <label class="field">Course name<input name="course" required></label>
+        <label class="field">Tees<input name="tees" required placeholder="White"></label>
+        <label class="field">Holes<select name="count"><option value="18">18</option><option value="front">Front 9</option><option value="back">Back 9</option></select></label>
+      </div>
+      <p class="muted">Type one row of the card at a time, in hole order. Use the number pad's <b>.</b> (or a space) between numbers. Pars can be typed straight through, like <code>443545434</code>.</p>
+      <div class="cf-rows">
+        <label class="field">Pars<input name="pars" inputmode="decimal" autocomplete="off" placeholder="4 4 3 5 4 5 4 3 4"></label>
+        <label class="field">Handicaps <span class="opt">(optional)</span><input name="hcps" inputmode="decimal" autocomplete="off" placeholder="7 1 15 3 11 9 5 17 13"></label>
+        <label class="field">Yards <span class="opt">(optional)</span><input name="yards" inputmode="decimal" autocomplete="off" placeholder="295 410 135 520 358"></label>
+      </div>
+      <div class="cf-preview" id="cf-preview"></div>
+      <ul class="cf-checks" id="cf-checks"></ul>
+      <div class="row"><button class="btn primary" type="submit">Save course</button><span id="course-status" class="muted" role="status"></span></div>
+    </form>
+  </section>
+</main>
+
+<dialog id="key-dialog">
+  <form method="dialog" class="key-form">
+    <h2>Score-entry passcode</h2>
+    <p class="muted">Only you can save scores. Enter the passcode once on this device.</p>
+    <label class="field">Passcode<input id="key-input" type="password" autocomplete="current-password" required></label>
+    <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
+  </form>
+</dialog>
+<script type="module" src="course.js?v=20261122d"></script>
+</body>
+</html>
