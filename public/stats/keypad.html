@@ -6,8 +6,8 @@
 <title>Score Keypad · Golf Stats</title>
 <meta name="theme-color" content="#15392a">
 <link rel="icon" href="../golf-icon.svg">
-<link rel="stylesheet" href="golf.css?v=20261120p">
-<link rel="stylesheet" href="keypad.css?v=20261120p">
+<link rel="stylesheet" href="golf.css?v=20261122e">
+<link rel="stylesheet" href="keypad.css?v=20261122e">
 </head>
 <body>
 <div class="kp" id="app">
@@ -71,7 +71,10 @@
       <p class="hint" id="save-state" role="status"></p>
       <div class="row2 foot"><button type="button" class="btn" id="edit-holes">Edit holes</button><button type="button" class="btn primary" id="save-next"></button></div>
     </div>
-    <div class="links"><button type="button" class="link" id="more">+ Another round here</button><button type="button" class="link" id="new-card">New scorecard</button></div>
+    <div class="after" id="after">
+      <button type="button" class="btn soft" id="more">+ More holes here today</button>
+      <button type="button" class="btn" id="new-card">New round: other course or day</button>
+    </div>
   </section>
 
   <p id="loading" class="loading">Loading courses…</p>
@@ -85,6 +88,6 @@
     <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
   </form>
 </dialog>
-<script type="module" src="keypad.js?v=20261120p"></script>
+<script type="module" src="keypad.js?v=20261122e"></script>
 </body>
 </html>

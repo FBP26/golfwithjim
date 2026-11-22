@@ -490,6 +490,7 @@ $("#golfer-picks").addEventListener("click", e => {
 });
 $("#edit-setup").addEventListener("click", () => { outing.setupOpen = true; saveDraft(); renderSetup(); });
 $("#done-setup").addEventListener("click", () => { outing.setupOpen = false; saveDraft(); renderSetup(); scrollTo({ top: 0, behavior: "smooth" }); });
+$("#new-round").addEventListener("click", () => $("#new-outing").click());
 $("#new-outing").addEventListener("click", () => {
   const unsaved = outing.golfers.some(g => g.dirty !== false && Object.keys(g.scores).length && !g.savedAt);
   if (unsaved && !confirm("Start over? Unsaved scores on this device will be cleared.")) return;
@@ -537,7 +538,7 @@ $("#save").addEventListener("click", async () => {
     if (!res.ok) throw new Error(body.details?.length ? body.details.map(d => d.error).join(" · ") : body.error || `HTTP ${res.status}`);
     for (const saved of body.saved) { const g = outing.golfers.find(x => x.id === saved.id); if (g) { g.revision = saved.revision; g.savedAt = new Date().toISOString(); } }
     saveDraft();
-    status.textContent = `Saved ${body.saved.length} round${body.saved.length > 1 ? "s" : ""}. You can keep editing; saving again updates them.`;
+    status.textContent = `Saved ${body.saved.length} round${body.saved.length > 1 ? "s" : ""}. You can keep editing; saving again updates them. For another course or day, tap New round at the top.`;
     toast("Saved ✓");
     loadData({ fresh: true }).then(d => { data = d; }).catch(() => {});
   } catch (e) {

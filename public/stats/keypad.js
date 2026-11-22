@@ -255,7 +255,7 @@ $("#nines").addEventListener("click", (e) => {
 });
 $("#who").addEventListener("click", (e) => {
   const b = e.target.closest("[data-p]"); if (!b) return;
-  d.cur.p = Number(b.dataset.p); d.cur.r = 0; const r = round();
+  d.cur.p = Number(b.dataset.p); d.cur.r = golfer().rounds.length - 1; const r = round();
   d.cur.hole = r.holes.find((h) => !r.scores[h]) ?? r.holes[0]; ui.editing = false; ui.toast = ""; loadToggles(); persist(); render();
 });
 
@@ -287,18 +287,23 @@ function renderReview(r) {
   $("#check-count").textContent = `(${ch.length})`;
   $("#checks").innerHTML = ch.length ? ch.map((c) => `<button type="button" data-hole="${c.h}">${esc(c.text)}</button>`).join("") : `<p class="none">Nothing odd.</p>`;
   const last = d.cur.p >= d.players.length - 1;
-  $("#save-next").hidden = last;
-  $("#save-next").textContent = last ? "" : `Next: ${d.players[d.cur.p + 1]}`;
+  $("#save-next").textContent = last ? "New round: other course or day" : `Next: ${d.players[d.cur.p + 1]}`;
+  $("#after").hidden = last; // on the last golfer the big button is the new-round button
   $("#save-state").textContent = r.saved ? `Saved${r.number > 1 ? " as round " + r.number : ""}. Changes save automatically.` : "Saves automatically.";
 }
 $("#checks").addEventListener("click", (e) => { const b = e.target.closest("[data-hole]"); if (!b) return; d.cur.hole = Number(b.dataset.hole); ui.editing = true; ui.toast = `Changing hole ${d.cur.hole}.`; loadToggles(); persist(); render(); });
 $("#edit-holes").addEventListener("click", () => { const r = round(); d.cur.hole = r.holes.find((h) => r.scores[h]) ?? r.holes[0]; ui.editing = true; ui.toast = "Tap any hole above, or change this one."; loadToggles(); persist(); render(); });
 function addMore() {
-  const g = golfer(); const holes = allHoles();
-  const number = Math.max(...g.rounds.map((x) => x.number), ...existingRounds(golferName())) + 1;
-  g.rounds.push({ id: uuid(), number, holes, scores: {}, revision: null, saved: false });
-  d.cur.r = g.rounds.length - 1; d.cur.hole = holes[0]; ui.editing = false;
-  ui.toastOk = true; ui.toast = `Round ${number} at ${d.course}. Start on any hole; tap Finish when you're done.`;
+  // another round at the same course and day, for everyone on the card
+  const holes = allHoles(); let first = null;
+  for (const name of d.players) {
+    const g = golfer(name); if (!g) continue;
+    const number = Math.max(...g.rounds.map((x) => x.number), ...existingRounds(name)) + 1;
+    g.rounds.push({ id: uuid(), number, holes, scores: {}, revision: null, saved: false });
+    if (first == null) first = number;
+  }
+  d.cur.p = 0; d.cur.r = golfer(d.players[0]).rounds.length - 1; d.cur.hole = holes[0]; ui.editing = false;
+  ui.toastOk = true; ui.toast = `Round ${first} at ${d.course}. Start on any hole.`;
   persist(); loadToggles(); render(); scrollTo(0, 0);
 }
 $("#more").addEventListener("click", addMore);
@@ -361,18 +366,20 @@ addEventListener("online", () => flushSave());
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") flushSave(); else if (dirtyRounds().length) flushSave(); });
 setInterval(() => { if (dirtyRounds().length && !saving) flushSave(); }, 30000);
 $("#save-next").addEventListener("click", () => {
-  if (d.cur.p >= d.players.length - 1) return;
+  if (d.cur.p >= d.players.length - 1) return newCard();
   const name = golferName();
-  d.cur.p++; d.cur.r = 0; const r = round(); d.cur.hole = r.holes.find((h) => !r.scores[h]) ?? r.holes[0];
+  d.cur.p++; d.cur.r = golfer().rounds.length - 1; const r = round(); d.cur.hole = r.holes.find((h) => !r.scores[h]) ?? r.holes[0];
   ui.editing = false; ui.toastOk = true; ui.toast = `${name} done.`;
   loadToggles(); persist(); render(); scrollTo(0, 0); flushSave();
 });
-$("#new-card").addEventListener("click", () => {
+$("#new-card").addEventListener("click", () => newCard());
+async function newCard() {
+  if (dirtyRounds().length && navigator.onLine) await flushSave(); // finish any save still waiting
   const unsaved = [...new Set(dirtyRounds().map(([n]) => n))];
   if (unsaved.length && !confirm(`Not saved yet for ${unsaved.join(", ")} (no signal?). Start a new card anyway? Those scores will be lost.`)) return;
   const keep = { course: d.course, tees: d.tees, players: d.players };
-  d = { ...freshDraft(), ...keep }; ui.toast = ""; persist(); render();
-});
+  d = { ...freshDraft(), ...keep }; ui.toast = ""; persist(); render(); scrollTo(0, 0);
+}
 
 // ---------- start ----------
 (async function start() {
