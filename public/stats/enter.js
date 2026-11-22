@@ -548,10 +548,10 @@ function cfCheck() {
   const holes = cfHoles(), n = holes.length, pars = cfNums("pars"), hcps = cfNums("hcps"), yards = cfNums("yards");
   const errs = [], warns = [], oks = [];
   if (pars.length !== n) errs.push(`Pars: ${pars.length} of ${n} entered.`);
-  pars.forEach((p, i) => { if (!(p >= 3 && p <= 6)) errs.push(`Hole ${holes[i] ?? "?"}: par ${p} doesn't look right.`); });
+  pars.forEach((p, i) => { if (!(p >= 3 && p <= 6)) errs.push(`Hole ${holes[i] ?? "?"}: par ${p} doesn't look right.`); else if (p === 6) warns.push(`Hole ${holes[i]}: par 6? Very rare (Meadows Farms' Longest Hole nine has one).`); });
   if (hcps.length && hcps.length !== n) errs.push(`Handicaps: ${hcps.length} of ${n} entered (leave it empty, or enter all ${n}).`);
   if (yards.length && yards.length !== n) errs.push(`Yards: ${yards.length} of ${n} entered (leave it empty, or enter all ${n}).`);
-  yards.forEach((y, i) => { if (!(y >= 40 && y <= 750)) warns.push(`Hole ${holes[i] ?? "?"}: ${y} yards?`); });
+  yards.forEach((y, i) => { if (!(y >= 40 && y <= (pars[i] === 6 ? 950 : 750))) warns.push(`Hole ${holes[i] ?? "?"}: ${y} yards?`); });
   if (hcps.length === n) {
     const bad = hcps.filter((h) => !(Number.isInteger(h) && h >= 1 && h <= 18));
     const dup = [...new Set(hcps.filter((h, i) => hcps.indexOf(h) !== i))];
