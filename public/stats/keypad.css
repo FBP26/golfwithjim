@@ -127,3 +127,6 @@ button:focus-visible { outline: 3px solid var(--brand2); outline-offset: 2px; }
 .datebtn input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0; padding: 0; margin: 0; -webkit-appearance: none; appearance: none; cursor: pointer; }
 .datebtn:focus-within { outline: 3px solid var(--brand2); outline-offset: 2px; }
 .homelink { font-size: 15px; font-weight: 600; color: var(--brand2); text-decoration: none; padding: 10px 0; white-space: nowrap; }
+
+.after { display: flex; flex-direction: column; gap: 8px; padding: 10px 12px calc(16px + env(safe-area-inset-bottom, 0px)); }
+.after .btn { width: 100%; min-height: 48px; }

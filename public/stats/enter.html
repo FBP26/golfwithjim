@@ -6,8 +6,8 @@
 <title>Enter Scores · Golf Stats</title>
 <meta name="theme-color" content="#15392a">
 <link rel="icon" href="../golf-icon.svg">
-<link rel="stylesheet" href="golf.css?v=20261122d">
-<link rel="stylesheet" href="enter.css?v=20261122d">
+<link rel="stylesheet" href="golf.css?v=20261122e">
+<link rel="stylesheet" href="enter.css?v=20261122e">
 </head>
 <body>
 <header class="top">
@@ -17,7 +17,7 @@
 <main>
   <section class="card setup-summary" id="setup-summary" hidden>
     <div><b id="setup-line"></b><div class="muted" id="setup-sub"></div></div>
-    <button class="btn" id="edit-setup" type="button">Edit</button>
+    <div class="row"><button class="btn" id="edit-setup" type="button">Edit</button><button class="btn" id="new-round" type="button">New round</button></div>
   </section>
   <section class="card setup" id="setup" aria-labelledby="setup-title">
     <h2 id="setup-title" class="sr">Round details</h2>
@@ -36,7 +36,7 @@
       <button class="btn" id="add-golfer" type="button">Add</button>
     </div>
     <div id="golfers" class="golfer-list" aria-live="polite"></div>
-    <div class="row setup-actions"><button class="btn primary" id="done-setup" type="button">Done — start entering</button><button class="btn" id="new-outing" type="button">Start a new outing</button></div>
+    <div class="row setup-actions"><button class="btn primary" id="done-setup" type="button">Done — start entering</button><button class="btn" id="new-outing" type="button">New round: other course or day</button></div>
   </section>
 
   <div class="tabs mode-tabs" role="tablist" aria-label="How to enter">
@@ -67,6 +67,6 @@
     <div class="row"><button class="btn" value="cancel" formnovalidate>Cancel</button><button class="btn primary" value="ok">Save passcode</button></div>
   </form>
 </dialog>
-<script type="module" src="enter.js?v=20261122d"></script>
+<script type="module" src="enter.js?v=20261122e"></script>
 </body>
 </html>
